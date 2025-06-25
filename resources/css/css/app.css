@@ -1,0 +1,37 @@
+/* Importing Tailwind CSS */
+@import 'tailwindcss';
+
+/* Importing Tailwind forms plugin */
+@plugin '@tailwindcss/forms';
+
+/* Base styles */
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+
+    /* Applying global font family */
+    * {
+        font-family: 'Vazir', sans-serif;
+    }
+}
+
+/* Font-face for 'Vazir' font */
+@font-face {
+    font-family: 'Vazir';
+    src: url('../../public/assets/fonts/Vazir/Vazir-Regular.eot');
+    src: url('../../public/assets/fonts/Vazir/Vazir-Regular.woff2') format('woff2'),
+    url('../../public/assets/fonts/Vazir/Vazir-Regular.woff') format('woff'),
+    url('../../public/assets/fonts/Vazir/Vazir-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-display: swap;
+}
+
+/* Direction for RTL layout */
+* {
+    direction: rtl;
+}
