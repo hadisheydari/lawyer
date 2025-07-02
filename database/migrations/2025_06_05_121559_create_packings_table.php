@@ -3,19 +3,18 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Database\Migrations\Traits\CommonFieldsCompanyOwner;
+
 return new class extends Migration
 {
-    use CommonFieldsCompanyOwner;
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('packings', function (Blueprint $table) {
+            //بسته بندی
             $table->id();
-            $table->tinyInteger('companyType')->default(0)->nullable();
-            $this->addCommonFields($table);
+            $table->string('name')->nullable()->comment(' نام بسته بندی ');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('packings');
     }
 };

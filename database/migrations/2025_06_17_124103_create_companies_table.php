@@ -3,25 +3,17 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
-
 return new class extends Migration
 {
-
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('product_owners', function (Blueprint $table) {
-            //اطلاعات صاحب بار
+        Schema::create('companies', function (Blueprint $table) {
+            //اطلاعات شرکت حمل
             $table->id();
-            $table->foreignId('user_id')->nullable()->comment(' شناسه کاربر ')->constrained()->cascadeOnDelete();
-            $table->tinyInteger('productOwnerType')->default(0)->comment(' نوع صاحب کالا : 1-حقیقی ، 2-حقوقی');
-            $table->string('nationalCode')->nullable()->comment(' کد ملی ');
-            $table->string('bankName')->nullable()->comment(' نام بانک ') ;
-            $table->string('shebaNumber')->nullable()->comment(' شماره شبا ');
-            $table->foreignId('province_id')->nullable()->comment(' شناسه استان ')->constrained()->cascadeOnDelete();
+            $table->tinyInteger('companyType')->default(0)->comment(' مقیاس شرکت حمل : 1-معمولی ، 2-بزرگ مقیاس ');
             $table->foreignId('city_id')->nullable()->comment(' شناسه شهر ')->constrained()->cascadeOnDelete();
             $table->string('registrationId')->nullable()->comment(' شناسه ثبت ');
             $table->string('nationalId')->nullable()->comment(' شناسه ملی ');
@@ -43,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_owners');
+        Schema::dropIfExists('companies');
     }
 };
