@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,10 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('packings', function (Blueprint $table) {
-            //بسته بندی
+        Schema::create('complaints', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable()->comment(' نام بسته بندی ');
+            $table->foreignIdFor(User::class);
+            $table->string('title')->comment('عنوان');
+            $table->string('description')->comment('توضیحات');
+            $table->enum('status',['notRead','read'])->default('notRead')->comment('وضعیت');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('packings');
+        Schema::dropIfExists('complaints');
     }
 };
