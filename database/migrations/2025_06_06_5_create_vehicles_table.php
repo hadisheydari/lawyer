@@ -21,13 +21,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('trailer_details', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('code')->comment('کد بارگیر');
-            $table->string('name')->comment('نام بارگیر');
-            $table->string('value')->comment('ظرفیت بارگیر');
-            $table->timestamps();
-        });
 
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
@@ -41,7 +34,6 @@ return new class extends Migration
             $table->enum('status', ['active', 'not_active'])->default('active');
             $table->enum('type', ['vehicle', 'trailer'])->default('vehicle')->comment('نوع خودرو');
             $table->foreignIdFor(VehicleDetail::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignIdFor(TrailerDetail::class)->constrained()->cascadeOnUpdate();
             $table->timestamps();
         });
     }
@@ -49,7 +41,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('vehicle_details');
-        Schema::dropIfExists('trailer_details');
         Schema::dropIfExists('vehicles');
     }
 };

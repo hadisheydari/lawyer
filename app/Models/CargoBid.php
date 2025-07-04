@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CargoBid extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'cargo_id',
         'company_id',
@@ -21,7 +24,7 @@ class CargoBid extends Model
     ];
     public function cargo(): BelongsTo
     {
-        return $this->belongsTo(Cargos::class , 'cargo_id');
+        return $this->belongsTo(Cargo::class , 'cargo_id');
     }
     public function company(): BelongsTo
     {

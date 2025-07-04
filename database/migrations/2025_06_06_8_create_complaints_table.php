@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('complaints', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->comment('شناسه کاربر ')->constrained()->cascadeOnDelete();
             $table->string('title')->comment('عنوان');
             $table->string('description')->comment('توضیحات');
             $table->enum('status',['notRead','read'])->default('notRead')->comment('وضعیت');
