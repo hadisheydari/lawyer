@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Partition extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'cargo_id',
         'company_id',
@@ -19,7 +16,7 @@ class Partition extends Model
         'commission',
         'status',
         'havaleFile',
-        'barnamehFile',
+        'barnamehFile'
     ];
 
     public function cargo(): BelongsTo

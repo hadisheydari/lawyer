@@ -2,23 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class City extends Model
 {
-    use HasFactory;
-
-
     protected $fillable = [
-        'code',
         'name',
+        'code',
         'state_id',
         'latitude',
-        'longitude',
+        'longitude'
     ];
-
 
     public function state(): BelongsTo
     {

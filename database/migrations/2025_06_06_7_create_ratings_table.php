@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->comment('شناسه کاربر')->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Partition::class)->comment('شناسه پارتیشن ')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Partition::class)->comment('شناسه پارتیشن')->constrained()->cascadeOnDelete();
             $table->unsignedTinyInteger('rating')->nullable()->comment('امتیاز');
             $table->timestamps();
         });

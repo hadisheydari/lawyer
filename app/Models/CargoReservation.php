@@ -2,22 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 
 class CargoReservation extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'cargo_id',
         'company_id',
-        'status',
+        'status'
     ];
-
-
 
     public function cargo(): BelongsTo
     {
@@ -28,5 +23,4 @@ class CargoReservation extends Model
     {
         return $this->belongsTo(User::class, 'company_id');
     }
-
 }

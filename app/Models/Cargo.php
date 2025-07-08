@@ -1,15 +1,13 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cargo extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'owner_id',
         'type',
@@ -23,19 +21,23 @@ class Cargo extends Model
         'fare_type',
         'cargo_type_id',
         'packing_id',
-        'description',
+        'description'
     ];
-    protected $casts = [
-        'insurance' => 'integer',
-        'fare' => 'integer',
-        'weight' => 'integer',
-        'number' => 'integer',
-        'thickness' => 'integer',
-        'length' => 'integer',
-        'width' => 'integer',
-        'type' => 'string',
-        'fare_type' => 'string',
-    ];
+
+    protected function casts(): array
+    {
+        return [
+            'insurance' => 'integer',
+            'fare' => 'integer',
+            'weight' => 'integer',
+            'number' => 'integer',
+            'thickness' => 'integer',
+            'length' => 'integer',
+            'width' => 'integer',
+            'type' => 'string',
+            'fare_type' => 'string',
+        ];
+    }
 
     public function owner(): BelongsTo
     {

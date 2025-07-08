@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Vehicle extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'smart_number',
         'cost_center',
@@ -23,10 +20,8 @@ class Vehicle extends Model
         'vehicle_detail_id',
     ];
 
-
     public function vehicleDetail(): BelongsTo
     {
         return $this->belongsTo(VehicleDetail::class);
     }
-
 }

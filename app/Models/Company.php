@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Company extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'user_id',
         'company_type',
@@ -25,7 +22,7 @@ class Company extends Model
         'manager_national_code',
         'manager_phone_number',
         'address',
-        'document',
+        'document'
     ];
 
     public function user(): BelongsTo

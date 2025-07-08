@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CargoInformation extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'cargo_id',
         'type',
@@ -21,13 +18,15 @@ class CargoInformation extends Model
         'date_at',
         'date_to'
     ];
+
     protected $casts =[
         'type' => 'string',
-        'lat' => 'decimal',
-        'lng' => 'decimal',
+        'lat' => 'float',
+        'lng' => 'float',
         'date_at' => 'timestamp',
         'date_to' => 'timestamp'
     ];
+
     public function cargo(): BelongsTo
     {
         return $this->belongsTo(Cargo::class , 'cargo_id');
