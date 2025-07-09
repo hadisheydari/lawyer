@@ -10,13 +10,13 @@ class City extends Model
     protected $fillable = [
         'name',
         'code',
-        'state_id',
+        'province_id',
         'latitude',
         'longitude'
     ];
 
     public function state(): BelongsTo
     {
-        return $this->belongsTo(State::class);
+        return $this->belongsTo(Province::class);
     }
 }
