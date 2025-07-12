@@ -1,5 +1,16 @@
 <?php
 
+use App\Enums\Cargo\CargoStatus;
+use App\Enums\Cargo\FareType;
+use App\Enums\Cargo\LocationType;
+use App\Enums\Cargo\ReservationStatus;
+use App\Enums\Cargo\Type;
+use App\Models\Cargo;
+use App\Models\CargoType;
+use App\Models\City;
+use App\Models\Driver;
+use App\Models\Packing;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,86 +19,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('cargos', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('owner_id')->comment('شناسه صاحب بار (کاربر ثبت کننده)')->constrained('users')->cascadeOnDelete();
-            $table->enum('type', ['reserve', 'rfq', 'free'])->nullable()->comment('نوع بار');
-            $table->unsignedSmallInteger('weight')->nullable()->comment('وزن بار بر اساس تن');
-            $table->unsignedSmallInteger('number')->nullable()->comment('تعداد');
-            $table->unsignedTinyInteger('thickness')->nullable()->comment('ضخامت بار بر اساس متر');
-            $table->unsignedTinyInteger('length')->nullable()->comment('طول بار بر اساس ‌متر');
-            $table->unsignedTinyInteger('width')->nullable()->comment('عرض بار بر اساس ‌متر');
-            $table->unsignedInteger('insurance')->nullable()->comment('ارزش بیمه بر حسب واحد مشخص شده');
-            $table->unsignedBigInteger('fare')->nullable()->comment('مبلغ کرایه بر حسب ریال');
-            $table->enum('fare_type', ['service', 'tonnage'])->nullable()->comment('نوع پرداخت کرایه');
-            $table->foreignId('cargo_type_id')->nullable()->comment('شناسه نوع بار ')->constrained('cargo_types')->cascadeOnDelete();
-            $table->foreignId('packing_id')->nullable()->comment('شناسه نوع بسته بندی  ')->constrained('packings')->cascadeOnDelete();
-            $table->text('description')->nullable()->comment('توضیحات اضافی درباره بار');
-
-            $table->timestamps();
-
-            $table->index('owner_id');
-            $table->index('type');
-
-        });
-        Schema::create('cargo_types', function (Blueprint $table) {
-            //انواع بار
-            $table->id();
-            $table->string('name')->nullable()->comment(' نوع بار  ');
-            $table->mediumInteger('code')->nullable()->comment(' کد بار ');
-            $table->timestamps();
-        });
-        Schema::create('cargo_information', function (Blueprint $table) {
-            //اطلاعات مبدا و مقصد بار
-            $table->id();
-            $table->foreignId('cargo_id')->comment('شناسه بار ')->constrained('cargos')->cascadeOnDelete();
-            $table->enum('type', ['origin', 'destination'])->nullable()->comment('نوع مبدا یا مقصد  ');
-            $table->decimal('lat', 10, 7)->nullable()->comment('عرض جغرافیایی ');
-            $table->decimal('lng', 10, 7)->nullable()->comment('طول جغرافیایی ');
-            $table->foreignId('city_id')->nullable()->comment('شناسه شهر ')->constrained('cities')->cascadeOnDelete();
-            $table->text('description')->nullable()->comment('توضیحات مربوط ');
-            $table->text('address')->nullable()->comment('آدرس دقیق');
-            $table->timestamp('date_at')->nullable()->comment('تاریخ و ساعت شروع ');
-            $table->timestamp('date_to')->nullable()->comment('تاریخ و ساعت پایان ');
-            $table->timestamps();
-        });
-        Schema::create('cargo_reservations', function (Blueprint $table) {
-            // رزرو بار برای شرکت حمل
-            $table->id();
-            $table->foreignId('cargo_id')->comment('شناسه ی بار ')->constrained('cargos')->cascadeOnDelete();
-            $table->foreignId('company_id')->comment('شناسه ی شرکت حمل  ')->constrained('users')->cascadeOnDelete();
-            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending')->comment('وضعیت تایید و یا رد بار ');
-            $table->timestamps();
-        });
-        Schema::create('cargo_bids', function (Blueprint $table) {
-            //  مناقصه شرکت حمل برای بار
-            $table->id();
-            $table->foreignId('cargo_id')->nullable()->comment('شناسه ی بار ')->constrained('cargos')->cascadeOnDelete();
-            $table->foreignId('company_id')->nullable()->comment('شناسه ی شرکت حمل ')->constrained('users')->cascadeOnDelete();
-            $table->unsignedBigInteger('offered_fare')->nullable()->comment('قیمت پیشنهادی برای بار   ');
-            $table->text('note')->nullable()->comment('توضیحات بار ');
-            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending')->comment('وضعیت تایید و یا رد پیشنهاد ');
-            $table->timestamps();
-        });
-        Schema::create('partitions', function (Blueprint $table) {
-            // پارتیشن ها
-            $table->id();
-            $table->foreignId('cargo_id')->nullable()->comment('شناسه ی بار ')->constrained('cargos')->cascadeOnDelete();
-            $table->foreignId('company_id')->nullable()->comment('شناسه ی شرکت حمل  ')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('driver_id')->nullable()->comment('شناسه ی راننده  ')->constrained('drivers')->cascadeOnDelete();
-            $table->unsignedInteger('weight')->nullable()->comment(' وزن بار بر اساس تن ');
-            $table->unsignedBigInteger('fare')->nullable()->comment(' قیمت کرایه ');
-            $table->unsignedBigInteger('commission')->nullable()->comment(' کمیسیو ');
-            $table->enum('status', ['free', 'reserved', 'havale', 'barnameh', 'delivered'])->default('free')->comment(' وضعیت حمل بار  ');
-            $table->string('havaleFile')->nullable()->comment(' فایل حواله   ');
-            $table->string('barnamehFile')->nullable()->comment(' فایل بارنامه   ');
-            $table->timestamps();
-
-            $table->index('cargo_id');
-            $table->index('company_id');
-            $table->index('driver_id');
-
-        });
         Schema::create('packings', function (Blueprint $table) {
             $table->id();
             $table->string('name')->comment('نام بسته بندی');
@@ -96,15 +27,93 @@ return new class extends Migration
 
         Schema::create('insurances', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable()->comment('نام بیمه');
-            $table->mediumInteger('code')->nullable()->comment('کد بیمه');
+            $table->string('name')->comment('نام بیمه');
+            $table->mediumInteger('code')->comment('کد بیمه');
             $table->decimal('coefficient')->nullable()->comment('ضریب بیمه');
+            $table->timestamps();
+        });
+
+        Schema::create('cargo_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->comment('نوع بار');
+            $table->mediumInteger('code')->comment('کد بار');
+            $table->timestamps();
+        });
+
+        Schema::create('cargos', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(User::class, 'owner_id')->comment('شناسه صاحب بار')->index()->constrained()->cascadeOnDelete();
+            $table->unsignedSmallInteger('weight')->nullable()->comment('وزن بار بر اساس تن');
+            $table->unsignedSmallInteger('number')->nullable()->comment('تعداد');
+            $table->unsignedTinyInteger('thickness')->nullable()->comment('ضخامت بار بر اساس متر');
+            $table->unsignedTinyInteger('length')->nullable()->comment('طول بار بر اساس متر');
+            $table->unsignedTinyInteger('width')->nullable()->comment('عرض بار بر اساس متر');
+            $table->unsignedInteger('insurance')->nullable()->comment('ارزش بیمه');
+            $table->unsignedBigInteger('fare')->nullable()->comment('مبلغ کرایه بر حسب ریال');
+            $table->enum('fare_type', FareType::TYPES)->nullable()->comment('نوع پرداخت کرایه');
+            $table->enum('type', Type::TYPES)->index()->comment('نوع بار');
+            $table->foreignIdFor(CargoType::class)->nullable()->comment('شناسه نوع بار')->constrained()->nullOnDelete();
+            $table->foreignIdFor(Packing::class)->nullable()->comment('شناسه نوع بسته‌بندی')->constrained()->nullOnDelete();
+            $table->text('description')->nullable()->comment('توضیحات');
+            $table->timestamps();
+        });
+
+        Schema::create('cargo_information', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Cargo::class)->constrained()->cascadeOnDelete();
+            $table->enum('type', LocationType::TYPES)->nullable()->comment('نوع (مبدا/مقصد)');
+            $table->decimal('lat', 10, 7)->nullable()->comment('عرض جغرافیایی');
+            $table->decimal('lng', 10, 7)->nullable()->comment('طول جغرافیایی');
+            $table->foreignIdFor(City::class)->nullable()->constrained()->nullOnDelete();
+            $table->text('description')->nullable()->comment('توضیحات');
+            $table->text('address')->nullable()->comment('آدرس دقیق');
+            $table->timestamp('date_at')->nullable()->comment('تاریخ و ساعت شروع');
+            $table->timestamp('date_to')->nullable()->comment('تاریخ و ساعت پایان');
+            $table->timestamps();
+        });
+
+        Schema::create('cargo_reservations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(User::class, 'company_id')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Cargo::class)->constrained()->cascadeOnDelete();
+            $table->enum('status', ReservationStatus::STATUSES)->default(ReservationStatus::PENDING)->comment('وضعیت رزرو');
+            $table->timestamps();
+        });
+
+        Schema::create('cargo_bids', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(User::class, 'company_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignIdFor(Cargo::class)->nullable()->constrained()->nullOnDelete();
+            $table->unsignedBigInteger('offered_fare')->default(0)->comment('قیمت پیشنهادی');
+            $table->enum('status', ReservationStatus::STATUSES)->default(ReservationStatus::PENDING)->comment('وضعیت پیشنهاد');
+            $table->text('note')->nullable()->comment('توضیحات بار');
+            $table->timestamps();
+        });
+
+        Schema::create('partitions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(User::class, 'company_id')->nullable()->index()->constrained()->nullOnDelete();
+            $table->foreignIdFor(Cargo::class)->nullable()->index()->constrained()->nullOnDelete();
+            $table->foreignIdFor(Driver::class)->nullable()->index()->constrained()->nullOnDelete();
+            $table->unsignedInteger('weight')->nullable()->comment('وزن (تن)');
+            $table->unsignedBigInteger('fare')->nullable()->comment('کرایه');
+            $table->unsignedBigInteger('commission')->nullable()->comment('کمیسیون');
+            $table->enum('status', CargoStatus::STATUSES)->default(CargoStatus::FREE)->comment('وضعیت حمل');
+            $table->string('havaleFile')->nullable()->comment('فایل حواله');
+            $table->string('barnamehFile')->nullable()->comment('فایل بارنامه');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('packings');
+        Schema::dropIfExists('insurances');
+        Schema::dropIfExists('cargo_types');
         Schema::dropIfExists('cargos');
+        Schema::dropIfExists('cargo_information');
+        Schema::dropIfExists('cargo_reservations');
+        Schema::dropIfExists('cargo_bids');
+        Schema::dropIfExists('partitions');
     }
 };

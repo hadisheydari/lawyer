@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use mysql_xdevapi\Table;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cargo extends Model
 {
@@ -22,33 +21,56 @@ class Cargo extends Model
         'fare_type',
         'cargo_type_id',
         'packing_id',
-        'description',
+        'description'
     ];
 
-    protected $casts = [
-        'insurance' => 'integer',
-        'fare' => 'integer',
-        'weight' => 'integer',
-        'number' => 'integer',
-        'thickness' => 'integer',
-        'length' => 'integer',
-        'width' => 'integer',
-        'type' => 'string',
-        'fare_type' => 'string',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'insurance' => 'integer',
+            'fare' => 'integer',
+            'weight' => 'integer',
+            'number' => 'integer',
+            'thickness' => 'integer',
+            'length' => 'integer',
+            'width' => 'integer',
+            'type' => 'string',
+            'fare_type' => 'string',
+        ];
+    }
 
-    public function productOwner(): BelongsTo
+    public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
     public function cargoType(): BelongsTo
     {
-        return $this->belongsTo(CargoType::class, 'cargo_type_id');
+        return $this->belongsTo(CargoType::class);
     }
 
     public function packing(): BelongsTo
     {
-        return $this->belongsTo(Packing::class, 'packing_id');
+        return $this->belongsTo(Packing::class);
+    }
+
+    public function cargoInformation(): HasMany
+    {
+        return $this->hasMany(CargoInformation::class);
+    }
+
+    public function cargoReservations(): HasMany
+    {
+        return $this->hasMany(CargoReservation::class);
+    }
+
+    public function cargoBids(): HasMany
+    {
+        return $this->hasMany(CargoBid::class);
+    }
+
+    public function partitions(): HasMany
+    {
+        return $this->hasMany(Partition::class);
     }
 }

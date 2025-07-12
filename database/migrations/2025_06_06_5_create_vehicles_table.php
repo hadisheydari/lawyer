@@ -1,7 +1,9 @@
 <?php
 
-use App\Enums\PlateLatter;
-use App\Models\TrailerDetail;
+use App\Enums\Vehicle\PlateLatter;
+use App\Enums\Vehicle\PlateType;
+use App\Enums\Vehicle\Status;
+use App\Enums\Vehicle\Type;
 use App\Models\VehicleDetail;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -21,14 +23,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('trailer_details', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('code')->comment('کد بارگیر');
-            $table->string('name')->comment('نام بارگیر');
-            $table->string('value')->comment('ظرفیت بارگیر');
-            $table->timestamps();
-        });
-
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('smart_number')->index()->comment('شماره هوشمند');
@@ -37,11 +31,10 @@ return new class extends Migration
             $table->unsignedSmallInteger('plate_second')->comment('قسمت دوم پلاک');
             $table->unsignedTinyInteger('plate_third')->comment('قسمت سوم پلاک(کد استان)');
             $table->enum('plate_letter', PlateLatter::LETTERS)->comment('حرف پلاک');
-            $table->enum('plate_type', ['general', 'governmental', 'personal'])->default('personal')->comment(' نوع پلاک ');
-            $table->enum('status', ['active', 'not_active'])->default('active');
-            $table->enum('type', ['vehicle', 'trailer'])->default('vehicle')->comment('نوع خودرو');
+            $table->enum('plate_type', PlateType::TYPES)->default(PlateType::PERSONAL)->comment('نوع پلاک');
+            $table->enum('status', Status::STATUSES)->default(Status::ACTIVE)->comment('وضعیت');
+            $table->enum('type', Type::TYPES)->default(Type::VEHICLE)->comment('نوع خودرو');
             $table->foreignIdFor(VehicleDetail::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignIdFor(TrailerDetail::class)->constrained()->cascadeOnUpdate();
             $table->timestamps();
         });
     }
@@ -49,7 +42,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('vehicle_details');
-        Schema::dropIfExists('trailer_details');
         Schema::dropIfExists('vehicles');
     }
 };

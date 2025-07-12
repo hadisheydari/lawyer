@@ -18,13 +18,15 @@ class CargoInformation extends Model
         'date_at',
         'date_to'
     ];
+
     protected $casts =[
         'type' => 'string',
-        'lat' => 'decimal',
-        'lng' => 'decimal',
+        'lat' => 'float',
+        'lng' => 'float',
         'date_at' => 'timestamp',
         'date_to' => 'timestamp'
     ];
+
     public function cargo(): BelongsTo
     {
         return $this->belongsTo(Cargo::class , 'cargo_id');

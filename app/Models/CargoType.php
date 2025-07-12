@@ -10,12 +10,7 @@ class CargoType extends Model
 {
     protected $fillable = [
         'name',
-        'code',
-    ];
-
-    protected $casts = [
-        'name' => 'string',
-        'code' => 'integer',
+        'code'
     ];
 
     public function cargos(): HasMany

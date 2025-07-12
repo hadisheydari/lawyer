@@ -11,13 +11,7 @@ class CargoReservation extends Model
     protected $fillable = [
         'cargo_id',
         'company_id',
-        'status',
-    ];
-
-    protected $casts = [
-        'cargo_id' => 'integer',
-        'company_id' => 'integer',
-        'status' => 'string',
+        'status'
     ];
 
     public function cargo(): BelongsTo
@@ -29,5 +23,4 @@ class CargoReservation extends Model
     {
         return $this->belongsTo(User::class, 'company_id');
     }
-
 }

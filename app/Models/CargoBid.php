@@ -13,16 +13,20 @@ class CargoBid extends Model
         'offered_fare',
         'note',
         'status'
+    ];
 
-    ];
-    protected $casts = [
-        'offered_fare' => 'integer',
-        'status' => 'string',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'offered_fare' => 'integer'
+        ];
+    }
+
     public function cargo(): BelongsTo
     {
-        return $this->belongsTo(Cargos::class , 'cargo_id');
+        return $this->belongsTo(Cargo::class , 'cargo_id');
     }
+
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class , 'company_id');
