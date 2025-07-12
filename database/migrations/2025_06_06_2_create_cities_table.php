@@ -20,7 +20,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('code')->index()->comment('کد شهر ');
             $table->string('name')->comment('نام شهر ');
-            $table->foreignIdFor(Province::class)->nullable()->comment('شناسه استان ')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Province::class)->comment('شناسه استان ')->constrained()->cascadeOnDelete();
             $table->double('latitude')->comment('عرض جغرافیایی');
             $table->double('longitude')->comment('طول جغرافیایی');
             $table->timestamps();

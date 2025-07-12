@@ -15,7 +15,7 @@ class City extends Model
         'longitude'
     ];
 
-    public function state(): BelongsTo
+    public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class);
     }
