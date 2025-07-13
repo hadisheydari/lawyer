@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8fa54c5ca937a755c9ad34fb9810504e",
+    "content-hash": "3155d1b57504225c85bd5592038de822",
     "packages": [
         {
             "name": "brick/math",
@@ -2005,6 +2005,48 @@
                 }
             ],
             "time": "2024-12-08T08:18:47+00:00"
+        },
+        {
+            "name": "m6t9n/iran-province-city",
+            "version": "1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/m6t9n/iran-province-city.git",
+                "reference": "bf9789c6429607d3ebde20bb75050dcc73748d55"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/m6t9n/iran-province-city/zipball/bf9789c6429607d3ebde20bb75050dcc73748d55",
+                "reference": "bf9789c6429607d3ebde20bb75050dcc73748d55",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "php": "^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Vendor\\IranProvinceCity\\Providers\\IranProvinceCityServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Vendor\\IranProvinceCity\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Laravel package for Iran's provinces and cities",
+            "support": {
+                "issues": "https://github.com/m6t9n/iran-province-city/issues",
+                "source": "https://github.com/m6t9n/iran-province-city/tree/1.0.6"
+            },
+            "time": "2025-07-12T12:44:57+00:00"
         },
         {
             "name": "monolog/monolog",
