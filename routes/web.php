@@ -2,13 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('Authentication.login');
-//    return view('welcome');
+require __DIR__.'/auth.php';
 
-});
-Route::get('/register', function () {
-    return view('Authentication.register');
-//    return view('welcome');
+Route::get('/', function () {
+    return view('welcome');
 
 });
