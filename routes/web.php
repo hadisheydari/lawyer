@@ -3,12 +3,13 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('Authentication.login');
-//    return view('welcome');
-
+    return view('dashboard');
 });
 Route::get('/register', function () {
     return view('Authentication.register');
-//    return view('welcome');
+
+});
+Route::get('/login', function () {
+    return view('Authentication.login');
 
 });
