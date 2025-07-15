@@ -1,18 +1,8 @@
-<!doctype html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+@extends('layout.authLayout')
+@section('title', 'ثبت نام در بازارگاه')
+@section('header', 'ثبت نام در بازارگاه')
 
-    <title>ثبت نام در بازارگاه</title>
-</head>
-<body>
-<x-auth-background text="ثبت نام در بازارگاه">
+@section('content')
     <x-form.base-form action="{{ route('registerAction') }}" method="POST" class="space-y-6">
         @csrf
 
@@ -82,7 +72,7 @@
         </div>
 
         <div>
-            <x-form.button text="ثبت نام" type="submit" class="w-full" />
+            <x-form.button text="ثبت نام" type="submit" class="w-full"/>
         </div>
 
         <p class="mt-6 text-center text-gray-600 text-sm">
@@ -93,8 +83,9 @@
             </a>
         </p>
     </x-form.base-form>
-</x-auth-background>
+@endsection
 
+@section('script')
 <script>
     document.querySelector('form').addEventListener('submit', function (event) {
         const pass1 = document.getElementById('password').value;
@@ -106,5 +97,7 @@
         }
     });
 </script>
-</body>
-</html>
+
+@endsection
+
+
