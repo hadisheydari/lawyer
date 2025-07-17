@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use Illuminate\Validation\Rule;
+use App\Models\CargoType;
+use App\Models\Packing;
 
 if (! function_exists('string_rules')) {
     /**
@@ -86,6 +88,96 @@ if (! function_exists('password_rules')) {
         $rules = ['string', 'min:8', 'max:255'];
         $rules[] = $required ? 'required' : 'nullable';
 
+        return $rules;
+    }
+}
+
+
+if (! function_exists('otp_code_rules')) {
+    /**
+     * OTP code validation rules.
+     *
+     * @param  bool  $required  Whether the field is required.
+     * @return array<string>
+     */
+    function otp_code_rules(bool $required = true): array
+    {
+        $rules = ['digits:6']; // یا 'numeric|min:100000|max:999999'
+        $rules[] = $required ? 'required' : 'nullable';
+
+        return $rules;
+    }
+}
+
+
+if (! function_exists('unsigned_integer_rules')) {
+    /**
+     * Rules for unsigned integers (nullable or required).
+     *
+     * @param bool $required
+     * @param int|null $max
+     * @return array<string>
+     */
+    function unsigned_integer_rules(bool $required = false, ?int $max = null): array
+    {
+        $rules = ['integer', 'min:0'];
+        if ($max) {
+            $rules[] = "max:$max";
+        }
+        $rules[] = $required ? 'required' : 'nullable';
+
+        return $rules;
+    }
+}
+
+if (! function_exists('enum_rules')) {
+    /**
+     * Rules for enums (Laravel Rule::in).
+     *
+     * @param array $values
+     * @param bool $required
+     * @return array<string|\Illuminate\Contracts\Validation\Rule>
+     */
+    function enum_rules(array $values, bool $required = true): array
+    {
+        $rules = [Rule::in($values)];
+        $rules[] = $required ? 'required' : 'nullable';
+
+        return $rules;
+    }
+}
+
+if (! function_exists('foreign_id_rules')) {
+    /**
+     * Rules for foreign IDs.
+     *
+     * @param string $table
+     * @param bool $required
+     * @return array<string|\Illuminate\Contracts\Validation\Rule>
+     */
+    function foreign_id_rules(string $table, bool $required = false): array
+    {
+        $rules = ['integer', "exists:$table,id"];
+        $rules[] = $required ? 'required' : 'nullable';
+
+        return $rules;
+    }
+}
+
+if (! function_exists('iranian_national_code_rules')) {
+    function iranian_national_code_rules(bool $required = true): array
+    {
+        $rules = ['regex:/^\d{10}$/']; // فقط 10 رقم
+        $rules[] = $required ? 'required' : 'nullable';
+        return $rules;
+    }
+}
+
+if (! function_exists('file_rules')) {
+    function file_rules(bool $required = false, array $mimes = ['jpg','jpeg','png','pdf'], int $max = 2048): array
+    {
+        $rules = ['file', 'mimes:' . implode(',', $mimes), "max:$max"];
+        $rules[] = $required ? 'required' : 'nullable';
         return $rules;
     }
 }

@@ -5,13 +5,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\OtpRequest;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UserOtpResource;
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use App\Services\OtpService;
 
 class AuthController extends Controller
 {
@@ -24,20 +28,39 @@ class AuthController extends Controller
 
         $user = User::create($data);
 
-        auth()->login($user);
-
+        $otp = app(OtpService::class)->generate($user);
         $request->session()->regenerate();
 
         if ($request->expectsJson()) {
-            return $this->success('ثبت نام و ورود با موفقیت انجام شد!', 201, [
-                'token' => $user->createToken('auth_token')->plainTextToken,
-                'user' => new UserResource($user),
+            return $this->success('ثبت‌نام انجام شد، کد برای شما ارسال شد.', 201, [
+                'otp' => new UserOtpResource($otp),
             ]);
         }
 
-        return redirect()->intended('/dashboard');
+        $request->session()->put('phone', $user->phone);
+        return redirect()->route('verify');
     }
 
+    public function verify(OtpRequest $request, OtpService $otpService): JsonResponse|RedirectResponse
+    {
+        $phone =  $request->session()->get('phone');
+        $user = User::where('phone', $phone)->first();
+
+        if ($otpService->verify($user, $request->code)) {
+            auth()->login($user);
+            $request->session()->regenerate();
+            if ($request->expectsJson()) {
+                return $this->success('ثبت نام و ورود با موفقیت انجام شد!', 201, [
+                    'token' => $user->createToken('auth_token')->plainTextToken,
+                    'user' => new UserResource($user),
+                ]);
+            }
+            return redirect()->intended('/dashboard')
+            ->with('success', 'ورود موفق! نقش خود را انتخاب کنید.');
+        }
+
+        return back()->withErrors(['code' => 'کد وارد شده اشتباه یا منقضی شده است.']);
+    }
 
     public function login(LoginRequest $request): JsonResponse|RedirectResponse
     {
@@ -70,9 +93,7 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse|RedirectResponse
     {
         $user = $request->user();
-        // api token
         $user->tokens()->delete();
-        // web session
         auth()->logout();
         session()->invalidate();
         session()->regenerateToken();

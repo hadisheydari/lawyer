@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,6 +21,15 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('user_otps', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(User::class)->comment('شناسه کاربر ')->constrained()->cascadeOnDelete();
+            $table->string('code')->comment('کد اعتبارسنجی');
+            $table->timestamp('expires_at')->comment('اعتبار کد')->nullable();
+            $table->timestamps();
+        });
+
+
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -39,6 +49,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
+        Schema::dropIfExists('user_otps');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
