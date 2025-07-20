@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class ProductOwnerRole extends Component
+class ProductOwnerRealRole extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class ProductOwnerRole extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.role-info.product-owner-role');
+        return view('components.role-info.product-owner-real-role');
     }
 }

@@ -14,16 +14,36 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $province_code کد استان
  * @property float|null $latitude
  * @property float|null $longitude
- *
  * @property-read Province $province استان مربوطه
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereLatitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereLongitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereProvinceCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|City whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
  */
 class City extends Model
 {
     public const TABLE = 'cities';
+
     public const CODE = 'code';
+
     public const NAME = 'name';
+
     public const PROVINCE_CODE = 'province_code';
+
     public const LATITUDE = 'latitude';
+
     public const LONGITUDE = 'longitude';
 
     /** @var string */

@@ -12,13 +12,28 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property int $code کد استان
  * @property string $name نام استان
- *
  * @property-read Collection<int, City> $cities لیست شهرهای این استان
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read int|null $cities_count
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Province newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Province newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Province query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Province whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Province whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Province whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Province whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Province whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
  */
 class Province extends Model
 {
     public const TABLE = 'provinces';
+
     public const CODE = 'code';
+
     public const NAME = 'name';
 
     /** @var string */

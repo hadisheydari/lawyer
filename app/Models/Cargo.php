@@ -6,6 +6,57 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property int $owner_id شناسه صاحب بار
+ * @property int|null $weight وزن بار بر اساس تن
+ * @property int|null $number تعداد
+ * @property int|null $thickness ضخامت بار بر اساس متر
+ * @property int|null $length طول بار بر اساس متر
+ * @property int|null $width عرض بار بر اساس متر
+ * @property int|null $insurance ارزش بیمه
+ * @property int|null $fare مبلغ کرایه بر حسب ریال
+ * @property string|null $fare_type نوع پرداخت کرایه
+ * @property string $type نوع بار
+ * @property int|null $cargo_type_id شناسه نوع بار
+ * @property int|null $packing_id شناسه نوع بسته‌بندی
+ * @property string|null $description توضیحات
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CargoBid> $cargoBids
+ * @property-read int|null $cargo_bids_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CargoInformation> $cargoInformation
+ * @property-read int|null $cargo_information_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CargoReservation> $cargoReservations
+ * @property-read int|null $cargo_reservations_count
+ * @property-read \App\Models\CargoType|null $cargoType
+ * @property-read \App\Models\User $owner
+ * @property-read \App\Models\Packing|null $packing
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Partition> $partitions
+ * @property-read int|null $partitions_count
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereCargoTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereFare($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereFareType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereInsurance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereLength($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereOwnerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo wherePackingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereThickness($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereWeight($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereWidth($value)
+ *
+ * @mixin \Eloquent
+ */
 class Cargo extends Model
 {
     protected $fillable = [
@@ -21,7 +72,7 @@ class Cargo extends Model
         'fare_type',
         'cargo_type_id',
         'packing_id',
-        'description'
+        'description',
     ];
 
     protected function casts(): array

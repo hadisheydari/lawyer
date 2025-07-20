@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\OtpRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserOtpResource;
+use App\Http\Resources\UserResource;
+use App\Models\City;
+use App\Models\Province;
 use App\Models\User;
+use App\Services\OtpService;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
-use App\Services\OtpService;
 
 class AuthController extends Controller
 {
@@ -38,16 +39,16 @@ class AuthController extends Controller
         }
 
         $request->session()->put('phone', $user->phone);
+
         return redirect()->route('verify');
     }
 
     public function verify(OtpRequest $request, OtpService $otpService): JsonResponse|RedirectResponse
     {
-        $phone =  $request->session()->get('phone');
+        $phone = $request->session()->get('phone');
         $user = User::where('phone', $phone)->first();
 
-        if ($otpService->verify($user, $request->code)) {
-            auth()->login($user);
+        if ($otpService->verify($user, $request['code'])) {
             $request->session()->regenerate();
             if ($request->expectsJson()) {
                 return $this->success('ثبت نام و ورود با موفقیت انجام شد!', 201, [
@@ -55,18 +56,42 @@ class AuthController extends Controller
                     'user' => new UserResource($user),
                 ]);
             }
-            return redirect()->intended('/dashboard')
-            ->with('success', 'ورود موفق! نقش خود را انتخاب کنید.');
+
+            return redirect()->route('selectRole')
+                ->with('success', 'ورود موفق! نقش خود را انتخاب کنید.');
         }
 
         return back()->withErrors(['code' => 'کد وارد شده اشتباه یا منقضی شده است.']);
+    }
+
+    public function selectRole(Request $request, string $role, ?string $type = null): View|RedirectResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if (! $user->hasRole($role)) {
+            $user->syncRoles([$role]);
+        }
+
+        if ($type !== null) {
+            $request->session()->put('user_type', $type);
+        }
+
+        $user->save();
+
+        $cities = City::all();
+        $province = Province::all();
+
+        return view('auth.role-info', compact('cities', 'province'))
+            ->with('success', 'نقش شما با موفقیت ثبت شد.');
+
     }
 
     public function login(LoginRequest $request): JsonResponse|RedirectResponse
     {
         $credentials = $request->validated();
 
-        if (!auth()->attempt($credentials)) {
+        if (! auth()->attempt($credentials)) {
             if ($request->expectsJson()) {
                 return $this->error('شماره موبایل یا رمز عبور اشتباه است.', 401);
             }

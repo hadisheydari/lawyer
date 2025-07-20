@@ -14,8 +14,9 @@ Route::middleware('web')->group(function () {
         Route::post('/register', [AuthController::class, 'register'])->name('registerAction');
         Route::post('/verify', [AuthController::class, 'verify'])->name('verifyAction');
 
-
     });
+    Route::get('/select-role', fn () => view('auth.select-role'))->name('selectRole');
+    Route::get('/select-role/{role}/{type?}', [AuthController::class, 'selectRole'])->name('selectRoleAction');
 
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logoutAction');
 });
