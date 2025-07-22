@@ -1,4 +1,4 @@
-@extends('layout.authLayout')
+@extends('layouts.auth')
 @section('title', 'ورود به بازارگاه')
 @section('header', 'ورود به بازارگاه')
 
@@ -8,9 +8,9 @@
         @if (session('status'))
             <p class="mb-4 text-sm text-green-600">{{ session('status') }}</p>
         @endif
-        <x-form.input name="code" label="کد تایید هویت" type="text" placeholder="********" maxlength="6" required />
+        <x-form.input name="code" label="کد تایید هویت" type="text" placeholder="********" maxlength="6" required/>
 
-        <x-form.button text="ثبت نام" type="submit" />
+        <x-form.button text="ثبت نام" type="submit"/>
 
 
     </x-form.base-form>

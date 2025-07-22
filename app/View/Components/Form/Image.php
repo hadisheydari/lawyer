@@ -1,27 +1,27 @@
 <?php
 
-namespace App\View\Components\RoleInfo;
+namespace App\View\Components\Form;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class DriverRole extends Component
+class Image extends Component
 {
     /**
      * Create a new component instance.
      */
     public function __construct(
-        public iterable|null $cities = [],
-        public iterable|null $companies = [],
-
-    )
-    {}
+        public ?string $name,
+        public ?string $label,
+        public ?string $currentImage,
+        public bool $required = false,
+    ) {}
     /**
      * Get the view / contents that represent the component.
      */
     public function render(): View|Closure|string
     {
-        return view('components.role-info.driver-role');
+        return view('components.form.image');
     }
 }

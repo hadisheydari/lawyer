@@ -1,4 +1,4 @@
-@extends('layout.authLayout')
+@extends('layouts.auth')
 @section('title', 'ثبت نام در بازارگاه')
 @section('header', 'ثبت نام در بازارگاه')
 
@@ -75,17 +75,17 @@
 @endsection
 
 @section('script')
-<script>
-    document.querySelector('form').addEventListener('submit', function (event) {
-        const pass1 = document.getElementById('password').value;
-        const pass2 = document.getElementById('repetPassword').value;
+    <script>
+        document.querySelector('form').addEventListener('submit', function (event) {
+            const pass1 = document.getElementById('password').value;
+            const pass2 = document.getElementById('repetPassword').value;
 
-        if (pass1 !== pass2) {
-            event.preventDefault();
-            alert('گذرواژه یکسان نیست.');
-        }
-    });
-</script>
+            if (pass1 !== pass2) {
+                event.preventDefault();
+                alert('گذرواژه یکسان نیست.');
+            }
+        });
+    </script>
 
 @endsection
 

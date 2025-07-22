@@ -42,30 +42,17 @@
             {{$readonly ?? false ? 'readonly' : ''}}
 
         >
-    @elseif ($type === 'file')
-        <input
-            type="file"
-            id="{{ $name }}"
-            name="{{ $name }}"
-            class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 file:bg-blue-500 file:text-white file:px-4 file:py-2 file:rounded-lg file:border-none"
-            accept="image/jpeg, image/png, image/jpg"
-            {{ $required ?? false ? 'required' : '' }}
-        >
-    @elseif ($type === 'img')
-
-        <img id="preview-{{ $name }}" src="{{ asset('storage/'. $value ?? '') }}" class="mt-2  w-40 h-40 object-cover rounded-lg border" />
 
     @elseif($type === 'date')
         <input
             type="text"
             id="{{$name}}"
             name="{{$name}}"
-            class="datepicker   px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            class="datepicker px-4 py-2 border rounded-lg bg-blue-50 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
             placeholder="{{$placeholder ?? ''}}"
             autocomplete="off"
-            value="{{ old($name, $value ?? '')}}"
+            value="{{ old($name, isset($value) ? \Morilog\Jalali\Jalalian::forge($value)->format('Y/m/d') : '') }}"
             {{$disabled ?? false ? 'disabled' : ''}}
-
         >
     @endif
     @error($name)

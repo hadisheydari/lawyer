@@ -8,7 +8,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserOtpResource;
 use App\Http\Resources\UserResource;
 use App\Models\City;
-use App\Models\Province;
+use App\Models\Company;
 use App\Models\User;
 use App\Services\OtpService;
 use App\Traits\ApiResponseTrait;
@@ -49,6 +49,7 @@ class AuthController extends Controller
         $user = User::where('phone', $phone)->first();
 
         if ($otpService->verify($user, $request['code'])) {
+            auth()->login($user);
             $request->session()->regenerate();
             if ($request->expectsJson()) {
                 return $this->success('ثبت نام و ورود با موفقیت انجام شد!', 201, [
@@ -79,10 +80,12 @@ class AuthController extends Controller
 
         $user->save();
 
-        $cities = City::all();
-        $province = Province::all();
+        $cities = City::pluck('name', 'id');
+        $companies = Company::with('user')->get()->mapWithKeys(function ($company) {
+            return [$company->id => $company->user->name];
+        });
 
-        return view('auth.role-info', compact('cities', 'province'))
+        return view('auth.role-info', compact('cities', 'companies'))
             ->with('success', 'نقش شما با موفقیت ثبت شد.');
 
     }

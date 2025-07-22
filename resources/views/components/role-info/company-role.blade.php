@@ -1,72 +1,163 @@
+<div class="text-blue-950 font-black text-2xl m-12 ">
+   ثبت اطلاعات شرکت حمل
+</div>
+<x-form.base-form action="#" method="POST" class="space-y-6">
+    @csrf
 
-    <x-form.base-form action="#" method="POST" class="space-y-6">
-        @csrf
+    @if ($errors->any())
+        <div class="rounded-md bg-red-50 p-4 text-red-700 text-sm font-medium space-y-1">
+            <ul class="list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                    <li><i class="fa-solid fa-circle-exclamation mr-2"></i>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    <div class="grid grid-cols-3 gap-4">
+        <div class="">
+            <x-form.select-box
+                name="company_type"
+                :options="['normal' => 'معمولی', 'large_scale' => 'بزرگ مقیاس ']"
+                label="نوع شرکت "
+                placeholder="یک گزینه را انتخاب کنید "
+                :multiple="false"
+                :required="true"
+            />
+        </div>
+        <div class="">
+            <x-form.select-box
+                name="city_id"
+                :options="$cities ?? []"
+                label="شهر "
+                placeholder="یک گزینه را انتخاب کنید "
+                :multiple="false"
+                :required="true"
+            />
+        </div>
 
-        @if ($errors->any())
-            <div class="rounded-md bg-red-50 p-4 text-red-700 text-sm font-medium space-y-1">
-                <ul class="list-disc list-inside">
-                    @foreach ($errors->all() as $error)
-                        <li><i class="fa-solid fa-circle-exclamation mr-2"></i>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <div>
+        <div class="">
             <x-form.input
-                name="name"
-                label="نام و نام خانوادگی"
+                name="registration_id"
+                label="شناسه ثبت"
                 type="text"
-                placeholder="جواد ذاکر"
-                value="{{ old('name') }}"
+                placeholder="شناسه ثبت را وارد کنید"
+                value="{{ old('registration_id') }}"
             />
 
         </div>
 
-        <div>
+        <div class="">
             <x-form.input
-                name="phone"
-                label="شماره تلفن"
+                name="national_id"
+                label="شناسه ملی"
                 type="text"
-                placeholder="09xxxxxxxxx"
-                value="{{ old('phone') }}"
+                placeholder="شناسه ملی را وارد کنید"
+                value="{{ old('national_id') }}"
             />
 
         </div>
 
-        <div>
-            <x-form.input-password
-                id="password"
-                name="password"
-                label="گذرواژه"
-                placeholder="********"
-                minlength="8"
+        <div class="">
+            <x-form.input
+                name="rahdari_code"
+                label="کد راهداری"
+                type="text"
+                placeholder="کد راهداری را وارد کنید"
+                value="{{ old('rahdari_code') }}"
             />
 
         </div>
 
-        <div>
-            <x-form.input-password
-                id="repetPassword"
-                name="password_confirmation"
-                label="تکرار گذرواژه"
-                placeholder="********"
-                minlength="8"
+        <div class="">
+            <x-form.input
+                name="agent_name"
+                label="نام نماینده"
+                type="text"
+                placeholder="نام نماینده را وارد کنید"
+                value="{{ old('agent_name') }}"
             />
 
         </div>
 
-        <div>
-            <x-form.button text="ثبت نام" type="submit" class="w-full"/>
+        <div class="">
+            <x-form.input
+                name="agent_phone_number"
+                label="شماره نماینده"
+                type="text"
+                placeholder="شماره نماینده را وارد کنید"
+                value="{{ old('agent_phone_number') }}"
+            />
+
         </div>
 
-        <p class="mt-6 text-center text-gray-600 text-sm">
-            قبلا ثبت نام کرده اید؟
-            <a href="{{ route('login') }}"
-               class="text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-200">
-                ورود
-            </a>
-        </p>
-    </x-form.base-form>
+        <div class="">
+            <x-form.input
+                name="manager_name"
+                label="نام مدیرعامل"
+                type="text"
+                placeholder="نام مدیرعامل را وارد کنید"
+                value="{{ old('manager_name') }}"
+            />
+
+        </div>
+
+        <div class="">
+            <x-form.input
+                name="manager_national_code"
+                label="کدملی مدیرعامل"
+                type="text"
+                placeholder="کدملی مدیرعامل را وارد کنید"
+                value="{{ old('manager_national_code') }}"
+            />
+
+        </div>
+
+        <div class="">
+            <x-form.input
+                name="manager_phone_number"
+                label="شماره مدیرعامل"
+                type="text"
+                placeholder="شماره مدیرعامل را وارد کنید"
+                value="{{ old('manager_phone_number') }}"
+            />
+
+        </div>
+
+        <div class="">
+            <x-form.input
+                name="manager_phone_number"
+                label="شماره مدیرعامل"
+                type="text"
+                placeholder="شماره مدیرعامل را وارد کنید"
+                value="{{ old('manager_phone_number') }}"
+            />
+
+        </div>
+
+        <div class="">
+            <x-form.input
+                name="address"
+                label="آدرس"
+                type="textarea"
+                placeholder="آدرس را وارد کنید"
+                value="{{ old('address') }}"
+            />
+
+        </div>
+        <div class="">
+            <x-form.image
+                name="document"
+                label="مدارک"
+            />
+
+        </div>
+
+
+    </div>
+
+    <div>
+        <x-form.button text="ثبت اطلاعات" type="submit" class="w-full"/>
+    </div>
+</x-form.base-form>
 
 

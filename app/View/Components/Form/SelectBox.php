@@ -14,7 +14,7 @@ class SelectBox extends Component
     public function __construct(
         public string $name,
         public string $label,
-        public array $options = [],
+        public iterable $options = [],
         public array|string|null $selected = null,
         public bool $multiple = false,
         public ?string $placeholder = null,

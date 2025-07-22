@@ -1,4 +1,4 @@
-@extends('layout.authLayout')
+@extends('layouts.auth')
 @section('title', 'ورود به بازارگاه')
 @section('header', 'ورود به بازارگاه')
 
@@ -18,7 +18,7 @@
 
         <x-form.input-password name="password" label="گذرواژه" placeholder="********" minlength="8"/>
 
-        <x-form.button  text="ورود" type="submit"/>
+        <x-form.button text="ورود" type="submit"/>
 
         <p class="mt-6 text-sm text-center text-gray-600">
             حساب کاربری نداری؟

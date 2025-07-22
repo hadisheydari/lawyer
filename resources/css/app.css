@@ -1,4 +1,6 @@
+@import "select2/dist/css/select2.min.css";
 @import './font.css';
+@import 'persian-datepicker/dist/css/persian-datepicker.min.css';
 
 @tailwind base;
 @tailwind components;

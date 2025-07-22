@@ -1,4 +1,4 @@
-import ApexCharts from 'apexcharts'
+import ApexCharts from 'apexcharts';
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .map(({value}) => value);
     }
 
-    // تابع تنظیمات اسپارک‌لاین‌ها
+    // تنظیمات اسپارک‌لاین‌ها
     const sparkOptions = (color, data) => ({
         series: [{data}],
         chart: {
@@ -32,115 +32,125 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ساخت اسپارک‌لاین‌ها
-    new ApexCharts(document.querySelector("#spark1"), sparkOptions("#10B981", randomizeArray(sparklineData))).render();
-    new ApexCharts(document.querySelector("#spark2"), sparkOptions("#3B82F6", randomizeArray(sparklineData))).render();
-    new ApexCharts(document.querySelector("#spark3"), sparkOptions("#F59E0B", randomizeArray(sparklineData))).render();
+    // ✅ ساخت اسپارک‌لاین‌ها (فقط اگر المنت وجود داشت)
+    if (document.querySelector("#spark1")) {
+        new ApexCharts(document.querySelector("#spark1"), sparkOptions("#10B981", randomizeArray(sparklineData))).render();
+    }
 
-    const salesChartOptions = {
-        series: [{
-            name: 'تحویل بار',
-            data: [144, 155, 141, 167, 122, 143, 121, 133, 145, 131, 117, 165]
-        }],
-        annotations: {
-            points: [{
-                x: 'تیر',
-                seriesIndex: 0,
-                label: {
-                    borderColor: '#775DD0',
-                    offsetY: 0,
-                    style: {
-                        color: '#fff',
-                        background: '#775DD0',
+    if (document.querySelector("#spark2")) {
+        new ApexCharts(document.querySelector("#spark2"), sparkOptions("#3B82F6", randomizeArray(sparklineData))).render();
+    }
+
+    if (document.querySelector("#spark3")) {
+        new ApexCharts(document.querySelector("#spark3"), sparkOptions("#F59E0B", randomizeArray(sparklineData))).render();
+    }
+
+    // ✅ نمودار فروش
+    if (document.querySelector("#chart")) {
+        const salesChartOptions = {
+            series: [{
+                name: 'تحویل بار',
+                data: [144, 155, 141, 167, 122, 143, 121, 133, 145, 131, 117, 165]
+            }],
+            annotations: {
+                points: [{
+                    x: 'تیر',
+                    seriesIndex: 0,
+                    label: {
+                        borderColor: '#775DD0',
+                        offsetY: 0,
+                        style: {
+                            color: '#fff',
+                            background: '#775DD0',
+                        },
+                        text: 'عملکرد خوب در تیر ماه',
+                    }
+                }]
+            },
+            chart: {
+                height: 350,
+                type: 'bar',
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 10,
+                    columnWidth: '50%',
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                width: 0
+            },
+            grid: {
+                row: {
+                    colors: ['#fff', '#f2f2f2']
+                }
+            },
+            xaxis: {
+                labels: {
+                    rotate: -45
+                },
+                categories: [
+                    'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+                    'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+                ],
+                tickPlacement: 'on'
+            },
+            yaxis: {
+                title: {
+                    text: 'تعداد تحویل بار ',
+                },
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    type: "horizontal",
+                    shadeIntensity: 0.25,
+                    gradientToColors: undefined,
+                    inverseColors: true,
+                    opacityFrom: 0.85,
+                    opacityTo: 0.85,
+                    stops: [50, 0, 100]
+                },
+            }
+        };
+
+        new ApexCharts(document.querySelector("#chart"), salesChartOptions).render();
+    }
+
+    // ✅ نمودار Polar Area
+    if (document.querySelector("#polarAreaChart")) {
+        var polarAreaOptions = {
+            series: [30, 25, 20],
+            labels: ['آزاد', 'رزرو', 'RFQ'],
+            chart: {
+                type: 'polarArea',
+                height: 350,
+            },
+            stroke: {
+                colors: ['#fff']
+            },
+            fill: {
+                opacity: 0.8
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 280
                     },
-                    text: 'عملکرد خوب در تیر ماه',
+                    legend: {
+                        position: 'bottom'
+                    }
                 }
             }]
-        },
-        chart: {
-            height: 350,
-            type: 'bar',
-        },
-        plotOptions: {
-            bar: {
-                borderRadius: 10,
-                columnWidth: '50%',
-            }
-        },
-        dataLabels: {
-            enabled: false
-        },
-        stroke: {
-            width: 0
-        },
-        grid: {
-            row: {
-                colors: ['#fff', '#f2f2f2']
-            }
-        },
-        xaxis: {
-            labels: {
-                rotate: -45
-            },
-            categories: [
-                'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
-                'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
-            ],
-            tickPlacement: 'on'
-        },
-        yaxis: {
-            title: {
-                text: 'تعداد تحویل بار ',
-            },
-        },
-        fill: {
-            type: 'gradient',
-            gradient: {
-                shade: 'light',
-                type: "horizontal",
-                shadeIntensity: 0.25,
-                gradientToColors: undefined,
-                inverseColors: true,
-                opacityFrom: 0.85,
-                opacityTo: 0.85,
-                stops: [50, 0, 100]
-            },
-        }
-    };
+        };
 
-    new ApexCharts(document.querySelector("#chart"), salesChartOptions).render();
-
-
-    var polarAreaOptions = {
-        series: [30, 25, 20],
-        labels: ['ازاد', 'رزرو', 'rfq' ],
-        chart: {
-            type: 'polarArea',
-            height: 350,
-        },
-        stroke: {
-            colors: ['#fff']
-        },
-        fill: {
-            opacity: 0.8
-        },
-
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                chart: {
-                    width: 280
-                },
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }]
-    };
-
-
-    var chart = new ApexCharts(document.querySelector("#polarAreaChart"), polarAreaOptions);
-    chart.render();
-
+        var chart = new ApexCharts(document.querySelector("#polarAreaChart"), polarAreaOptions);
+        chart.render();
+    }
 
 });

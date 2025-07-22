@@ -36,9 +36,9 @@ class RolePermissionSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        $companyRole = Role::firstOrCreate(['name' => 'Company']);
-        $driverRole = Role::firstOrCreate(['name' => 'Driver']);
-        $productOwnerRole = Role::firstOrCreate(['name' => 'Product Owner']);
+        $companyRole = Role::firstOrCreate(['name' => 'company']);
+        $driverRole = Role::firstOrCreate(['name' => 'driver']);
+        $productOwnerRole = Role::firstOrCreate(['name' => 'productOwner']);
 
         $companyRole->syncPermissions([
             'manage users',

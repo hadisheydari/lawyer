@@ -5,6 +5,8 @@ export default {
         "./resources/**/*.blade.php",
         "./resources/**/*.js",
         "./resources/**/*.vue",
+        "./resources/views/components/**/*.blade.php", // اضافه کن
+        "./app/View/Components/**/*.php", // اضافه کن
     ],
     theme: {
         extend: {},
@@ -13,4 +15,3 @@ export default {
         forms,
     ],
 }
-
