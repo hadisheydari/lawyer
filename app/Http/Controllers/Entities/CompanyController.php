@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Entities;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use App\Http\Requests\Entities\CompanyRequest;
+
 
 class CompanyController extends Controller
 {
@@ -27,9 +29,19 @@ class CompanyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CompanyRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $data['user_id'] = auth()->id();
+
+        if ($request->hasFile('document')) {
+            $data['document'] = $request->file('document')->store('companies', 'public');
+        }
+
+        Company::create($data);
+
+        return redirect()->route('dashboard')->with('success', 'شرکت با موفقیت ثبت شد.');
     }
 
     /**
@@ -51,7 +63,7 @@ class CompanyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Company $company)
+    public function update(CompanyRequest $request, Company $company)
     {
         //
     }

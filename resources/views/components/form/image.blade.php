@@ -1,6 +1,6 @@
 <div
     x-data="singleImageUploader('{{ $currentImage ?? '' }}')"
-    class="flex flex-col items-center gap-4 p-6 border-2 border-blue-400 bg-blue-50 rounded-xl shadow-md w-96">
+    class="flex flex-col items-center gap-4 p-6 border-2 border-blue-400 bg-blue-50 rounded-xl shadow-md w-full ">
 
     <label class="text-lg font-semibold text-blue-900">{{ $label }}</label>
 
@@ -29,14 +29,6 @@
         انتخاب تصویر
         <input type="file" name="{{ $name }}" @change="previewImage($event)" accept="image/*" class="hidden" {{ $required ? 'required' : '' }}>
     </label>
-
-    <template x-if="previewUrl">
-        <button type="button"
-                @click="cancelNewImage"
-                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg shadow text-sm">
-            کنسل انتخاب جدید
-        </button>
-    </template>
 
     <input type="hidden" name="remove_image" x-model="removeOldImage">
 </div>

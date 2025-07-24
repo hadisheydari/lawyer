@@ -1,7 +1,7 @@
 <div class="text-blue-950 font-black text-2xl m-12 ">
     ثبت اطلاعات صاحب کالا(حقیقی)
 </div>
-<x-form.base-form action="#" method="POST" class="space-y-6">
+<x-form.base-form action="{{route('product-owners.store')}}" method="POST" class="space-y-6">
     @csrf
 
     @if ($errors->any())
@@ -32,6 +32,7 @@
                 label="کد ملی"
                 type="text"
                 placeholder="کد ملی را وارد کنید"
+
                 value="{{ old('national_code') }}"
             />
 
@@ -80,6 +81,7 @@
 
 
     </div>
+    {{ $slot }}
 
     <div>
         <x-form.button text="ثبت اطلاعات" type="submit" class="w-full"/>

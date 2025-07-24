@@ -48,7 +48,7 @@
             type="text"
             id="{{$name}}"
             name="{{$name}}"
-            class="datepicker px-4 py-2 border rounded-lg bg-blue-50 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            class="persian-datepicker px-4 py-2 border rounded-lg bg-blue-50 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
             placeholder="{{$placeholder ?? ''}}"
             autocomplete="off"
             value="{{ old($name, isset($value) ? \Morilog\Jalali\Jalalian::forge($value)->format('Y/m/d') : '') }}"

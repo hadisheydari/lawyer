@@ -3,8 +3,10 @@
 namespace App\Http\Requests\Entities;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Enums\Entity\CompanyType;
 
-class UpdateCompanyRequest extends FormRequest
+
+class CompanyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,21 +23,27 @@ class UpdateCompanyRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'user_id' => foreign_id_rules('users', false),
-            'company_type' => enum_rules(\App\Enums\Entity\CompanyType::TYPES, false),
-            'registration_id' => string_rules(false),
-            'national_id' => string_rules(false),
-            'rahdari_code' => string_rules(false),
-            'agent_name' => string_rules(false),
+        $rules = [
+            'user_id' => foreign_id_rules('users', true),
+            'company_type' => enum_rules(CompanyType::TYPES),
+            'registration_id' => string_rules(),
+            'national_id' => string_rules(),
+            'rahdari_code' => string_rules(),
+            'agent_name' => string_rules(),
             'agent_national_code' => iranian_national_code_rules(false),
             'agent_phone_number' => phone_rules(false),
-            'manager_name' => string_rules(false),
+            'manager_name' => string_rules(),
             'manager_national_code' => iranian_national_code_rules(false),
             'manager_phone_number' => phone_rules(false),
-            'address' => string_rules(false, 0, 500),
-            'document' => file_rules(false),
-            'city_id' => foreign_id_rules('cities', false),
+            'address' => string_rules(),
+            'document' => file_rules(false, ['jpg', 'jpeg', 'png', 'pdf']),
+            'city_id' => foreign_id_rules('cities'),
         ];
+
+        if ($this->isMethod('post')) {
+            $rules['terms'] = ['accepted'];
+        }
+
+        return $rules;
     }
 }

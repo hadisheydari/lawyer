@@ -181,3 +181,33 @@ if (! function_exists('file_rules')) {
         return $rules;
     }
 }
+
+if (! function_exists('date_rules')) {
+    /**
+     * Rules for date fields.
+     *
+     * @param bool $required
+     * @return array<string>
+     */
+    function date_rules(bool $required = false): array
+    {
+        $rules = ['date'];
+        $rules[] = $required ? 'required' : 'nullable';
+        return $rules;
+    }
+}
+
+if (! function_exists('sheba_rules')) {
+    /**
+     * Rules for Iranian Sheba number (starts with IR and 24 digits).
+     *
+     * @param bool $required
+     * @return array<string>
+     */
+    function sheba_rules(bool $required = false): array
+    {
+        $rules = ['regex:/^IR\d{24}$/i'];
+        $rules[] = $required ? 'required' : 'nullable';
+        return $rules;
+    }
+}

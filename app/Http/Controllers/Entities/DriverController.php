@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Entities;
 use App\Http\Controllers\Controller;
 use App\Models\Driver;
 use Illuminate\Http\Request;
+use App\Http\Requests\Entities\DriverRequest;
 
 class DriverController extends Controller
 {
@@ -27,9 +28,24 @@ class DriverController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DriverRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['user_id'] = auth()->id();
+
+        if ($request->hasFile('national_card_file')) {
+            $data['national_card_file'] = $request->file('national_card_file')->store('drivers/national_cards');
+        }
+        if ($request->hasFile('smart_card_file')) {
+            $data['smart_card_file'] = $request->file('smart_card_file')->store('drivers/smart_cards');
+        }
+        if ($request->hasFile('certificate_file')) {
+            $data['certificate_file'] = $request->file('certificate_file')->store('drivers/certificates');
+        }
+
+        Driver::create($data);
+
+        return redirect()->route('drivers.index')->with('success', 'درایور با موفقیت ساخته شد.');
     }
 
     /**
@@ -51,7 +67,7 @@ class DriverController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Driver $driver)
+    public function update(DriverRequest $request, Driver $driver)
     {
         //
     }

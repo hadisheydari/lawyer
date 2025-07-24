@@ -1,7 +1,7 @@
 <div class="text-blue-950 font-black text-2xl m-12 ">
     ثبت اطلاعات صاحب کالا(حقیقی)
 </div>
-<x-form.base-form action="#" method="POST" class="space-y-6">
+<x-form.base-form action="{{route('drivers.store')}}" method="POST" class="space-y-6">
     @csrf
 
     @if ($errors->any())
@@ -95,14 +95,30 @@
         </div>
         <div class="">
             <x-form.image
-                name="document"
-                label="مدارک"
+                name="national_card_file"
+                label="فایل کارت ملی"
             />
 
         </div>
 
+        <div class="">
+            <x-form.image
+                name="smart_card_file"
+                label="فایل کارت هوشمند"
+            />
+
+        </div>
+
+        <div class="">
+            <x-form.image
+                name="certificate_file"
+                label="فایل گواهینامه"
+            />
+
+        </div>
 
     </div>
+    {{ $slot }}
 
     <div>
         <x-form.button text="ثبت اطلاعات" type="submit" class="w-full"/>

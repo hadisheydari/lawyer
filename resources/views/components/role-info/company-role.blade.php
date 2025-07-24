@@ -1,7 +1,7 @@
 <div class="text-blue-950 font-black text-2xl m-12 ">
    ثبت اطلاعات شرکت حمل
 </div>
-<x-form.base-form action="#" method="POST" class="space-y-6">
+<x-form.base-form action="{{route('companies.store')}}" method="POST" class="space-y-6">
     @csrf
 
     @if ($errors->any())
@@ -154,6 +154,8 @@
 
 
     </div>
+    {{ $slot }}
+
 
     <div>
         <x-form.button text="ثبت اطلاعات" type="submit" class="w-full"/>
