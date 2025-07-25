@@ -33,19 +33,23 @@ class DriverController extends Controller
         $data = $request->validated();
         $data['user_id'] = auth()->id();
 
-        if ($request->hasFile('national_card_file')) {
-            $data['national_card_file'] = $request->file('national_card_file')->store('drivers/national_cards');
-        }
-        if ($request->hasFile('smart_card_file')) {
-            $data['smart_card_file'] = $request->file('smart_card_file')->store('drivers/smart_cards');
-        }
-        if ($request->hasFile('certificate_file')) {
-            $data['certificate_file'] = $request->file('certificate_file')->store('drivers/certificates');
+        // آرایه‌ای که کلید فایل‌ها و مسیر ذخیره رو مشخص می‌کند
+        $fileFields = [
+            'national_card_file' => 'drivers/national_cards',
+            'smart_card_file' => 'drivers/smart_cards',
+            'certificate_file' => 'drivers/certificates',
+        ];
+
+        foreach ($fileFields as $field => $path) {
+            if ($request->hasFile($field)) {
+                $data[$field] = $request->file($field)->store($path);
+            }
         }
 
         Driver::create($data);
 
-        return redirect()->route('drivers.index')->with('success', 'درایور با موفقیت ساخته شد.');
+        return redirect()->route('drivers.index')
+            ->with('success', 'درایور با موفقیت ساخته شد.');
     }
 
     /**

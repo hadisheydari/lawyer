@@ -24,21 +24,24 @@ class DriverRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'user_id' => foreign_id_rules('users', true),
             'national_code' => iranian_national_code_rules(),
-            'birth_date' => ['date', 'nullable'],
+            'birth_date' => ['nullable', 'integer'],
             'father_name' => string_rules(),
             'certificate_number' => string_rules(),
             'property' => enum_rules(PropertyType::TYPES, false),
             'national_card_file' => file_rules(false, ['jpg', 'jpeg', 'png']),
             'smart_card_file' => file_rules(false, ['jpg', 'jpeg', 'png']),
             'certificate_file' => file_rules(false, ['jpg', 'jpeg', 'png']),
-            'company_id' => foreign_id_rules('companies'),
+            'company_id' => foreign_id_rules('companies', false),
             'city_id' => foreign_id_rules('cities'),
         ];
 
+        if ($this->input('property') === PropertyType::OWNED) {
+            $rules['company_id'] = foreign_id_rules('companies', true); // اجباری
+        }
+
         if ($this->isMethod('post')) {
-            $rules['terms'] = ['accepted'];
+            $rules['conditions'] = ['accepted'];
         }
 
         return $rules;

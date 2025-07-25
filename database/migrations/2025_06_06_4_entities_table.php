@@ -59,7 +59,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->comment('شناسه کاربر ')->constrained()->cascadeOnDelete();
             $table->string('national_code')->comment('کدملی');
-            $table->date('birth_date')->nullable()->comment('تاریخ تولد');
+            $table->timestamp('birth_date')->nullable()->comment('تاریخ تولد');
             $table->string('father_name')->nullable()->comment('نام پدر');
             $table->string('certificate_number')->nullable()->comment('شماره گواهینامه');
             $table->enum('property', PropertyType::TYPES)->nullable()->comment('owned -> ملکی, non_owned -> غیرملکی');

@@ -4,13 +4,12 @@ namespace App\Enums\Cargo;
 
 class FareType
 {
-    public const RESERVE = 'reserve';
-    public const RFQ = 'rfq';
-    public const FREE = 'free';
+    public const SERVICE = 'service';
+    public const TONNAGE = 'tonnage';
 
     public const TYPES = [
-        self::RESERVE,
-        self::RFQ,
-        self::FREE
+        self::SERVICE,
+        self::TONNAGE
     ];
+
 }

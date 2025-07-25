@@ -24,7 +24,6 @@ class CompanyRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'user_id' => foreign_id_rules('users', true),
             'company_type' => enum_rules(CompanyType::TYPES),
             'registration_id' => string_rules(),
             'national_id' => string_rules(),

@@ -46,15 +46,23 @@
     @elseif($type === 'date')
         <input
             type="text"
-            id="{{$name}}"
-            name="{{$name}}"
+            id="{{ $name }}_display"
             class="persian-datepicker px-4 py-2 border rounded-lg bg-blue-50 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="{{$placeholder ?? ''}}"
+            placeholder="{{ $placeholder ?? '' }}"
             autocomplete="off"
             value="{{ old($name, isset($value) ? \Morilog\Jalali\Jalalian::forge($value)->format('Y/m/d') : '') }}"
-            {{$disabled ?? false ? 'disabled' : ''}}
+            {{ $disabled ?? false ? 'disabled' : '' }}
+            data-pd-target="{{ $name }}"
+        >
+        <input
+            type="hidden"
+            id="{{ $name }}"
+            name="{{ $name }}"
+            value="{{ old($name, isset($value) ? \Carbon\Carbon::parse($value)->timestamp : '') }}"
         >
     @endif
+
+
     @error($name)
     <p class="text-red-500 text-sm mt-1">{{$message}}</p>
     @enderror

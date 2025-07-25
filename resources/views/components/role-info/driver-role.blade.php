@@ -79,7 +79,7 @@
                 label=" شرکت حمل "
                 placeholder="یک گزینه را انتخاب کنید "
                 :multiple="false"
-                :required="true"
+                :required="false"
             />
         </div>
 
