@@ -52,6 +52,7 @@ return new class extends Migration
             $table->unsignedBigInteger('fare')->nullable()->comment('مبلغ کرایه بر حسب ریال');
             $table->enum('fare_type', FareType::TYPES)->nullable()->comment('نوع پرداخت کرایه');
             $table->enum('type', Type::TYPES)->index()->comment('نوع بار');
+
             $table->foreignIdFor(CargoType::class)->nullable()->comment('شناسه نوع بار')->constrained()->nullOnDelete();
             $table->foreignIdFor(Packing::class)->nullable()->comment('شناسه نوع بسته‌بندی')->constrained()->nullOnDelete();
             $table->text('description')->nullable()->comment('توضیحات');
