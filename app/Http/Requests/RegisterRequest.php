@@ -15,7 +15,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => string_rules(),
-            'phone' => phone_rules(),
+            'phone' => phone_rules(true, null, true),
             'password' => password_rules(),
         ];
     }

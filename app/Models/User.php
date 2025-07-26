@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -64,5 +65,20 @@ class User extends Authenticatable
             'verified_at' => 'datetime',
             'email_verified_at' => 'datetime',
         ];
+    }
+
+    public function company():HasOne
+    {
+        return $this->hasOne(Company::class);
+    }
+
+    public function productOwner():HasOne
+    {
+        return $this->hasOne(ProductOwner::class);
+    }
+
+    public function driver():HasOne
+    {
+        return $this->hasOne(Driver::class);
     }
 }

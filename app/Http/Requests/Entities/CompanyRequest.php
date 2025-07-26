@@ -25,22 +25,22 @@ class CompanyRequest extends FormRequest
     {
         $rules = [
             'company_type' => enum_rules(CompanyType::TYPES),
-            'registration_id' => string_rules(),
-            'national_id' => string_rules(),
-            'rahdari_code' => string_rules(),
+            'registration_id' => numeric_rules(false),
+            'national_id' => numeric_rules(false),
+            'rahdari_code' => numeric_rules(false),
             'agent_name' => string_rules(),
             'agent_national_code' => iranian_national_code_rules(false),
-            'agent_phone_number' => phone_rules(false),
+            'agent_phone_number' => phone_rules(true, null, false),
             'manager_name' => string_rules(),
             'manager_national_code' => iranian_national_code_rules(false),
-            'manager_phone_number' => phone_rules(false),
+            'manager_phone_number' => phone_rules(true, null, false),
             'address' => string_rules(),
             'document' => file_rules(false, ['jpg', 'jpeg', 'png', 'pdf']),
             'city_id' => foreign_id_rules('cities'),
         ];
 
         if ($this->isMethod('post')) {
-            $rules['terms'] = ['accepted'];
+            $rules['conditions'] = ['accepted'];
         }
 
         return $rules;

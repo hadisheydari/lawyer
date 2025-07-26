@@ -52,7 +52,7 @@ return new class extends Migration
             $table->unsignedBigInteger('fare')->nullable()->comment('مبلغ کرایه بر حسب ریال');
             $table->enum('fare_type', FareType::TYPES)->nullable()->comment('نوع پرداخت کرایه');
             $table->enum('type', Type::TYPES)->index()->comment('نوع بار');
-
+            $table->timestamp('date_to')->nullable()->comment('تاریخ پایان مناقصه');
             $table->foreignIdFor(CargoType::class)->nullable()->comment('شناسه نوع بار')->constrained()->nullOnDelete();
             $table->foreignIdFor(Packing::class)->nullable()->comment('شناسه نوع بسته‌بندی')->constrained()->nullOnDelete();
             $table->text('description')->nullable()->comment('توضیحات');
@@ -68,8 +68,8 @@ return new class extends Migration
             $table->foreignIdFor(City::class)->nullable()->constrained()->nullOnDelete();
             $table->text('description')->nullable()->comment('توضیحات');
             $table->text('address')->nullable()->comment('آدرس دقیق');
-            $table->timestamp('date_at')->nullable()->comment('تاریخ و ساعت شروع');
-            $table->timestamp('date_to')->nullable()->comment('تاریخ و ساعت پایان');
+            $table->timestamp('date_at')->nullable()->comment('تاریخ  شروع');
+            $table->timestamp('date_to')->nullable()->comment('تاریخ پایان');
             $table->timestamps();
         });
 

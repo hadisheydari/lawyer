@@ -19,13 +19,31 @@
                     <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 ">
                         <div
                             class="relative flex items-center justify-between p-4 mb-6 rounded-2xl bg-white/60 backdrop-blur-lg shadow-xl border border-white/30">
+
+                            {{--                 profile                 --}}
+
+
+                            @php
+                                $user = auth()->user();
+                                    if ($user->hasRole('company')) {
+                                        $info = $user->company?->company_type;
+                                    } elseif ($user->hasRole('productOwner')) {
+                                        $info = $user->productOwner?->product_owner_type;
+                                    } elseif ($user->hasRole('driver')) {
+                                        $info = $user->driver?->property;
+                                    } else{
+                                        $info = null;
+                                    }
+
+                            @endphp
+
                             <div class="flex items-center gap-4">
                                 <img
                                     src="data:image/png;base64,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"
                                     alt="external-user-web-flaticons-flat-flat-icons-2">
                                 <div class="text-right">
-                                    <h3 class="text-gray-800 font-bold text-sm">علی حسینی</h3>
-                                    <p class="text-xs text-gray-500">مدیر سیستم</p>
+                                    <h3 class="text-gray-800 font-bold text-sm">{{$user?->name}}</h3>
+                                    <p class="text-xs text-gray-500">{{ __('role_types.' . $info) }}</p>
                                 </div>
                             </div>
 
@@ -91,6 +109,9 @@
                                 </button>
 
                             </div>
+
+                            {{--               end profile                 --}}
+
                         </div>
 
                         <ul class="space-y-4 font-medium">
@@ -108,156 +129,173 @@
                                     <span class="ms-3">داشبورد</span>
                                 </a>
                             </li>
-                            <li>
-                                <a href="#"
-                                   class="flex items-center p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                         stroke-linejoin="round" class="lucide lucide-users-icon lucide-users">
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                                        <path d="M16 3.128a4 4 0 0 1 0 7.744"/>
-                                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                                        <circle cx="9" cy="7" r="4"/>
-                                    </svg>
-                                    <span class="ms-3">مدیریت کاربران</span>
-                                </a>
-                            </li>
-                            <li>
-                                <button
-                                    class="flex items-center w-full p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group focus:outline-none"
-                                    aria-expanded="false"
-                                    aria-controls="submenu-1"
-                                    id="menu-button-1"
-                                    onclick="toggleSubmenu('submenu-1', this)"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                              d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                              d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-                                    </svg>
-                                    <span class="flex-1 ms-3 text-right">تنظیمات</span>
+                            @can('manage users')
+                                <li>
+                                    <a href="#"
+                                       class="flex items-center p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             viewBox="0 0 24 24"
+                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                             stroke-linejoin="round" class="lucide lucide-users-icon lucide-users">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                            <path d="M16 3.128a4 4 0 0 1 0 7.744"/>
+                                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                                            <circle cx="9" cy="7" r="4"/>
+                                        </svg>
+                                        <span class="ms-3">مدیریت کاربران</span>
+                                    </a>
+                                </li>
+                            @endcan
 
-                                    <svg
-                                        class="w-4 h-4 ml-2 text-gray-500 transition-transform duration-300 transform group-[aria-expanded='true']:rotate-180"
-                                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </button>
-                                <ul id="submenu-1"
-                                    class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out ps-8 mt-2 space-y-2"
-                                    aria-labelledby="menu-button-1">
-                                    <li>
-                                        <a href="#"
-                                           class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
-                                            <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
-                                                 viewBox="0 0 16 16">
-                                                <circle cx="8" cy="8" r="8"/>
-                                            </svg>
-                                            <span class="ms-2">لیست کالاها</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                           class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
-                                            <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
-                                                 viewBox="0 0 16 16">
-                                                <circle cx="8" cy="8" r="8"/>
-                                            </svg>
-                                            <span class="ms-2">لیست انواع بارگیرها</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                           class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
-                                            <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
-                                                 viewBox="0 0 16 16">
-                                                <circle cx="8" cy="8" r="8"/>
-                                            </svg>
-                                            <span class="ms-2">لیست بسته‌بندی</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                           class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
-                                            <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
-                                                 viewBox="0 0 16 16">
-                                                <circle cx="8" cy="8" r="8"/>
-                                            </svg>
-                                            <span class="ms-2">لیست شرکت‌های بیمه</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            @can('read setting')
+                                <li>
+                                    <button
+                                        class="flex items-center w-full p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group focus:outline-none"
+                                        aria-expanded="false"
+                                        aria-controls="submenu-1"
+                                        id="menu-button-1"
+                                        onclick="toggleSubmenu('submenu-1', this)"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                             stroke-width="1.5" stroke="currentColor" class="size-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                        </svg>
+                                        <span class="flex-1 ms-3 text-right">تنظیمات</span>
 
-                            <li>
-                                <button
-                                    class="flex items-center w-full p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group focus:outline-none"
-                                    aria-expanded="false"
-                                    aria-controls="submenu-2"
-                                    id="menu-button-2"
-                                    onclick="toggleSubmenu('submenu-2', this)"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                         stroke-linejoin="round"
-                                         class="lucide lucide-package-plus-icon lucide-package-plus">
-                                        <path d="M16 16h6"/>
-                                        <path d="M19 13v6"/>
-                                        <path
-                                            d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
-                                        <path d="m7.5 4.27 9 5.15"/>
-                                        <polyline points="3.29 7 12 12 20.71 7"/>
-                                        <line x1="12" x2="12" y1="22" y2="12"/>
-                                    </svg>
+                                        <svg
+                                            class="w-4 h-4 ml-2 text-gray-500 transition-transform duration-300 transform group-[aria-expanded='true']:rotate-180"
+                                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
+                                    <ul id="submenu-1"
+                                        class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out ps-8 mt-2 space-y-2"
+                                        aria-labelledby="menu-button-1">
+                                        <li>
+                                            <a href="#"
+                                               class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
+                                                <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
+                                                     viewBox="0 0 16 16">
+                                                    <circle cx="8" cy="8" r="8"/>
+                                                </svg>
+                                                <span class="ms-2">لیست کالاها</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                               class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
+                                                <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
+                                                     viewBox="0 0 16 16">
+                                                    <circle cx="8" cy="8" r="8"/>
+                                                </svg>
+                                                <span class="ms-2">لیست انواع بارگیرها</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                               class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
+                                                <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
+                                                     viewBox="0 0 16 16">
+                                                    <circle cx="8" cy="8" r="8"/>
+                                                </svg>
+                                                <span class="ms-2">لیست بسته‌بندی</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#"
+                                               class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
+                                                <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
+                                                     viewBox="0 0 16 16">
+                                                    <circle cx="8" cy="8" r="8"/>
+                                                </svg>
+                                                <span class="ms-2">لیست شرکت‌های بیمه</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            @endcan
 
-                                    <span class="flex-1 ms-3 text-right">اعلام بار</span>
-                                    <svg
-                                        class="w-4 h-4 ml-2 text-gray-500 transition-transform duration-300 transform group-[aria-expanded='true']:rotate-180"
-                                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
+                            @can('read cargo list')
 
-                                </button>
-                                <ul id="submenu-2"
-                                    class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out ps-8 mt-2 space-y-2"
-                                    aria-labelledby="menu-button-2">
-                                    <li>
-                                        <a href="#"
-                                           class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
-                                            <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
-                                                 viewBox="0 0 16 16">
-                                                <circle cx="8" cy="8" r="8"/>
-                                            </svg>
-                                            <span class="ms-2">لیست بار</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                           class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
-                                            <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
-                                                 viewBox="0 0 16 16">
-                                                <circle cx="8" cy="8" r="8"/>
-                                            </svg>
-                                            <span class="ms-2">مناقصه ی بار </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                           class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
-                                            <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
-                                                 viewBox="0 0 16 16">
-                                                <circle cx="8" cy="8" r="8"/>
-                                            </svg>
-                                            <span class="ms-2">رزرو بار </span>
-                                        </a>
-                                    </li>
+                                <li>
+                                    <button
+                                        class="flex items-center w-full p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group focus:outline-none"
+                                        aria-expanded="false"
+                                        aria-controls="submenu-2"
+                                        id="menu-button-2"
+                                        onclick="toggleSubmenu('submenu-2', this)"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             viewBox="0 0 24 24"
+                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                             stroke-linejoin="round"
+                                             class="lucide lucide-package-plus-icon lucide-package-plus">
+                                            <path d="M16 16h6"/>
+                                            <path d="M19 13v6"/>
+                                            <path
+                                                d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
+                                            <path d="m7.5 4.27 9 5.15"/>
+                                            <polyline points="3.29 7 12 12 20.71 7"/>
+                                            <line x1="12" x2="12" y1="22" y2="12"/>
+                                        </svg>
 
-                                </ul>
-                            </li>
+                                        <span class="flex-1 ms-3 text-right">اعلام بار</span>
+                                        <svg
+                                            class="w-4 h-4 ml-2 text-gray-500 transition-transform duration-300 transform group-[aria-expanded='true']:rotate-180"
+                                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="M19 9l-7 7-7-7"></path>
+                                        </svg>
 
+                                    </button>
+                                    <ul id="submenu-2"
+                                        class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out ps-8 mt-2 space-y-2"
+                                        aria-labelledby="menu-button-2">
+                                        <li>
+                                            <a href="#"
+                                               class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
+                                                <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
+                                                     viewBox="0 0 16 16">
+                                                    <circle cx="8" cy="8" r="8"/>
+                                                </svg>
+                                                <span class="ms-2">لیست بار</span>
+                                            </a>
+                                        </li>
+                                        @can('bids')
+                                            <li>
+                                                <a href="#"
+                                                   class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
+                                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
+                                                         viewBox="0 0 16 16">
+                                                        <circle cx="8" cy="8" r="8"/>
+                                                    </svg>
+                                                    <span class="ms-2">مناقصه ی بار </span>
+                                                </a>
+                                            </li>
+                                        @endcan
+                                        @can('Reserve')
+                                        <li>
+                                                <a href="#"
+                                                   class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
+                                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
+                                                         viewBox="0 0 16 16">
+                                                        <circle cx="8" cy="8" r="8"/>
+                                                    </svg>
+                                                    <span class="ms-2">رزرو بار </span>
+                                                </a>
+                                            </li>
+                                        @endcan
 
+                                    </ul>
+                                </li>
+
+                            @endcan
+
+                            @can('read cargo delivery')
                             <li>
                                 <button
                                     class="flex items-center w-full p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group focus:outline-none"
@@ -382,6 +420,8 @@
                                     <span class="ms-3">مدیریت رانندگان</span>
                                 </a>
                             </li>
+                            @endcan
+                            @can('read complaints')
                             <li>
                                 <a href="#"
                                    class="flex items-center p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group">
@@ -393,6 +433,8 @@
                                     <span class="ms-3"> شکایات</span>
                                 </a>
                             </li>
+                            @endcan
+
                         </ul>
                     </div>
                 </aside>

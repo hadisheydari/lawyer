@@ -25,7 +25,7 @@ class DriverRequest extends FormRequest
     {
         $rules = [
             'national_code' => iranian_national_code_rules(),
-            'birth_date' => ['nullable', 'integer'],
+            'birth_date' => gregorian_datetime_rules() ,
             'father_name' => string_rules(),
             'certificate_number' => string_rules(),
             'property' => enum_rules(PropertyType::TYPES, false),
@@ -37,7 +37,7 @@ class DriverRequest extends FormRequest
         ];
 
         if ($this->input('property') === PropertyType::OWNED) {
-            $rules['company_id'] = foreign_id_rules('companies', true); // اجباری
+            $rules['company_id'] = foreign_id_rules('companies', true);
         }
 
         if ($this->isMethod('post')) {

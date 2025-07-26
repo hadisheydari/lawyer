@@ -81,6 +81,17 @@
 
         <div class="">
             <x-form.input
+                name="agent_national_code"
+                label="کدملی مدیرعامل"
+                type="text"
+                placeholder="کدملی مدیرعامل را وارد کنید"
+                value="{{ old('agent_national_code') }}"
+            />
+
+        </div>
+
+        <div class="">
+            <x-form.input
                 name="agent_phone_number"
                 label="شماره نماینده"
                 type="text"
@@ -125,17 +136,6 @@
 
         <div class="">
             <x-form.input
-                name="manager_phone_number"
-                label="شماره مدیرعامل"
-                type="text"
-                placeholder="شماره مدیرعامل را وارد کنید"
-                value="{{ old('manager_phone_number') }}"
-            />
-
-        </div>
-
-        <div class="">
-            <x-form.input
                 name="address"
                 label="آدرس"
                 type="textarea"
@@ -144,6 +144,7 @@
             />
 
         </div>
+
         <div class="">
             <x-form.image
                 name="document"

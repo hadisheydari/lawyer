@@ -166,7 +166,7 @@ return [
         'company_id' => 'شرکت حمل',
         'bank_name' => 'نام بانک',
         'phone' => 'تلفن',
-//        'password' => 'گذرواژه',
+        'code' => 'کد',
 //        'agent_phone_number' => 'شماره نماینده',
 //        'manager_name' => 'نام مدیرعامل',
 //        'manager_national_code' => 'کدملی مدیرعامل',

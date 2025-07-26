@@ -48,8 +48,8 @@ class DriverController extends Controller
 
         Driver::create($data);
 
-        return redirect()->route('drivers.index')
-            ->with('success', 'درایور با موفقیت ساخته شد.');
+        return redirect()->route('dashboard')
+            ->with('success', 'راننده با موفقیت ساخته شد.');
     }
 
     /**

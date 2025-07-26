@@ -1,4 +1,5 @@
 export async function loadPersianDatepickerCDN() {
+    // بارگذاری CSS
     if (!document.querySelector('link[href*="persian-datepicker.min.css"]')) {
         const cssLink = document.createElement('link');
         cssLink.rel = 'stylesheet';
@@ -6,6 +7,7 @@ export async function loadPersianDatepickerCDN() {
         document.head.appendChild(cssLink);
     }
 
+    // بارگذاری کتابخانه‌ها
     await loadScriptOnce('https://cdn.jsdelivr.net/npm/persian-date@1.0.5/dist/persian-date.min.js');
     await loadScriptOnce('https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js');
 
@@ -15,13 +17,24 @@ export async function loadPersianDatepickerCDN() {
             const hiddenId = $displayInput.data('pd-target');
             const $hiddenInput = $('#' + hiddenId);
 
-            // مقدار اولیه timestamp از hidden
-            const ts = parseInt($hiddenInput.val());
-            if (ts && !isNaN(ts)) {
-                const pd = new persianDate(ts * 1000);
-                $displayInput.val(pd.format('YYYY/MM/DD'));
+            // تبدیل اعداد فارسی به انگلیسی
+            function normalizeDigits(str) {
+                const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+                return str.replace(/[۰-۹]/g, d => persianDigits.indexOf(d));
             }
 
+            // اگر hidden مقدار داشته باشد (میلادی)، آن را به شمسی نمایش دهیم
+            const hiddenVal = $hiddenInput.val();
+            if (hiddenVal) {
+                try {
+                    const pd = new persianDate(new Date(hiddenVal)).toCalendar('persian');
+                    $displayInput.val(pd.format('YYYY/MM/DD'));
+                } catch (e) {
+                    console.warn('تاریخ نامعتبر برای تبدیل:', hiddenVal);
+                }
+            }
+
+            // مقداردهی پلاگین
             $displayInput.persianDatepicker({
                 format: 'YYYY/MM/DD',
                 autoClose: true,
@@ -32,8 +45,13 @@ export async function loadPersianDatepickerCDN() {
                 initialValue: !!$displayInput.val(),
                 initialValueType: 'persian',
                 onSelect: function (unix) {
-                    const timestamp = Math.floor(unix / 1000);
-                    $hiddenInput.val(timestamp).trigger('change');
+                    let gregorianDate = new persianDate(unix)
+                        .toCalendar('gregorian')
+                        .format('YYYY-MM-DD HH:mm:ss');
+
+                    gregorianDate = normalizeDigits(gregorianDate);
+
+                    $hiddenInput.val(gregorianDate).trigger('change');
                 }
             });
         });

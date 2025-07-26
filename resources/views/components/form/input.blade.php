@@ -54,11 +54,14 @@
             {{ $disabled ?? false ? 'disabled' : '' }}
             data-pd-target="{{ $name }}"
         >
+
         <input
             type="hidden"
             id="{{ $name }}"
             name="{{ $name }}"
-            value="{{ old($name, isset($value) ? \Carbon\Carbon::parse($value)->timestamp : '') }}"
+            value="{{ old($name, isset($value) ? \Carbon\Carbon::parse(\Illuminate\Support\Str::of($value)
+            ->replace(['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'], ['0','1','2','3','4','5','6','7','8','9'])
+        )->format('Y-m-d H:i:s') : '') }}"
         >
     @endif
 

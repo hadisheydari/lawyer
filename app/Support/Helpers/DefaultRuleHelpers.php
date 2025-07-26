@@ -50,11 +50,12 @@ if (! function_exists('phone_rules')) {
     /**
      * Validation rules for Iranian phone numbers.
      *
-     * @param  bool  $required  Whether the field is required.
+     * @param  bool  $required   Whether the field is required.
      * @param  int|null  $ignoreId  ID to ignore for unique check (useful for updates).
+     * @param  bool  $checkUnique  Whether to check for unique phone (e.g., for register).
      * @return array<string|\Illuminate\Contracts\Validation\Rule>
      */
-    function phone_rules(bool $required = true, ?int $ignoreId = null): array
+    function phone_rules(bool $required = true, ?int $ignoreId = null, bool $checkUnique = true): array
     {
         $rules = [
             'string',
@@ -64,12 +65,14 @@ if (! function_exists('phone_rules')) {
 
         $rules[] = $required ? 'required' : 'nullable';
 
-        $unique = Rule::unique(User::class, 'phone');
-        if ($ignoreId) {
-            $unique->ignore($ignoreId);
+        // فقط اگر چک یکتا بودن لازمه
+        if ($checkUnique) {
+            $unique = Rule::unique(User::class, 'phone');
+            if ($ignoreId) {
+                $unique->ignore($ignoreId);
+            }
+            $rules[] = $unique;
         }
-
-        $rules[] = $unique;
 
         return $rules;
     }
@@ -208,6 +211,50 @@ if (! function_exists('sheba_rules')) {
     {
         $rules = ['regex:/^IR\d{24}$/i'];
         $rules[] = $required ? 'required' : 'nullable';
+        return $rules;
+    }
+}
+if (! function_exists('gregorian_datetime_rules')) {
+    /**
+     * Validate a Gregorian datetime in format Y-m-d H:i:s.
+     *
+     * @param bool $required
+     * @return array<string>
+     */
+    function gregorian_datetime_rules(bool $required = true): array
+    {
+        $rules = [
+            'regex:/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/',
+            'date'
+        ];
+        $rules[] = $required ? 'required' : 'nullable';
+        return $rules;
+    }
+}
+
+if (! function_exists('numeric_rules')) {
+    /**
+     * Rules for numeric values.
+     *
+     * @param bool $required  Whether the field is required.
+     * @param float|int|null $min  Minimum numeric value.
+     * @param float|int|null $max  Maximum numeric value.
+     * @return array<string>
+     */
+    function numeric_rules(bool $required = false, $min = null, $max = null): array
+    {
+        $rules = ['numeric'];
+
+        if (!is_null($min)) {
+            $rules[] = "min:$min";
+        }
+
+        if (!is_null($max)) {
+            $rules[] = "max:$max";
+        }
+
+        $rules[] = $required ? 'required' : 'nullable';
+
         return $rules;
     }
 }
