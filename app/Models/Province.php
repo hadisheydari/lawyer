@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read int|null $cities_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Province newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Province newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Province query()
@@ -25,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Province whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Province whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Province whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class Province extends Model

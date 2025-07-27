@@ -12,6 +12,7 @@ class DriverRole extends Component
      * Create a new component instance.
      */
     public function __construct(
+        public iterable|null $provinces = [],
         public iterable|null $cities = [],
         public iterable|null $companies = [],
 

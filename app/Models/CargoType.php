@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Cargo> $cargos
  * @property-read int|null $cargos_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoType query()
@@ -22,7 +21,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoType whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoType whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class CargoType extends Model

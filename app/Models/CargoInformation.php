@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float|null $lat عرض جغرافیایی
  * @property float|null $lng طول جغرافیایی
  * @property int|null $city_id
+ * @property int|null $province_id شناسه استان
  * @property string|null $description توضیحات
  * @property string|null $address آدرس دقیق
  * @property int|null $date_at تاریخ و ساعت شروع
@@ -20,7 +21,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cargo $cargo
  * @property-read \App\Models\City|null $city
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoInformation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoInformation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoInformation query()
@@ -36,7 +36,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoInformation whereLng($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoInformation whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoInformation whereUpdatedAt($value)
- *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoInformation whereProvinceId($value)
  * @mixin \Eloquent
  */
 class CargoInformation extends Model
@@ -47,6 +47,7 @@ class CargoInformation extends Model
         'lat',
         'lng',
         'city_id',
+        'province_id',
         'description',
         'address',
         'date_at',
@@ -69,5 +70,9 @@ class CargoInformation extends Model
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class, 'city_id');
+    }
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(province::class);
     }
 }

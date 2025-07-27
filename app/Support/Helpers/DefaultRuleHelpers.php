@@ -170,7 +170,8 @@ if (! function_exists('foreign_id_rules')) {
 if (! function_exists('iranian_national_code_rules')) {
     function iranian_national_code_rules(bool $required = true): array
     {
-        $rules = ['regex:/^\d{10}$/']; // فقط 10 رقم
+        $rules = ['regex:/^\d{9,12}$/'];
+        // فقط 10 رقم
         $rules[] = $required ? 'required' : 'nullable';
         return $rules;
     }
@@ -202,18 +203,23 @@ if (! function_exists('date_rules')) {
 
 if (! function_exists('sheba_rules')) {
     /**
-     * Rules for Iranian Sheba number (starts with IR and 24 digits).
+     * Rules for an unsigned big integer or Iranian Sheba (optional IR prefix).
      *
      * @param bool $required
      * @return array<string>
      */
     function sheba_rules(bool $required = false): array
     {
-        $rules = ['regex:/^IR\d{24}$/i'];
+        $rules = [
+            'numeric',
+            'min:0',
+        ];
         $rules[] = $required ? 'required' : 'nullable';
+
         return $rules;
     }
 }
+
 if (! function_exists('gregorian_datetime_rules')) {
     /**
      * Validate a Gregorian datetime in format Y-m-d H:i:s.

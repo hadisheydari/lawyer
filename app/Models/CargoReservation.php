@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cargo $cargo
  * @property-read \App\Models\User $company
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoReservation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoReservation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoReservation query()
@@ -24,7 +23,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoReservation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoReservation whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoReservation whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class CargoReservation extends Model

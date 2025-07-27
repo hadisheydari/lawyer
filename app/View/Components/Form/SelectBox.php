@@ -12,6 +12,7 @@ class SelectBox extends Component
      * Create a new component instance.
      */
     public function __construct(
+        public string|null $id,
         public string $name,
         public string $label,
         public iterable $options = [],

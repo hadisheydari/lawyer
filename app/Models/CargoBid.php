@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cargo|null $cargo
  * @property-read \App\Models\Company|null $company
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoBid newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoBid newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoBid query()
@@ -28,7 +27,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoBid whereOfferedFare($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoBid whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoBid whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class CargoBid extends Model

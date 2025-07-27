@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Entities\CompanyController;
 use App\Http\Controllers\Entities\DriverController;
 use App\Http\Controllers\Entities\ProductOwnerController;
+use App\Http\Controllers\Location\CityController;
 
 require __DIR__.'/auth.php';
 
@@ -14,3 +15,5 @@ Route::middleware(['auth', 'role.selected'])->group(function () {
     Route::resource('product-owners', ProductOwnerController::class);
 
 });
+
+Route::get('/get-cities/{province}', [CityController::class, 'getCities'])->name('getCities');

@@ -17,14 +17,41 @@
 
         <div class="">
             <x-form.select-box
-                name="city_id"
-                :options="$cities ?? []"
-                label="شهر "
-                placeholder="یک گزینه را انتخاب کنید "
+                name="province_id"
+                :options="$provinces ?? []"
+                label="استان"
+                placeholder="یک گزینه را انتخاب کنید"
                 :multiple="false"
                 :required="true"
+                id="province"
             />
         </div>
+
+        <div class="">
+            <x-form.select-box
+                name="city_id"
+                :options="[]"
+                label="شهر"
+                placeholder="ابتدا استان را انتخاب کنید"
+                :multiple="false"
+                :required="true"
+                id="city"
+            />
+        </div>
+
+
+        <div class="">
+            <x-form.input
+                name="national_code"
+                label="کد ملی"
+                type="text"
+                placeholder="کد ملی را وارد کنید"
+
+                value="{{ old('national_code') }}"
+            />
+
+        </div>
+
 
         <div class="">
             <x-form.input
@@ -69,6 +96,17 @@
             />
 
         </div>
+        <div class="">
+            <x-form.input
+                name="agent_national_code"
+                label="کدملی نماینده"
+                type="text"
+                placeholder="کدملی نماینده را وارد کنید"
+                value="{{ old('agent_national_code') }}"
+            />
+
+        </div>
+
 
         <div class="">
             <x-form.input
@@ -114,16 +152,7 @@
 
         </div>
 
-        <div class="">
-            <x-form.input
-                name="manager_phone_number"
-                label="شماره مدیرعامل"
-                type="text"
-                placeholder="شماره مدیرعامل را وارد کنید"
-                value="{{ old('manager_phone_number') }}"
-            />
 
-        </div>
 
         <div class="">
             <x-form.input

@@ -43,7 +43,7 @@
                                     alt="external-user-web-flaticons-flat-flat-icons-2">
                                 <div class="text-right">
                                     <h3 class="text-gray-800 font-bold text-sm">{{$user?->name}}</h3>
-                                    <p class="text-xs text-gray-500">{{ __('role_types.' . $info) }}</p>
+                                    <p class="text-xs text-gray-500 m-2">{{ __('role_types.' . $info) }}</p>
                                 </div>
                             </div>
 
@@ -386,6 +386,9 @@
                                 </ul>
                             </li>
 
+                            @endcan
+                            @can('read vehicles')
+
                             <li>
                                 <a href="#"
                                    class="flex items-center p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group">
@@ -403,6 +406,8 @@
                                     <span class="ms-3">مدیریت مکانیزم ها</span>
                                 </a>
                             </li>
+                            @endcan
+                            @can('read drivers')
                             <li>
                                 <a href="#"
                                    class="flex items-center p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group">

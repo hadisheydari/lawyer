@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\VehicleDetail $vehicleDetail
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vehicle newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vehicle newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vehicle query()
@@ -37,7 +36,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vehicle whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vehicle whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vehicle whereVehicleDetailId($value)
- *
  * @mixin \Eloquent
  */
 class Vehicle extends Model

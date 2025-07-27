@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Vehicle> $vehicles
  * @property-read int|null $vehicles_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VehicleDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VehicleDetail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VehicleDetail query()
@@ -28,7 +27,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VehicleDetail whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VehicleDetail whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|VehicleDetail whereYear($value)
- *
  * @mixin \Eloquent
  */
 class VehicleDetail extends Model

@@ -21,7 +21,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\Cargo|null $cargo
  * @property-read \App\Models\User|null $company
  * @property-read \App\Models\Driver|null $driver
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Partition newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Partition newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Partition query()
@@ -37,7 +36,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Partition whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Partition whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Partition whereWeight($value)
- *
  * @mixin \Eloquent
  */
 class Partition extends Model

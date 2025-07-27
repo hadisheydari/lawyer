@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Cargo> $cargos
  * @property-read int|null $cargos_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Packing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Packing newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Packing query()
@@ -20,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Packing whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Packing whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Packing whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class Packing extends Model

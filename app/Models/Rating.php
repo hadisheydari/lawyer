@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Partition $partition
  * @property-read \App\Models\User $user
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Rating newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Rating newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Rating query()
@@ -24,7 +23,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Rating whereRating($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Rating whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Rating whereUserId($value)
- *
  * @mixin \Eloquent
  */
 class Rating extends Model

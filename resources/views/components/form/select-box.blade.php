@@ -4,7 +4,7 @@
     </label>
 
     <select
-        id="{{ $name }}"
+        id="{{$id}}"
         name="{{ $name }}{{ $multiple ?? false ? '[]' : '' }}"
         class="select2 w-full px-4 py-2 rounded-lg bg-blue-50 text-blue-900 border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-700 placeholder:text-blue-500 {{ $hidden ?? false ? 'hidden' : '' }}"
         {{ $multiple ?? false ? 'multiple' : '' }}

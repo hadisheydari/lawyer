@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserOtpResource;
 use App\Http\Resources\UserResource;
 use App\Models\City;
+use App\Models\Province;
 use App\Models\Company;
 use App\Models\User;
 use App\Services\OtpService;
@@ -80,12 +81,12 @@ class AuthController extends Controller
 
         $user->save();
 
-        $cities = City::pluck('name', 'id');
+        $provinces = Province::pluck('name', 'id');
         $companies = Company::with('user')->get()->mapWithKeys(function ($company) {
             return [$company->id => $company->user->name];
         });
 
-        return view('auth.role-info', compact('cities', 'companies'))
+        return view('auth.role-info', compact( 'companies' , 'provinces'))
             ->with('success', 'نقش شما با موفقیت ثبت شد.');
 
     }

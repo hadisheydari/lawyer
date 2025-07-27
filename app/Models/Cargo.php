@@ -34,7 +34,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\Packing|null $packing
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Partition> $partitions
  * @property-read int|null $partitions_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo query()
@@ -54,7 +53,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereWeight($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereWidth($value)
- *
+ * @property string|null $date_to تاریخ پایان مناقصه
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereDateTo($value)
  * @mixin \Eloquent
  */
 class Cargo extends Model

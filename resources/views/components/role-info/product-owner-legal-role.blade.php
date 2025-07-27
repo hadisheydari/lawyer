@@ -17,14 +17,28 @@
 
         <div class="">
             <x-form.select-box
-                name="city_id"
-                :options="$cities ?? []"
-                label="شهر "
-                placeholder="یک گزینه را انتخاب کنید "
+                name="province_id"
+                :options="$provinces ?? []"
+                label="استان"
+                placeholder="یک گزینه را انتخاب کنید"
                 :multiple="false"
                 :required="true"
+                id="province"
             />
         </div>
+
+        <div class="">
+            <x-form.select-box
+                name="city_id"
+                :options="[]"
+                label="شهر"
+                placeholder="ابتدا استان را انتخاب کنید"
+                :multiple="false"
+                :required="true"
+                id="city"
+            />
+        </div>
+
 
         <div class="">
             <x-form.input
@@ -52,7 +66,7 @@
         <div class="">
             <x-form.input
                 name="sheba_number"
-                label="شماره شبا"
+                label=" شماره شبا( بدون IR  )"
                 type="text"
                 placeholder="شماره شبا را وارد کنید"
                 value="{{ old('sheba_number') }}"

@@ -18,12 +18,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $certificate_file فایل گواهینامه
  * @property int|null $company_id شناسه شرکت حمل
  * @property int|null $city_id شناسه شهر
+ * @property int|null $province_id شناسه استان
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\City|null $city
  * @property-read \App\Models\Company|null $company
  * @property-read \App\Models\User $user
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Driver newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Driver newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Driver query()
@@ -41,7 +41,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Driver whereSmartCardFile($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Driver whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Driver whereUserId($value)
- *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Driver whereProvinceId($value)
  * @mixin \Eloquent
  */
 class Driver extends Model
@@ -58,6 +58,7 @@ class Driver extends Model
         'certificate_file',
         'company_id',
         'city_id',
+        'province_id',
     ];
 
     public function user(): BelongsTo
@@ -74,4 +75,9 @@ class Driver extends Model
     {
         return $this->belongsTo(City::class);
     }
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class);
+    }
+
 }

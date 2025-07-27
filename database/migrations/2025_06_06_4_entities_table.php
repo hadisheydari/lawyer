@@ -4,6 +4,7 @@ use App\Enums\Entity\CompanyType;
 use App\Enums\Entity\ProductOwnerType;
 use App\Enums\Entity\PropertyType;
 use App\Models\City;
+use App\Models\Province;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -30,6 +31,7 @@ return new class extends Migration
             $table->string('address')->nullable()->comment('آدرس');
             $table->string('document')->nullable()->comment('مدارک');
             $table->foreignIdFor(City::class)->nullable()->comment('شناسه شهر')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Province::class)->nullable()->comment('شناسه استان')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
 
@@ -41,6 +43,7 @@ return new class extends Migration
             $table->string('bank_name')->nullable()->comment('نام بانک');
             $table->string('sheba_number')->nullable()->comment('شماره شبا');
             $table->foreignIdFor(City::class)->nullable()->comment('شناسه شهر ')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Province::class)->nullable()->comment('شناسه استان')->constrained()->cascadeOnDelete();
             $table->string('registration_id')->nullable()->comment('شناسه ثبت');
             $table->string('national_id')->nullable()->comment('شناسه ملی');
             $table->string('rahdari_code')->nullable()->comment('کد راهداری');
@@ -68,6 +71,7 @@ return new class extends Migration
             $table->string('certificate_file')->nullable()->comment('فایل گواهینامه');
             $table->foreignIdFor(Company::class)->nullable()->comment('شناسه شرکت حمل ')->constrained()->cascadeOnDelete();
             $table->foreignIdFor(City::class)->nullable()->comment('شناسه شهر ')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Province::class)->nullable()->comment('شناسه استان')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

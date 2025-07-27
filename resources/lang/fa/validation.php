@@ -167,7 +167,7 @@ return [
         'bank_name' => 'نام بانک',
         'phone' => 'تلفن',
         'code' => 'کد',
-//        'agent_phone_number' => 'شماره نماینده',
+        'province_id' => 'شناسه استان',
 //        'manager_name' => 'نام مدیرعامل',
 //        'manager_national_code' => 'کدملی مدیرعامل',
 //        'manager_phone_number'=> 'شماره مدیرعامل',

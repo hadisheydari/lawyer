@@ -8,6 +8,7 @@ use App\Enums\Cargo\Type;
 use App\Models\Cargo;
 use App\Models\CargoType;
 use App\Models\City;
+use App\Models\Province;
 use App\Models\Driver;
 use App\Models\Packing;
 use App\Models\User;
@@ -65,7 +66,8 @@ return new class extends Migration
             $table->enum('type', LocationType::TYPES)->nullable()->comment('نوع (مبدا/مقصد)');
             $table->decimal('lat', 10, 7)->nullable()->comment('عرض جغرافیایی');
             $table->decimal('lng', 10, 7)->nullable()->comment('طول جغرافیایی');
-            $table->foreignIdFor(City::class)->nullable()->constrained()->nullOnDelete();
+            $table->foreignIdFor(Province::class)->nullable()->comment('شناسه استان')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(City::class)->nullable()->comment('شناسه شهر')->constrained()->nullOnDelete();
             $table->text('description')->nullable()->comment('توضیحات');
             $table->text('address')->nullable()->comment('آدرس دقیق');
             $table->timestamp('date_at')->nullable()->comment('تاریخ  شروع');

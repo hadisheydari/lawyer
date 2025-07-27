@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $coefficient ضریب بیمه
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Insurance newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Insurance newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Insurance query()
@@ -21,7 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Insurance whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Insurance whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Insurance whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class Insurance extends Model

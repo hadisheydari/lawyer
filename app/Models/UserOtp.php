@@ -15,7 +15,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read int|null $remaining_seconds
  * @property-read \App\Models\User $user
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserOtp newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserOtp newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserOtp query()
@@ -25,7 +24,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserOtp whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserOtp whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserOtp whereUserId($value)
- *
  * @mixin \Eloquent
  */
 class UserOtp extends Model

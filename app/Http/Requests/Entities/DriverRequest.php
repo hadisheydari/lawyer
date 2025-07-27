@@ -29,11 +29,13 @@ class DriverRequest extends FormRequest
             'father_name' => string_rules(),
             'certificate_number' => string_rules(),
             'property' => enum_rules(PropertyType::TYPES, false),
-            'national_card_file' => file_rules(false, ['jpg', 'jpeg', 'png']),
-            'smart_card_file' => file_rules(false, ['jpg', 'jpeg', 'png']),
-            'certificate_file' => file_rules(false, ['jpg', 'jpeg', 'png']),
+            'national_card_file' => file_rules(true, ['jpg', 'jpeg', 'png']),
+            'smart_card_file' => file_rules(true, ['jpg', 'jpeg', 'png']),
+            'certificate_file' => file_rules(true, ['jpg', 'jpeg', 'png']),
             'company_id' => foreign_id_rules('companies', false),
-            'city_id' => foreign_id_rules('cities'),
+            'city_id' => foreign_id_rules('cities' , true),
+            'province_id' => foreign_id_rules('provinces' , true),
+
         ];
 
         if ($this->input('property') === PropertyType::OWNED) {

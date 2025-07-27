@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $bank_name نام بانک
  * @property string|null $sheba_number شماره شبا
  * @property int|null $city_id شناسه شهر
+ * @property int|null $province_id شناسه استان
  * @property string|null $registration_id شناسه ثبت
  * @property string|null $national_id شناسه ملی
  * @property string|null $rahdari_code کد راهداری
@@ -28,7 +29,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\City|null $city
  * @property-read \App\Models\User $user
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwner newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwner newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwner query()
@@ -52,7 +52,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwner whereShebaNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwner whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwner whereUserId($value)
- *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwner whereProvinceId($value)
  * @mixin \Eloquent
  */
 class ProductOwner extends Model
@@ -64,6 +64,7 @@ class ProductOwner extends Model
         'bank_name',
         'sheba_number',
         'city_id',
+        'province_id',
         'registration_id',
         'national_id',
         'rahdari_code',
@@ -86,4 +87,10 @@ class ProductOwner extends Model
     {
         return $this->belongsTo(City::class);
     }
+
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(province::class);
+    }
+
 }

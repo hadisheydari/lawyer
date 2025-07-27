@@ -52,12 +52,25 @@
 
         <div class="">
             <x-form.select-box
-                name="city_id"
-                :options="$cities ?? []"
-                label="شهر "
-                placeholder="یک گزینه را انتخاب کنید "
+                name="province_id"
+                :options="$provinces ?? []"
+                label="استان"
+                placeholder="یک گزینه را انتخاب کنید"
                 :multiple="false"
                 :required="true"
+                id="province"
+            />
+        </div>
+
+        <div class="">
+            <x-form.select-box
+                name="city_id"
+                :options="[]"
+                label="شهر"
+                placeholder="ابتدا استان را انتخاب کنید"
+                :multiple="false"
+                :required="true"
+                id="city"
             />
         </div>
 
