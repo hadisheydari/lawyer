@@ -5,6 +5,7 @@ use App\Enums\Vehicle\PlateType;
 use App\Enums\Vehicle\Status;
 use App\Enums\Vehicle\Type;
 use App\Models\VehicleDetail;
+use App\Models\Driver;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->enum('status', Status::STATUSES)->default(Status::ACTIVE)->comment('وضعیت');
             $table->enum('type', Type::TYPES)->default(Type::VEHICLE)->comment('نوع خودرو');
             $table->foreignIdFor(VehicleDetail::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignIdFor(Driver::class)->nullable()->comment('شناسه راننده ')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

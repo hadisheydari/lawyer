@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
+use App\Models\Driver;
 /**
  * @property int $id
  * @property int $smart_number شماره هوشمند
@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $status وضعیت
  * @property string $type نوع خودرو
  * @property int $vehicle_detail_id
+ * @property int $driver_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\VehicleDetail $vehicleDetail
@@ -51,10 +52,15 @@ class Vehicle extends Model
         'status',
         'type',
         'vehicle_detail_id',
+        'driver_id',
     ];
 
     public function vehicleDetail(): BelongsTo
     {
         return $this->belongsTo(VehicleDetail::class);
+    }
+    public function driver(): BelongsTo
+    {
+        return $this->belongsTo(Driver::class);
     }
 }

@@ -15,7 +15,9 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        //
+        $companies = Company::with(['user', 'drivers'])->where('user_id', auth()->id())->paginate(10);
+
+        return view('entities.companies.index', compact('companies'));
     }
 
     /**
@@ -49,7 +51,9 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
-        //
+        $company->load(['user', 'drivers']);
+
+        return view('entities.companies.show', compact('company'));
     }
 
     /**
@@ -57,7 +61,7 @@ class CompanyController extends Controller
      */
     public function edit(Company $company)
     {
-        //
+        return view('entities.companies.edit', compact('company'));
     }
 
     /**
@@ -65,7 +69,15 @@ class CompanyController extends Controller
      */
     public function update(CompanyRequest $request, Company $company)
     {
-        //
+        $data = $request->validated();
+
+        if ($request->hasFile('document')) {
+            $data['document'] = $request->file('document')->store('companies', 'public');
+        }
+
+        $company->update($data);
+
+        return redirect()->route('dashboard')->with('success', 'اطلاعات شرکت با موفقیت به‌روزرسانی شد.');
     }
 
     /**
@@ -73,6 +85,8 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
-        //
+        $company->delete();
+
+        return redirect()->route('dashboard')->with('success', 'شرکت با موفقیت حذف شد.');
     }
 }
