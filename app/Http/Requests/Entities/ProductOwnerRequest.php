@@ -31,7 +31,7 @@ class ProductOwnerRequest extends FormRequest
             'bank_name' => string_rules(false),
             'sheba_number' => sheba_rules(),
             'address' => string_rules(false),
-            'document' => file_rules(true, ['jpg', 'jpeg', 'png', 'pdf']),
+            'document' => file_rules(false, ['jpg', 'jpeg', 'png', 'pdf']),
             'registration_id' => numeric_rules(false),
             'national_id' => numeric_rules(false),
             'rahdari_code' => numeric_rules(false),

@@ -1,5 +1,6 @@
-<div x-data="{ open: false }" class="relative text-left">
-    <button @click="open = !open" class="p-1 ">
+<div x-data="{ open: false }" class="relative inline-block text-left">
+    <!-- دکمه سه نقطه -->
+    <button @click="open = !open" class="p-1">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
              viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="5"
@@ -7,8 +8,22 @@
         </svg>
     </button>
 
-    <div x-show="open" @click.away="open = false"
-         class="absolute z-10 mt-2 w-40 bg-white rounded shadow-lg ring-1 ring-black ring-opacity-5 text-sm">
+    <div
+        x-show="open"
+        x-transition
+        @click.outside="open = false"
+        x-ref="dropdown"
+        x-init="$watch('open', value => {
+        if (value) {
+            let rect = $el.parentElement.getBoundingClientRect();
+            $el.style.position = 'fixed';
+            $el.style.top = rect.bottom + 'px';
+            $el.style.left = rect.right - $el.offsetWidth + 'px';
+        }
+    })"
+        class="z-50 w-44 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        style="display: none; min-width: max-content;"
+    >
         @foreach($items as $item)
             <a href="{{ $item['route'] }}"
                class="flex items-center px-4 py-2 gap-2 hover:bg-gray-100 {{ $item['bg'] ?? 'text-gray-700' }}">
@@ -19,4 +34,3 @@
             </a>
         @endforeach
     </div>
-</div>

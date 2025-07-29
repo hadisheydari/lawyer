@@ -35,7 +35,7 @@ class CompanyRequest extends FormRequest
             'manager_national_code' => iranian_national_code_rules(false),
             'manager_phone_number' => phone_rules(true, null, false),
             'address' => string_rules(),
-            'document' => file_rules(true, ['jpg', 'jpeg', 'png', 'pdf']),
+            'document' => file_rules(false, ['jpg', 'jpeg', 'png', 'pdf']),
             'city_id' => foreign_id_rules('cities', true),
             'province_id' => foreign_id_rules('provinces' , true),
 

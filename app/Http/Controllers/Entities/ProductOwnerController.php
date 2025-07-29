@@ -35,7 +35,7 @@ class ProductOwnerController extends Controller
             [
                 'user_id' => auth()->id(),
                 'product_owner_type' => $request->session()->get('user_type'),
-                'document' => $request->hasFile('document') ? $request->file('document')->store('product_owners/documents') : null,
+                'document' => $request->hasFile('document') ? $request->file('document')->store('product_owners/documents' , 'public' ) : null,
             ]
         );
 

@@ -15,6 +15,7 @@ class Image extends Component
         public ?string $name,
         public ?string $label,
         public ?string $currentImage,
+        public bool $readonly = false,
         public bool $required = false,
     ) {}
     /**

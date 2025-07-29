@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Requests\Entities\CompanyRequest;
+use App\Models\City;
+use App\Models\Province;
+use Illuminate\Support\Facades\Storage;
 
 
 class CompanyController extends Controller
@@ -17,7 +20,9 @@ class CompanyController extends Controller
     {
         $companies = Company::with(['user', 'drivers'])->where('user_id', auth()->id())->paginate(10);
 
-        return view('entities.companies.index', compact('companies'));
+        $drivers = $companies->flatMap(fn($company) => $company->drivers);
+
+        return view('entities.companies.index', compact('companies', 'drivers'));
     }
 
     /**
@@ -53,7 +58,15 @@ class CompanyController extends Controller
     {
         $company->load(['user', 'drivers']);
 
-        return view('entities.companies.show', compact('company'));
+        $province = Province::find($company->province_id);
+        $cities = [];
+
+        if ($province) {
+            $cities = City::where('province_code', $province->code)->pluck('name', 'id');
+        }
+        $provinces = Province::pluck('name', 'id');
+
+        return view('entities.companies.show', compact('company', 'provinces' , 'cities'));
     }
 
     /**
@@ -61,7 +74,17 @@ class CompanyController extends Controller
      */
     public function edit(Company $company)
     {
-        return view('entities.companies.edit', compact('company'));
+        $company->load(['user', 'drivers']);
+
+        $province = Province::find($company->province_id);
+        $cities = [];
+
+        if ($province) {
+            $cities = City::where('province_code', $province->code)->pluck('name', 'id');
+        }
+        $provinces = Province::pluck('name', 'id');
+
+        return view('entities.companies.edit', compact('company', 'provinces' , 'cities'));
     }
 
     /**
@@ -71,13 +94,25 @@ class CompanyController extends Controller
     {
         $data = $request->validated();
 
+        if ($request->boolean('remove_image')) {
+            if ($company->document && Storage::disk('public')->exists($company->document)) {
+                Storage::disk('public')->delete($company->document);
+            }
+            $data['document'] = null;
+        }
         if ($request->hasFile('document')) {
+            if ($company->document && Storage::disk('public')->exists($company->document)) {
+                Storage::disk('public')->delete($company->document);
+            }
+
             $data['document'] = $request->file('document')->store('companies', 'public');
         }
 
         $company->update($data);
 
-        return redirect()->route('dashboard')->with('success', 'اطلاعات شرکت با موفقیت به‌روزرسانی شد.');
+        return redirect()
+            ->route('companies.index')
+            ->with('success', 'اطلاعات شرکت با موفقیت به‌روزرسانی شد.');
     }
 
     /**

@@ -1,3 +1,6 @@
+
+
+
 <div class="flex flex-col m-4">
     <label for="{{$name}}" class="block mb-2  font-medium text-blue-900 {{$hidden ?? false ? 'hidden' : ''}}">
         {{$label ?? ucfirst($name)}}

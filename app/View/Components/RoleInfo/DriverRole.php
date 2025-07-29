@@ -15,7 +15,8 @@ class DriverRole extends Component
         public iterable|null $provinces = [],
         public iterable|null $cities = [],
         public iterable|null $companies = [],
-
+        public string|null $mode = 'create',
+        public $driver = null
     )
     {}
     /**

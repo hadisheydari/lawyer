@@ -1,6 +1,7 @@
 import $ from 'jquery';
 window.$ = window.jQuery = $;
 
+
 import { loadSelect2CDN } from './select2-init.js';
 import { loadPersianDatepickerCDN } from './persian-datepicker-loader.js';
 
@@ -12,12 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error loading resources:', error);
     }
 });
-
 import '../css/app.css';
 import Alpine from 'alpinejs';
 import './chart.js';
 
-if (!window.Livewire) {
-    window.Alpine = Alpine;
-    Alpine.start();
-}
+window.Alpine = Alpine;
+Alpine.start();
+

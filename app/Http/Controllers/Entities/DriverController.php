@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Entities;
 
 use App\Http\Controllers\Controller;
 use App\Models\Driver;
+use App\Models\Company;
+use App\Models\City;
+use App\Models\Province;
 use Illuminate\Http\Request;
 use App\Http\Requests\Entities\DriverRequest;
 
@@ -42,7 +45,7 @@ class DriverController extends Controller
 
         foreach ($fileFields as $field => $path) {
             if ($request->hasFile($field)) {
-                $data[$field] = $request->file($field)->store($path);
+                $data[$field] = $request->file($field)->store($path , 'public');
             }
         }
 
@@ -57,8 +60,17 @@ class DriverController extends Controller
      */
     public function show(Driver $driver)
     {
-        //
-    }
+        $companies = Company::with('user')->get()->mapWithKeys(function ($company) {
+            return [$company->id => $company->user->name];
+        });
+        $driver->load(['user', 'company', 'city', 'province', 'vehicle']);
+        $province = Province::find($driver->province_id);
+        $cities = [];
+        if ($province) {
+            $cities = City::where('province_code', $province->code)->pluck('name', 'id');
+        }
+        $provinces = Province::pluck('name', 'id');
+        return view('entities.drivers.show', compact('driver' , 'companies' , 'provinces' , 'cities'));    }
 
     /**
      * Show the form for editing the specified resource.

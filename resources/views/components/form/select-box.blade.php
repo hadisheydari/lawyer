@@ -16,9 +16,15 @@
         @endif
 
         @foreach($options as $key => $text)
-            <option value="{{ $key }}" {{ in_array($key, (array) old($name, $selected ?? [])) ? 'selected' : '' }}>
-                {{ $text }}
-            </option>
+                @php
+                    $currentValue = old($name) ?? $selected;
+                @endphp
+
+                <option value="{{ $key }}" {{ (string)$key === (string)$currentValue ? 'selected' : '' }}>
+
+                    {{ $text }}
+                </option>
+
         @endforeach
     </select>
 

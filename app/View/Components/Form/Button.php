@@ -17,6 +17,7 @@ class Button extends Component
         public string $type,
         public ?string $action,
         public string $text,
+        public ?string $mode,
     ) {}
 
     /**

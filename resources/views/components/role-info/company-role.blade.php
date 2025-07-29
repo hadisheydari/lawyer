@@ -1,7 +1,29 @@
+@php
+    $isShow = $mode === 'show';
+    $isEdit = $mode === 'edit';
+    $isCreate = $mode === 'create';
+
+    $action = $isCreate
+        ? route('companies.store')
+        : ($isEdit ? route('companies.update', $company->id) : '#');
+
+    $method = $isCreate ? 'POST' : ($isEdit ? 'PUT' : 'GET');
+
+    $translate=[
+        'show' => 'نمایش',
+        'edit' => 'ویرایش',
+        'create' => 'ثبت',
+
+];
+@endphp
+
 <div class="text-blue-950 font-black text-2xl m-12 ">
-   ثبت اطلاعات شرکت حمل
+           {{$translate[$mode]}}  اطلاعات شرکت حمل
 </div>
-<x-form.base-form action="{{route('companies.store')}}" method="POST" class="space-y-6">
+<x-form.base-form
+    :action="$mode === 'edit' ? route('companies.update', $company->id) : route('companies.store')"
+    :method="$mode === 'edit' ? 'PUT' : 'POST'"
+    class="space-y-6">
     @csrf
 
     @if ($errors->any())
@@ -20,8 +42,10 @@
                 :options="['normal' => 'معمولی', 'large_scale' => 'بزرگ مقیاس ']"
                 label="نوع شرکت "
                 placeholder="یک گزینه را انتخاب کنید "
+                :selected="old('company_type', $company->company_type ?? '')"
                 :multiple="false"
-                :required="true"
+                :disabled="$isShow"
+
             />
         </div>
         <div class="">
@@ -30,8 +54,9 @@
                 :options="$provinces ?? []"
                 label="استان"
                 placeholder="یک گزینه را انتخاب کنید"
+                :selected="old('province_id', $company->province_id ?? '')"
                 :multiple="false"
-                :required="true"
+                :disabled="$isShow"
                 id="province"
             />
         </div>
@@ -39,11 +64,12 @@
         <div class="">
             <x-form.select-box
                 name="city_id"
-                :options="[]"
+                :options="$cities ?? []"
                 label="شهر"
                 placeholder="ابتدا استان را انتخاب کنید"
+                :selected="old('city_id', $company->city_id ?? '')"
                 :multiple="false"
-                :required="true"
+                :disabled="$isShow"
                 id="city"
             />
         </div>
@@ -54,7 +80,8 @@
                 label="شناسه ثبت"
                 type="text"
                 placeholder="شناسه ثبت را وارد کنید"
-                value="{{ old('registration_id') }}"
+                value="{{ old('registration_id' , $company->registration_id ?? '') }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -65,7 +92,8 @@
                 label="شناسه ملی"
                 type="text"
                 placeholder="شناسه ملی را وارد کنید"
-                value="{{ old('national_id') }}"
+                value="{{ old('national_id', $company->national_id ?? '') }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -76,7 +104,8 @@
                 label="کد راهداری"
                 type="text"
                 placeholder="کد راهداری را وارد کنید"
-                value="{{ old('rahdari_code') }}"
+                value="{{ old('rahdari_code', $company->rahdari_code ?? '') }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -87,7 +116,8 @@
                 label="نام نماینده"
                 type="text"
                 placeholder="نام نماینده را وارد کنید"
-                value="{{ old('agent_name') }}"
+                value="{{ old('agent_name', $company->agent_name ?? '') }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -98,7 +128,8 @@
                 label="کدملی مدیرعامل"
                 type="text"
                 placeholder="کدملی مدیرعامل را وارد کنید"
-                value="{{ old('agent_national_code') }}"
+                value="{{ old('agent_national_code', $company->agent_national_code ?? '') }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -109,7 +140,8 @@
                 label="شماره نماینده"
                 type="text"
                 placeholder="شماره نماینده را وارد کنید"
-                value="{{ old('agent_phone_number') }}"
+                value="{{ old('agent_phone_number', $company->agent_phone_number ?? '') }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -120,7 +152,8 @@
                 label="نام مدیرعامل"
                 type="text"
                 placeholder="نام مدیرعامل را وارد کنید"
-                value="{{ old('manager_name') }}"
+                value="{{ old('manager_name', $company->manager_name ?? '') }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -131,7 +164,8 @@
                 label="کدملی مدیرعامل"
                 type="text"
                 placeholder="کدملی مدیرعامل را وارد کنید"
-                value="{{ old('manager_national_code') }}"
+                value="{{ old('manager_national_code' , $company->manager_national_code ?? '') }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -142,7 +176,8 @@
                 label="شماره مدیرعامل"
                 type="text"
                 placeholder="شماره مدیرعامل را وارد کنید"
-                value="{{ old('manager_phone_number') }}"
+                value="{{ old('manager_phone_number' , $company->manager_phone_number ?? '') }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -153,7 +188,8 @@
                 label="آدرس"
                 type="textarea"
                 placeholder="آدرس را وارد کنید"
-                value="{{ old('address') }}"
+                value="{{ old('address' , $company->address ?? '') }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -162,6 +198,9 @@
             <x-form.image
                 name="document"
                 label="مدارک"
+                :currentImage="$company->document ?? null"
+                :readonly="$mode === 'show'"
+                :required="$mode === 'create'"
             />
 
         </div>
@@ -172,8 +211,22 @@
 
 
     <div>
-        <x-form.button text="ثبت اطلاعات" type="submit" class="w-full"/>
+        @if($mode === 'show')
+            <x-form.button
+                type="button"
+                text="بازگشت"
+                :mode="$mode"
+                :action="'window.location.href=\''.route('companies.index').'\''"
+            />
+        @else
+            <x-form.button
+                type="submit"
+                text="{{ $mode === 'edit' ? 'ویرایش اطلاعات' : 'ثبت اطلاعات' }}"
+                :mode="$mode"
+            />
+        @endif
     </div>
+
 </x-form.base-form>
 
 
