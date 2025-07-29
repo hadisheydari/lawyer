@@ -14,6 +14,8 @@ class ProductOwnerRealRole extends Component
     public function __construct(
         public iterable|null $provinces = [],
         public iterable|null $cities = [],
+        public string|null $mode = 'create',
+        public $productOwner = null
     )
     {}
 

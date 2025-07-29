@@ -46,6 +46,7 @@
                 type="text"
                 placeholder="کد ملی را وارد کنید"
                 value="{{ old('national_code'  , $driver->national_code ?? '' ) }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -57,6 +58,8 @@
                 type="date"
                 placeholder="تاریخ تولد را وارد کنید"
                 value="{{ old('birth_date' , $driver->birth_date ?? '') }}"
+                :readonly="$isShow"
+
             />
 
         </div>
@@ -68,6 +71,8 @@
                 type="text"
                 placeholder="نام پدر را وارد کنید"
                 value="{{ old('father_name' , $driver->national_code ?? '') }}"
+                :readonly="$isShow"
+
             />
 
         </div>
@@ -81,6 +86,7 @@
                 :selected="old('province_id', $driver->province_id ?? '')"
                 :multiple="false"
                 :required="true"
+                :disabled="$isShow"
                 id="province"
             />
         </div>
@@ -94,6 +100,7 @@
                 :selected="old('city_id', $driver->city_id ?? '')"
                 :multiple="false"
                 :required="true"
+                :disabled="$isShow"
                 id="city"
             />
         </div>
@@ -107,6 +114,7 @@
                 :selected="old('property', $driver->property ?? '')"
                 :multiple="false"
                 :required="true"
+                :disabled="$isShow"
             />
         </div>
 
@@ -119,6 +127,8 @@
                 :selected="old('property', $driver->company_id ?? '')"
                 :multiple="false"
                 :required="false"
+                :disabled="$isShow"
+
             />
         </div>
 
@@ -129,6 +139,7 @@
                 type="text"
                 placeholder="شماره گواهینامه را وارد کنید"
                 value="{{ old('certificate_number' , $driver->certificate_number ?? '') }}"
+                :readonly="$isShow"
             />
 
         </div>
@@ -140,6 +151,8 @@
                 :currentImage="$driver->national_card_file ?? null"
                 :readonly="$mode === 'show'"
                 :required="$mode === 'create'"
+                :readonly="$isShow"
+
             />
 
         </div>
@@ -176,7 +189,7 @@
                 type="button"
                 text="بازگشت"
                 :mode="$mode"
-                :action="'window.location.href=\''.route('drivers.index').'\''"
+                :action="'window.history.back()'"
             />
         @else
             <x-form.button

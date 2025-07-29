@@ -70,7 +70,8 @@ class DriverController extends Controller
             $cities = City::where('province_code', $province->code)->pluck('name', 'id');
         }
         $provinces = Province::pluck('name', 'id');
-        return view('entities.drivers.show', compact('driver' , 'companies' , 'provinces' , 'cities'));    }
+        return view('entities.drivers.show', compact('driver' , 'companies' , 'provinces' , 'cities'));
+    }
 
     /**
      * Show the form for editing the specified resource.

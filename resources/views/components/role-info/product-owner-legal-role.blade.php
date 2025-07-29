@@ -1,7 +1,29 @@
+@php
+    $isShow = $mode === 'show';
+    $isEdit = $mode === 'edit';
+    $isCreate = $mode === 'create';
+
+    $action = $isCreate
+        ? route('product-owners.store')
+        : ($isEdit ? route('product-owners.update', $productOwner->id) : '#');
+
+    $method = $isCreate ? 'POST' : ($isEdit ? 'PUT' : 'GET');
+
+    $translate=[
+        'show' => 'نمایش',
+        'edit' => 'ویرایش',
+        'create' => 'ثبت',
+
+];
+@endphp
+
 <div class="text-blue-950 font-black text-2xl m-12 ">
-    ثبت اطلاعات صاحب کالا(حقیقی)
+    {{$translate[$mode]}}  اطلاعات صاحب کالا(حقوقی)
 </div>
-<x-form.base-form action="{{route('product-owners.store')}}" method="POST" class="space-y-6">
+<x-form.base-form
+    :action="$mode === 'edit' ? route('product-owners.update', $company->id) : route('product-owners.store')"
+    :method="$mode === 'edit' ? 'PUT' : 'POST'"
+    class="space-y-6">
     @csrf
 
     @if ($errors->any())
@@ -21,21 +43,27 @@
                 :options="$provinces ?? []"
                 label="استان"
                 placeholder="یک گزینه را انتخاب کنید"
+                :selected="old('province_id', $productOwner->province_id ?? '')"
                 :multiple="false"
                 :required="true"
                 id="province"
+                :disabled="$isShow"
+
             />
         </div>
 
         <div class="">
             <x-form.select-box
                 name="city_id"
-                :options="[]"
+                :options="$cities ?? []"
                 label="شهر"
                 placeholder="ابتدا استان را انتخاب کنید"
                 :multiple="false"
                 :required="true"
+                :selected="old('province_id', $productOwner->city_id ?? '')"
                 id="city"
+                :disabled="$isShow"
+
             />
         </div>
 
@@ -46,8 +74,8 @@
                 label="کد ملی"
                 type="text"
                 placeholder="کد ملی را وارد کنید"
-
-                value="{{ old('national_code') }}"
+                :readonly="$isShow"
+                value="{{ old('national_code', $productOwner->national_code ?? '') }}"
             />
 
         </div>
@@ -58,7 +86,9 @@
                 label="نام بانک"
                 type="text"
                 placeholder="نام بانک را وارد کنید"
-                value="{{ old('bank_name') }}"
+                value="{{ old('bank_name', $productOwner->bank_name ?? '') }}"
+                :readonly="$isShow"
+
             />
 
         </div>
@@ -69,7 +99,9 @@
                 label=" شماره شبا( بدون IR  )"
                 type="text"
                 placeholder="شماره شبا را وارد کنید"
-                value="{{ old('sheba_number') }}"
+                value="{{ old('sheba_number', $productOwner->sheba_number ?? '') }}"
+                :readonly="$isShow"
+
             />
 
         </div>
@@ -81,7 +113,9 @@
                 label="آدرس"
                 type="textarea"
                 placeholder="آدرس را وارد کنید"
-                value="{{ old('address') }}"
+                value="{{ old('address' , $productOwner->address ?? '') }}"
+                :readonly="$isShow"
+
             />
 
         </div>
@@ -89,6 +123,9 @@
             <x-form.image
                 name="document"
                 label="مدارک"
+                :currentImage="$productOwner->document ?? null"
+                :readonly="$mode === 'show'"
+                :required="$mode === 'create'"
             />
 
         </div>
@@ -98,7 +135,20 @@
     {{ $slot }}
 
     <div>
-        <x-form.button text="ثبت اطلاعات" type="submit" class="w-full"/>
+        @if($mode === 'show')
+            <x-form.button
+                type="button"
+                text="بازگشت"
+                :mode="$mode"
+                :action="'window.location.href=\''.route('product-owners.index').'\''"
+            />
+        @else
+            <x-form.button
+                type="submit"
+                text="{{ $mode === 'edit' ? 'ویرایش اطلاعات' : 'ثبت اطلاعات' }}"
+                :mode="$mode"
+            />
+        @endif
     </div>
 </x-form.base-form>
 

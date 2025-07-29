@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Entities;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProductOwner;
+use App\Models\City;
+use App\Models\Province;
 use Illuminate\Http\Request;
 use App\Http\Requests\Entities\ProductOwnerRequest;
 
@@ -50,7 +52,14 @@ class ProductOwnerController extends Controller
      */
     public function show(ProductOwner $productOwner)
     {
-        //
+        $productOwner->load(['user', 'company', 'city', 'province', 'vehicle']);
+        $province = Province::find($productOwner->province_id);
+        $cities = [];
+        if ($province) {
+            $cities = City::where('province_code', $province->code)->pluck('name', 'id');
+        }
+        $provinces = Province::pluck('name', 'id');
+        return view('entities.product-owners.show', compact('productOwner'  , 'provinces' , 'cities'));
     }
 
     /**
