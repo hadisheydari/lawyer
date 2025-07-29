@@ -137,7 +137,7 @@
             <x-form.image
                 name="national_card_file"
                 label="فایل کارت ملی"
-                :currentImage="$driver->document ?? null"
+                :currentImage="$driver->national_card_file ?? null"
                 :readonly="$mode === 'show'"
                 :required="$mode === 'create'"
             />
@@ -148,7 +148,7 @@
             <x-form.image
                 name="smart_card_file"
                 label="فایل کارت هوشمند"
-                :currentImage="$driver->document ?? null"
+                :currentImage="$driver->smart_card_file ?? null"
                 :readonly="$mode === 'show'"
                 :required="$mode === 'create'"
             />
@@ -159,7 +159,7 @@
             <x-form.image
                 name="certificate_file"
                 label="فایل گواهینامه"
-                :currentImage="$driver->document ?? null"
+                :currentImage="$driver->certificate_file ?? null"
                 :readonly="$mode === 'show'"
                 :required="$mode === 'create'"
             />
