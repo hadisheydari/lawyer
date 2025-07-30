@@ -4,8 +4,8 @@
     $isCreate = $mode === 'create';
 
     $action = $isCreate
-        ? route('companies.store')
-        : ($isEdit ? route('companies.update', $driver->id) : '#');
+        ? route('drivers.store')
+        : ($isEdit ? route('drivers.update', $driver->id) : '#');
 
     $method = $isCreate ? 'POST' : ($isEdit ? 'PUT' : 'GET');
 
@@ -70,7 +70,7 @@
                 label="نام پدر"
                 type="text"
                 placeholder="نام پدر را وارد کنید"
-                value="{{ old('father_name' , $driver->national_code ?? '') }}"
+                value="{{ old('father_name' , $driver->father_name ?? '') }}"
                 :readonly="$isShow"
 
             />

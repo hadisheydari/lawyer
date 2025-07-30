@@ -15,7 +15,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.6",
-        "fakerphp/faker": "^1.23",
+        "fakerphp/faker": "^1.24",
         "kitloong/laravel-migrations-generator": "^7.1",
         "laravel-lang/lang": "^15.22",
         "laravel/pail": "^1.2.2",

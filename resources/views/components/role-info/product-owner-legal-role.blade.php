@@ -21,7 +21,7 @@
     {{$translate[$mode]}}  اطلاعات صاحب کالا(حقوقی)
 </div>
 <x-form.base-form
-    :action="$mode === 'edit' ? route('product-owners.update', $company->id) : route('product-owners.store')"
+    :action="$mode === 'edit' ? route('product-owners.update', $productOwner->id) : route('product-owners.store')"
     :method="$mode === 'edit' ? 'PUT' : 'POST'"
     class="space-y-6">
     @csrf

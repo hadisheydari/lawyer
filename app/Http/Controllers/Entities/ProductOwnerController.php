@@ -7,6 +7,7 @@ use App\Models\ProductOwner;
 use App\Models\City;
 use App\Models\Province;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Entities\ProductOwnerRequest;
 
 class ProductOwnerController extends Controller
@@ -16,7 +17,9 @@ class ProductOwnerController extends Controller
      */
     public function index()
     {
-        //
+        $product_owners = ProductOwner::with('user')->where('user_id', auth()->id())->get();
+
+        return view('entities.product-owners.index', compact( 'product_owners'));
     }
 
     /**
@@ -67,8 +70,14 @@ class ProductOwnerController extends Controller
      */
     public function edit(ProductOwner $productOwner)
     {
-        //
-    }
+        $productOwner->load(['user', 'company', 'city', 'province', 'vehicle']);
+        $province = Province::find($productOwner->province_id);
+        $cities = [];
+        if ($province) {
+            $cities = City::where('province_code', $province->code)->pluck('name', 'id');
+        }
+        $provinces = Province::pluck('name', 'id');
+        return view('entities.product-owners.edit', compact('productOwner'  , 'provinces' , 'cities'));    }
 
     /**
      * Update the specified resource in storage.

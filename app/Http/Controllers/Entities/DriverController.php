@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\City;
 use App\Models\Province;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Entities\DriverRequest;
 
 class DriverController extends Controller
@@ -17,7 +18,9 @@ class DriverController extends Controller
      */
     public function index()
     {
-        //
+        $drivers = Driver::with(['user', 'company'])->where('user_id', auth()->id())->get();
+
+        return view('entities.drivers.index', compact( 'drivers'));
     }
 
     /**
@@ -36,7 +39,6 @@ class DriverController extends Controller
         $data = $request->validated();
         $data['user_id'] = auth()->id();
 
-        // آرایه‌ای که کلید فایل‌ها و مسیر ذخیره رو مشخص می‌کند
         $fileFields = [
             'national_card_file' => 'drivers/national_cards',
             'smart_card_file' => 'drivers/smart_cards',
@@ -78,7 +80,17 @@ class DriverController extends Controller
      */
     public function edit(Driver $driver)
     {
-        //
+        $companies = Company::with('user')->get()->mapWithKeys(function ($company) {
+            return [$company->id => $company->user->name];
+        });
+        $driver->load(['user', 'company', 'city', 'province', 'vehicle']);
+        $province = Province::find($driver->province_id);
+        $cities = [];
+        if ($province) {
+            $cities = City::where('province_code', $province->code)->pluck('name', 'id');
+        }
+        $provinces = Province::pluck('name', 'id');
+        return view('entities.drivers.edit', compact('driver' , 'companies' , 'provinces' , 'cities'));
     }
 
     /**
@@ -86,7 +98,34 @@ class DriverController extends Controller
      */
     public function update(DriverRequest $request, Driver $driver)
     {
-        //
+        $data = $request->validated();
+        $fileFields = [
+            'national_card_file' => 'drivers/national_cards',
+            'smart_card_file' => 'drivers/smart_cards',
+            'certificate_file' => 'drivers/certificates',
+        ];
+
+        foreach ($fileFields as $field => $path) {
+            if ($request->boolean("remove_{$field}")) {
+                if ($driver->$field && Storage::disk('public')->exists($driver->$field)) {
+                    Storage::disk('public')->delete($driver->$field);
+                }
+                $data[$field] = null;
+            }
+
+            if ($request->hasFile($field)) {
+                if ($driver->$field && Storage::disk('public')->exists($driver->$field)) {
+                    Storage::disk('public')->delete($driver->$field);
+                }
+                $data[$field] = $request->file($field)->store($path, 'public');
+            }
+        }
+
+        $driver->update($data);
+
+        return redirect($request->input('redirect_to', route('drivers.index')))
+            ->with('success', 'اطلاعات راننده با موفقیت به‌روزرسانی شد.');
+
     }
 
     /**
