@@ -2,19 +2,19 @@
 @section('title', 'نمایش کاربر صاحب کالا ')
 
 @section('content')
-    @if($productOwner->product_owner_type === 'real')
+    @if($product_owner->product_owner_type === 'real')
         <x-role-info.product-owner-real-role
             :provinces="$provinces"
             :cities="$cities"
             :mode="'show'"
-            :productOwner="$productOwner"
+            :productOwner="$product_owner"
         />
     @else
         <x-role-info.product-owner-legal-role
             :provinces="$provinces"
             :cities="$cities"
             :mode="'show'"
-            :productOwner="$productOwner"
+            :productOwner="$product_owner"
         />
 
     @endif

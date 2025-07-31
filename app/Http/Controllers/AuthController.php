@@ -116,7 +116,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended('/dashboard');
+        return redirect()->route('dashboard');
     }
 
     public function logout(Request $request): JsonResponse|RedirectResponse

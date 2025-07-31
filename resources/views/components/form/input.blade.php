@@ -45,6 +45,21 @@
             {{$readonly ?? false ? 'readonly' : ''}}
 
         >
+    @elseif($type === 'decimal'  )
+        <input
+            type="number"
+            id="{{$name}}"
+            name="{{$name}}"
+            step="0.0000001"
+            class="w-full px-4 py-2 rounded-lg bg-blue-50 text-blue-900 border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-700 placeholder:text-blue-500"
+            placeholder="{{$placeholder ?? ''}}"
+            value="{{ old($name, $value ?? '')}}"
+            min="{{$min}}"
+            max="{{$max}}"
+            {{$required ?? false ? 'required' : ''}}
+            {{$readonly ?? false ? 'readonly' : ''}}
+
+        >
 
     @elseif($type === 'date')
         <input

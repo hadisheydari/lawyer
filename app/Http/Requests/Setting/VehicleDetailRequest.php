@@ -22,7 +22,11 @@ class VehicleDetailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'brand'      => string_rules(true, 2, 255),
+            'name'       => string_rules(true, 2, 255),
+            'motorCode'  => string_rules(true, 2, 255),
+            'bodyCode'   => string_rules(true, 2, 255),
+            'year'       => unsigned_integer_rules(true, date('Y') + 1),
         ];
     }
 }

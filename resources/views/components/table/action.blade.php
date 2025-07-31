@@ -25,12 +25,30 @@
         style="display: none; min-width: max-content;"
     >
         @foreach($items as $item)
-            <a href="{{ $item['route'] }}"
-               class="flex items-center px-4 py-2 gap-2 hover:bg-gray-100 {{ $item['bg'] ?? 'text-gray-700' }}">
-                @if(isset($item['icon']))
-{{--                    <x-dynamic-component :component="$item['icon']" class="w-4 h-4" />--}}
-                @endif
-                {{ $item['name'] }}
-            </a>
+            @if(isset($item['method']) && $item['method'] === 'delete')
+
+                <form action="{{ $item['route'] }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button"
+                            onclick="confirmDelete(this)"
+                            @if(isset($item['icon']))
+                                {{--                <x-dynamic-component :component="$item['icon']" class="w-4 h-4" />--}}
+                            @endif
+                            class="w-full text-right flex items-center px-4 py-2 gap-2 hover:bg-gray-100 {{ $item['bg'] ?? 'text-gray-700' }}">
+                        {{ $item['name'] }}
+                    </button>
+                </form>
+            @else
+                <a href="{{ $item['route'] }}"
+                   class="flex items-center px-4 py-2 gap-2 hover:bg-gray-100 {{ $item['bg'] ?? 'text-gray-700' }}">
+                    @if(isset($item['icon']))
+                        {{--                <x-dynamic-component :component="$item['icon']" class="w-4 h-4" />--}}
+                    @endif
+                    {{ $item['name'] }}
+                </a>
+            @endif
         @endforeach
+
     </div>
+</div>

@@ -1,6 +1,6 @@
 @extends('layouts.main')
-@section('title', ' نوع بار')
-@section('header', 'نوع بار')
+@section('title', ' لیست نوع بار')
+@section('header', 'لیست نوع بار')
 
 @section('content')
     @if (session('success'))
@@ -8,30 +8,30 @@
             {{ session('success') }}
         </p>
     @endif
-    <div class="w-full flex justify-end mb-4">
-        <x-form.button
-            type="button"
-            text="بازگشت"
-            :action="'window.history.back()'"
-        />
-    </div>
+    @can('write setting')
+        <div class="!m-4 w-full grid justify-start">
+            <x-form.button
+                name="create"
+                type="button"
+                text="افزودن نوع بار "
+                :action="route('cargo_types.create')"
+            />
+        </div>
 
-
+    @endcan
 
     <x-table.base-table
         :headers="['نام نوع بار','کد نوع بار ' ]"
         :columns="['name', 'code']"
         :rows="$cargoTypes"
         :with-index="true"
-        :actions="fn($row) => view('components.table.action', [
-        'items' => [
+        :actions="fn($row) => view('components.table.action',[
+        'items' => array_filter([
             ['name' => 'نمایش', 'route' => route('cargo_types.show', $row->id), 'bg' => 'text-blue-600', 'icon' => 'lucide-eye'],
-            ['name' => 'ویرایش', 'route' => route('cargo_types.edit', $row->id), 'bg' => 'text-yellow-600', 'icon' => 'lucide-pencil'],
-            ['name' => 'حذف', 'route' => route('cargo_types.destroy', $row->id), 'bg' => 'text-red-600', 'icon' => 'lucide-trash'],
-        ]
+            auth()->user()?->can('write setting') ? ['name' => 'ویرایش', 'route' => route('cargo_types.edit', $row->id), 'bg' => 'text-yellow-600', 'icon' => 'lucide-pencil'] : null,
+            auth()->user()?->can('write setting') ? ['name' => 'حذف', 'route' => route('cargo_types.destroy', $row->id), 'bg' => 'text-red-600', 'icon' => 'lucide-trash' ,  'method' => 'delete',] : null,
+    ])
     ])"
     />
-
-
 
 @endsection

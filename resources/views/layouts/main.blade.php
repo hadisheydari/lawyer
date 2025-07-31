@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js' , 'resources/js/methods/oldImage.js', 'resources/js/methods/cities.js' ])
+    @vite(['resources/css/app.css', 'resources/js/app.js' , 'resources/js/methods/oldImage.js', 'resources/js/methods/cities.js', 'resources/js/methods/deleteRecords.js' ])
 </head>
 <body class="bg-gray-100 text-gray-900">
 <div class="min-h-screen bg-gradient-to-r from-sky-900 via-blue-950 to-slate-900 flex items-center justify-center">
@@ -182,7 +182,7 @@
                                                      viewBox="0 0 16 16">
                                                     <circle cx="8" cy="8" r="8"/>
                                                 </svg>
-                                                <span class="ms-2">لیست کالاها</span>
+                                                <span class="ms-2">لیست نوع بار</span>
                                             </a>
                                         </li>
                                         <li>
@@ -196,7 +196,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#"
+                                            <a href="{{route('packings.index')}}"
                                                class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
                                                 <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
                                                      viewBox="0 0 16 16">
@@ -206,7 +206,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#"
+                                            <a href="{{route('insurances.index')}}"
                                                class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
                                                 <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
                                                      viewBox="0 0 16 16">
@@ -447,7 +447,7 @@
 
             <div class="flex-1 flex flex-col space-y-6 p-8">
 
-                <div class="text-right text-3xl font-semibold text-blue-950 m-1">
+                <div class="text-right text-3xl font-semibold text-blue-950 m-1 mb-4">
                     @yield('header')
                 </div>
                 @yield('content')

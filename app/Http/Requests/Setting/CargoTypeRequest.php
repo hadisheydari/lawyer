@@ -11,7 +11,7 @@ class CargoTypeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -26,7 +26,6 @@ class CargoTypeRequest extends FormRequest
         return [
             'name' => string_rules(true, 2, 255), // رشته الزامی با طول بین ۲ تا ۲۵۵
             'code' => array_merge(unsigned_integer_rules(true), [
-                \Illuminate\Validation\Rule::unique('cargo_types', 'code')->ignore($id)
             ]),
         ];
     }

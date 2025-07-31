@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $name نام بیمه
  * @property int $code کد بیمه
- * @property string|null $coefficient ضریب بیمه
+ * @property float|null $coefficient ضریب بیمه
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Insurance newModelQuery()

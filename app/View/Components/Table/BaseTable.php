@@ -5,6 +5,8 @@ namespace App\View\Components\Table;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\Paginator;
 
 class BaseTable extends Component
 {
@@ -19,7 +21,10 @@ class BaseTable extends Component
         public mixed $actions = null,
     )
     {}
-
+    public function isPaginated(): bool
+    {
+        return $this->rows instanceof LengthAwarePaginator || $this->rows instanceof Paginator;
+    }
     /**
      * Get the view / contents that represent the component.
      */

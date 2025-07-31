@@ -32,7 +32,7 @@ class CargoTypeController extends Controller
     public function store(CargoTypeRequest $request)
     {
         CargoType::create($request->validated());
-        return redirect()->route('setting.cargo-types.index')->with('success', 'نوع بار با موفقیت ایجاد شد.');
+        return redirect()->route('cargo_types.index')->with('success', 'نوع بار با موفقیت ایجاد شد.');
     }
 
     /**
@@ -57,7 +57,7 @@ class CargoTypeController extends Controller
     public function update(CargoTypeRequest $request, CargoType $cargo_type)
     {
         $cargo_type->update($request->validated());
-        return redirect()->route('setting.cargo-types.index')->with('success', 'نوع بار با موفقیت به‌روزرسانی شد.');
+        return redirect()->route('cargo_types.index')->with('success', 'نوع بار با موفقیت به‌روزرسانی شد.');
     }
 
     /**
@@ -66,6 +66,6 @@ class CargoTypeController extends Controller
     public function destroy(CargoType $cargo_type)
     {
         $cargo_type->delete();
-        return redirect()->route('setting.cargo-types.index')->with('success', 'نوع بار با موفقیت حذف شد.');
+        return redirect()->route('cargo_types.index')->with('success', 'نوع بار با موفقیت حذف شد.');
     }
 }

@@ -11,7 +11,7 @@ class InsuranceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class InsuranceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => string_rules(true, 2, 255),
+            'code' => unsigned_integer_rules(true),
+            'coefficient' => numeric_rules(false, 0),
         ];
     }
 }
