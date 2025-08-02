@@ -9,6 +9,8 @@ use App\Http\Controllers\Setting\PackingController;
 use App\Http\Controllers\Setting\VehicleDetailController;
 use App\Http\Controllers\Setting\InsuranceController;
 use App\Http\Controllers\Setting\CargoTypeController;
+use App\Http\Controllers\Vehicle\VehicleController;
+
 
 require __DIR__.'/auth.php';
 
@@ -21,6 +23,9 @@ Route::middleware(['auth', 'role.selected'])->group(function () {
     Route::resource('vehicle_details', VehicleDetailController::class);
     Route::resource('insurances', InsuranceController::class);
     Route::resource('cargo_types', CargoTypeController::class);
+    Route::resource('vehicles', VehicleController::class);
+    Route::get('driver_management/index', [CompanyController::class ,  'driverIndex'])->name('driverManagement');
+    Route::get('allocation/{$driver}', [DriverController::class , 'allocation'])->name('allocation');
 
 });
 

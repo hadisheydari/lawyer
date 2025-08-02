@@ -20,7 +20,9 @@ class CompanyController extends Controller
     {
         $companies = Company::with(['user', 'drivers'])->where('user_id', auth()->id())->paginate(10);
 
-        $drivers = $companies->flatMap(fn($company) => $company->drivers);
+        $companyIds = $companies->pluck('id');
+
+        $drivers = Driver::with('vehicle')->whereIn('company_id', $companyIds)->paginate(10);
 
         return view('entities.companies.index', compact('companies', 'drivers'));
     }
@@ -124,4 +126,19 @@ class CompanyController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'شرکت با موفقیت حذف شد.');
     }
+
+
+
+    public function driverIndex()
+    {
+        $companies = Company::with(['user', 'drivers'])->where('user_id', auth()->id())->paginate(10);
+
+        $companyIds = $companies->pluck('id');
+
+        $drivers = Driver::with('vehicle')->whereIn('company_id', $companyIds)->paginate(10);
+
+        return view('entities.driver_management.index', compact('companies', 'drivers'));
+    }
+
+
 }

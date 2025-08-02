@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Entities\ProductOwnerRequest;
 
+
 class ProductOwnerController extends Controller
 {
     /**
@@ -55,7 +56,7 @@ class ProductOwnerController extends Controller
      */
     public function show(ProductOwner $product_owner)
     {
-        $product_owner->load(['user', 'company', 'city', 'province', 'vehicle']);
+        $product_owner->load(['user', 'city']);
         $province = Province::find($product_owner->province_id);
         $cities = [];
         if ($province) {
@@ -70,7 +71,7 @@ class ProductOwnerController extends Controller
      */
     public function edit(ProductOwner $product_owner)
     {
-        $product_owner->load(['user', 'company', 'city', 'province', 'vehicle']);
+        $product_owner->load(['user', 'city']);
         $province = Province::find($product_owner->province_id);
         $cities = [];
         if ($province) {

@@ -133,6 +133,33 @@ class DriverController extends Controller
      */
     public function destroy(Driver $driver)
     {
-        //
+        $fileFields = [
+            'national_card_file',
+            'smart_card_file',
+            'certificate_file',
+        ];
+
+        foreach ($fileFields as $field) {
+            if ($driver->$field && Storage::disk('public')->exists($driver->$field)) {
+                Storage::disk('public')->delete($driver->$field);
+            }
+        }
+
+        $driver->delete();
+
+        return redirect()->route('drivers.index')->with('success', 'راننده با موفقیت حذف شد.');
     }
+
+
+
+    public function allocation(Driver $driver)
+    {
+
+        $driver->load([ 'vehicle' , 'vehicle.vehicleDetail' , 'user']);
+
+        $vehicles = Vehicle::pluck('vehicleDetail.name', 'id');
+        return view('driver_management.mechanism_allocation', compact('driver' , 'vehicles'));
+    }
+
+
 }

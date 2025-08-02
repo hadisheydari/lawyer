@@ -16,9 +16,9 @@
         :with-index="true"
         :actions="fn($row) => view('components.table.action', [
         'items' => [
-            ['name' => 'نمایش', 'route' => route('drivers.show', $row->id), 'bg' => 'text-blue-600', 'icon' => 'lucide-eye'],
-            ['name' => 'ویرایش', 'route' => route('drivers.edit', $row->id), 'bg' => 'text-yellow-600', 'icon' => 'lucide-pencil'],
-            ['name' => 'حذف', 'route' => route('drivers.destroy', $row->id), 'bg' => 'text-red-600', 'icon' => 'lucide-trash'],
+            ['name' => 'نمایش', 'route' => route('product-owners.show', $row->id), 'bg' => 'text-blue-600', 'icon' => 'lucide-eye'],
+            ['name' => 'ویرایش', 'route' => route('product-owners.edit', $row->id), 'bg' => 'text-yellow-600', 'icon' => 'lucide-pencil'],
+            ['name' => 'حذف', 'route' => route('product-owners.destroy', $row->id), 'bg' => 'text-red-600', 'icon' => 'lucide-trash'],
         ]
     ])"
     />

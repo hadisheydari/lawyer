@@ -15,7 +15,6 @@ use App\Models\Driver;
  * @property string $plate_letter حرف پلاک
  * @property string $plate_type نوع پلاک
  * @property string $status وضعیت
- * @property string $type نوع خودرو
  * @property int $vehicle_detail_id
  * @property int $driver_id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -50,7 +49,6 @@ class Vehicle extends Model
         'plate_letter',
         'plate_type',
         'status',
-        'type',
         'vehicle_detail_id',
         'driver_id',
     ];

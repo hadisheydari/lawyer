@@ -25,11 +25,15 @@
 
                             @php
                                 $user = auth()->user();
+                                $userRoute = null;
                                     if ($user->hasRole('company')) {
+                                        $userRoute = 'companies';
                                         $info = $user->company?->company_type;
                                     } elseif ($user->hasRole('productOwner')) {
+                                        $userRoute = 'product-owners';
                                         $info = $user->productOwner?->product_owner_type;
                                     } elseif ($user->hasRole('driver')) {
+                                        $userRoute = 'drivers';
                                         $info = $user->driver?->property;
                                     } else{
                                         $info = null;
@@ -131,7 +135,7 @@
                             </li>
                             @can('manage users')
                                 <li>
-                                    <a href="{{route('companies.index')}}"
+                                    <a href="{{route($userRoute.'.index')}}"
                                        class="flex items-center p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                              viewBox="0 0 24 24"
@@ -186,7 +190,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#"
+                                            <a href="{{route('vehicle_details.index')}}"
                                                class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
                                                 <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
                                                      viewBox="0 0 16 16">
@@ -390,7 +394,7 @@
                             @can('read vehicles')
 
                             <li>
-                                <a href="#"
+                                <a href="{{ route('vehicles.index') }}"
                                    class="flex items-center p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
