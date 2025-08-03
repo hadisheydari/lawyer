@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Entities\CompanyRequest;
 use App\Models\City;
 use App\Models\Province;
+use App\Models\Driver;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -137,7 +138,7 @@ class CompanyController extends Controller
 
         $drivers = Driver::with('vehicle')->whereIn('company_id', $companyIds)->paginate(10);
 
-        return view('entities.driver_management.index', compact('companies', 'drivers'));
+        return view('driver_management.index', compact('companies', 'drivers'));
     }
 
 

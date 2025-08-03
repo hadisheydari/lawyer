@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js' , 'resources/js/methods/oldImage.js', 'resources/js/methods/cities.js', 'resources/js/methods/deleteRecords.js' ])
+    @vite(['resources/css/app.css', 'resources/js/app.js' , 'resources/js/methods/oldImage.js', 'resources/js/methods/cities.js', 'resources/js/methods/deleteRecords.js'  ])
+    @stack('imports')
+
 </head>
 <body class="bg-gray-100 text-gray-900">
 <div class="min-h-screen bg-gradient-to-r from-sky-900 via-blue-950 to-slate-900 flex items-center justify-center">
@@ -413,7 +415,7 @@
                             @endcan
                             @can('read drivers')
                             <li>
-                                <a href="#"
+                                <a href="{{ route('driverManagement') }}"
                                    class="flex items-center p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

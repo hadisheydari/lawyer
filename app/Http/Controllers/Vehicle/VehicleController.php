@@ -66,7 +66,8 @@ class VehicleController extends Controller
     public function update(VehicleRequest $request, Vehicle $vehicle)
     {
         $vehicle->update($request->validated());
-        return redirect()->route('vehicles.index')->with('success', 'ماشین با موفقیت به‌روزرسانی شد.');
+        return redirect($request->input('redirect_to', route('vehicles.index')))
+            ->with('success', 'مکانیزم با موفقیت به‌روزرسانی شد.');
     }
 
     /**
@@ -75,8 +76,17 @@ class VehicleController extends Controller
     public function destroy(Vehicle $vehicle)
     {
         $vehicle->delete();
-        return redirect()->route('vehicles.index')->with('success', 'ماشین با موفقیت حذف شد.');
+        return redirect()->route('vehicles.index')->with('success', 'مکانیزم با موفقیت حذف شد.');
 
+    }
+
+
+    public function detachDriver(Vehicle $vehicle)
+    {
+        $vehicle->driver_id = null;
+        $vehicle->save();
+
+        return redirect()->back()->with('success', 'راننده از وسیله نقلیه جدا شد.');
     }
 
 

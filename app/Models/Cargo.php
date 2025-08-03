@@ -72,6 +72,7 @@ class Cargo extends Model
         'fare_type',
         'cargo_type_id',
         'packing_id',
+        'assigned_company_id',
         'description',
     ];
 

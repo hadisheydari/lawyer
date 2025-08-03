@@ -1,26 +1,26 @@
 <?php
 
-namespace App\View\Components\Form;
+namespace App\View\Components\CargoDeclaration;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class baseForm extends Component
+class Cargo extends Component
 {
     /**
      * Create a new component instance.
      */
-    public function __construct(
-        public string $action = '#',
-        public string $method = 'POST' ,
-        public $id = null
-    ) {}
+    public function __construct()
+    {
+        //
+    }
+
     /**
      * Get the view / contents that represent the component.
      */
     public function render(): View|Closure|string
     {
-        return view('components.form.base-form');
+        return view('components.cargo-declaration.cargo');
     }
 }

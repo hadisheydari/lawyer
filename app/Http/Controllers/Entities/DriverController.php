@@ -7,6 +7,8 @@ use App\Models\Driver;
 use App\Models\Company;
 use App\Models\City;
 use App\Models\Province;
+use App\Models\Vehicle;
+use App\Models\VehicleDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Entities\DriverRequest;
@@ -154,10 +156,10 @@ class DriverController extends Controller
 
     public function allocation(Driver $driver)
     {
-
         $driver->load([ 'vehicle' , 'vehicle.vehicleDetail' , 'user']);
-
-        $vehicles = Vehicle::pluck('vehicleDetail.name', 'id');
+        $vehicles = Vehicle::with('vehicleDetail')->get()->mapWithKeys(function ($vehicle) {
+            return [$vehicle->id => $vehicle->vehicleDetail->name ?? '---'];
+        });
         return view('driver_management.mechanism_allocation', compact('driver' , 'vehicles'));
     }
 

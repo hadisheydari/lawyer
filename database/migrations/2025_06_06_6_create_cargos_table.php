@@ -57,7 +57,6 @@ return new class extends Migration
             $table->foreignIdFor(CargoType::class)->nullable()->comment('شناسه نوع بار')->constrained()->nullOnDelete();
             $table->foreignIdFor(Packing::class)->nullable()->comment('شناسه نوع بسته‌بندی')->constrained()->nullOnDelete();
             $table->foreignId('assigned_company_id')->nullable()->constrained('users')->comment('شرکت تاییدکننده نهایی');
-            $table->enum('status', CargoStatus::STATUSES)->default(CargoStatus::FREE)->comment('وضعیت کلی بار');
             $table->text('description')->nullable()->comment('توضیحات');
             $table->timestamps();
         });

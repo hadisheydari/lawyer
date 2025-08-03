@@ -29,7 +29,7 @@
 
                 <form action="{{ $item['route'] }}" method="POST">
                     @csrf
-                    @method('DELETE')
+                    @method($item['method'] ?? 'DELETE')
                     <button type="button"
                             onclick="confirmDelete(this)"
                             @if(isset($item['icon']))
@@ -52,3 +52,4 @@
 
     </div>
 </div>
+

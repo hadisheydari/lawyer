@@ -25,7 +25,9 @@ Route::middleware(['auth', 'role.selected'])->group(function () {
     Route::resource('cargo_types', CargoTypeController::class);
     Route::resource('vehicles', VehicleController::class);
     Route::get('driver_management/index', [CompanyController::class ,  'driverIndex'])->name('driverManagement');
-    Route::get('allocation/{$driver}', [DriverController::class , 'allocation'])->name('allocation');
+    Route::get('allocation/{driver}', [DriverController::class , 'allocation'])->name('allocation');
+    Route::get('vehicles/detachDriver/{vehicle}', [VehicleController::class , 'detachDriver'])->name('vehicles.detachDriver');
+
 
 });
 
