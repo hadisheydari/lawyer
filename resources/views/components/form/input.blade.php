@@ -57,6 +57,17 @@
             {{$readonly ?? false ? 'readonly' : ''}}
 
         >
+    @elseif($type === 'SpecialNumber' )
+        <input
+            type="text"
+            id="{{$name}}"
+            name="{{$name}}"
+            class="w-full px-4 py-2 rounded-lg bg-blue-50 text-blue-900 border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-700 placeholder:text-blue-500 number-format"
+            placeholder="{{$placeholder ?? ''}}"
+            value="{{ old($name, $value ?? '')}}"
+            {{$required ?? false ? 'required' : ''}}
+            {{$readonly ?? false ? 'readonly' : ''}}
+        >
 
     @elseif($type === 'date')
         <input
