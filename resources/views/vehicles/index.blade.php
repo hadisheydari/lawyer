@@ -8,7 +8,7 @@
             {{ session('success') }}
         </p>
     @endif
-    @can('write setting')
+    @can('write vehicles')
         <div class="!m-4 w-full grid justify-start">
             <x-form.button
                 name="create"
@@ -28,8 +28,8 @@
         :actions="fn($row) => view('components.table.action',[
         'items' => array_filter([
             ['name' => 'نمایش', 'route' => route('vehicles.show', $row->id), 'bg' => 'text-blue-600', 'icon' => 'lucide-eye'],
-            auth()->user()?->can('write setting') ? ['name' => 'ویرایش', 'route' => route('vehicles.edit', $row->id), 'bg' => 'text-yellow-600', 'icon' => 'lucide-pencil'] : null,
-            auth()->user()?->can('write setting') ? ['name' => 'حذف', 'route' => route('vehicles.destroy', $row->id), 'bg' => 'text-red-600', 'icon' => 'lucide-trash' ,  'method' => 'delete',] : null,
+            auth()->user()?->can('write vehicles') ? ['name' => 'ویرایش', 'route' => route('vehicles.edit', $row->id), 'bg' => 'text-yellow-600', 'icon' => 'lucide-pencil'] : null,
+            auth()->user()?->can('write vehicles') ? ['name' => 'حذف', 'route' => route('vehicles.destroy', $row->id), 'bg' => 'text-red-600', 'icon' => 'lucide-trash' ,  'method' => 'delete',] : null,
     ])
     ])"
     />

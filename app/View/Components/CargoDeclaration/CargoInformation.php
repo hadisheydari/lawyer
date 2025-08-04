@@ -6,18 +6,16 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class Cargo extends Component
+class CargoInformation extends Component
 {
     /**
      * Create a new component instance.
      */
     public function __construct(
-        public $cargoTypes = null ,
-        public $packings = null ,
-        public $insurances = null ,
         public iterable|null $provinces = [],
         public iterable|null $cities = [],
-        public string|null $mode = 'create',
+        public string|null $locationType = null,
+        public bool|null $isShow = false,
         public $cargo = null
     )
     {}
@@ -27,6 +25,6 @@ class Cargo extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.cargo-declaration.cargo');
+        return view('components.cargo-declaration.cargo-information');
     }
 }

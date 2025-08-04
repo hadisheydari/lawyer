@@ -12,6 +12,7 @@ class Input extends Component
      * Create a new component instance.
      */
     public function __construct(
+        public string|null $id,
         public string $name,
         public string $label,
         public string $type = 'text',
@@ -25,6 +26,7 @@ class Input extends Component
         public bool $disabled = false,
         public bool $required = false,
         public bool $readonly = false,
+        public bool $numberFormat = false,
     ) {}
 
     /**

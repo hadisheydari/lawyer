@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\CargoDeclaration\CargoRequest;
 use App\Models\Cargo;
+use App\Models\Packing;
+use App\Models\CargoType;
+use App\Models\Insurance;
+use App\Models\Province;
 
 class CargoController extends Controller
 {
@@ -14,7 +18,9 @@ class CargoController extends Controller
      */
     public function index()
     {
-        //
+        $cargos = Cargo::with(['cargoType', 'owner'])->where('owner_id', auth()->id())->orWhere('assigned_company_id', auth()->id())->paginate(10);
+
+        return view('cargo_declaration.cargos.index', compact( 'cargos'));
     }
 
     /**
@@ -22,8 +28,14 @@ class CargoController extends Controller
      */
     public function create()
     {
-        //
+        $cargoTypes = CargoType::pluck('name', 'id');
+        $packings = Packing::pluck('name', 'id');
+        $insurances = Insurance::select('id', 'name', 'coefficient')->get();
+        $provinces = Province::pluck('name', 'id');
+
+        return view('cargo_declaration.cargos.create', compact('cargoTypes', 'packings', 'insurances' , 'provinces'));
     }
+
 
     /**
      * Store a newly created resource in storage.

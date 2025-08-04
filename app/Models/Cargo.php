@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $thickness ضخامت بار بر اساس متر
  * @property int|null $length طول بار بر اساس متر
  * @property int|null $width عرض بار بر اساس متر
- * @property int|null $insurance ارزش بیمه
+ * @property int|null $insurance_value ارزش بیمه
  * @property int|null $fare مبلغ کرایه بر حسب ریال
  * @property string|null $fare_type نوع پرداخت کرایه
  * @property string $type نوع بار
@@ -67,7 +67,8 @@ class Cargo extends Model
         'thickness',
         'length',
         'width',
-        'insurance',
+        'insurance_id',
+        'insurance_value',
         'fare',
         'fare_type',
         'cargo_type_id',

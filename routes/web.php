@@ -10,6 +10,7 @@ use App\Http\Controllers\Setting\VehicleDetailController;
 use App\Http\Controllers\Setting\InsuranceController;
 use App\Http\Controllers\Setting\CargoTypeController;
 use App\Http\Controllers\Vehicle\VehicleController;
+use App\Http\Controllers\CargoDeclaration\CargoController;
 
 
 require __DIR__.'/auth.php';
@@ -27,8 +28,14 @@ Route::middleware(['auth', 'role.selected'])->group(function () {
     Route::get('driver_management/index', [CompanyController::class ,  'driverIndex'])->name('driverManagement');
     Route::get('allocation/{driver}', [DriverController::class , 'allocation'])->name('allocation');
     Route::get('vehicles/detachDriver/{vehicle}', [VehicleController::class , 'detachDriver'])->name('vehicles.detachDriver');
+    Route::resource('cargos', CargoController::class);
 
 
 });
 
 Route::get('/get-cities/{province}', [CityController::class, 'getCities'])->name('getCities');
+
+
+Route::get('/get-city-scale/{city}', [CityController::class, 'getCityScale'])->name('getCityScale');
+
+

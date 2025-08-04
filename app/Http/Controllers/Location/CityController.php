@@ -73,5 +73,13 @@ class CityController extends Controller
 
         return response()->json($cities);
     }
+    public function getCityScale($cityId)
+    {
+        $city = City::findOrFail($cityId);
+
+        return response()->json([
+            'latitude' => $city->latitude,
+            'longitude' => $city->longitude,]);
+    }
 
 }

@@ -11,6 +11,7 @@ use App\Models\City;
 use App\Models\Province;
 use App\Models\Driver;
 use App\Models\Packing;
+use App\Models\Insurance;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -49,7 +50,8 @@ return new class extends Migration
             $table->unsignedTinyInteger('thickness')->nullable()->comment('ضخامت بار بر اساس متر');
             $table->unsignedTinyInteger('length')->nullable()->comment('طول بار بر اساس متر');
             $table->unsignedTinyInteger('width')->nullable()->comment('عرض بار بر اساس متر');
-            $table->unsignedInteger('insurance')->nullable()->comment('ارزش بیمه');
+            $table->foreignIdFor(Insurance::class)->nullable()->comment('شرکت بیمه')->constrained()->nullOnDelete();
+            $table->unsignedInteger('insurance_value')->nullable()->comment('ارزش بیمه');
             $table->unsignedBigInteger('fare')->nullable()->comment('مبلغ کرایه بر حسب ریال');
             $table->enum('fare_type', FareType::TYPES)->nullable()->comment('نوع پرداخت کرایه');
             $table->enum('type', Type::TYPES)->index()->comment('نوع بار');
