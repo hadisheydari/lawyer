@@ -76,14 +76,14 @@ class Driver extends Model
     {
         return $this->belongsTo(City::class);
     }
-    public function province(): BelongsTo
-    {
-        return $this->belongsTo(Province::class);
-    }
-
     public function vehicle(): HasOne
     {
         return $this->hasOne(Vehicle::class);
+    }
+
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class);
     }
 
 }

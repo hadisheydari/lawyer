@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @push('imports')
-    @vite(['resources/js/methods/numberFormat.js' , 'resources/js/methods/fareCalculatre.js'  , 'resources/js/methods/cargoCity.js' ])
+    @vite(['resources/js/methods/numberFormat.js' , 'resources/js/methods/fareCalculator.js'  ])
 @endpush
 @section('title', 'ثبت بار')
 @section('content')

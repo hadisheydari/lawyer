@@ -8,7 +8,7 @@
             $cellValue = data_get($row, $col);
         @endphp
 
-        @if($col === 'status')
+        @if($col === 'status' || $col === 'type')
             <x-table.cell>
                 <x-table.status :value="$cellValue" />
             </x-table.cell>

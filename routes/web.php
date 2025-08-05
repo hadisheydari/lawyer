@@ -29,13 +29,12 @@ Route::middleware(['auth', 'role.selected'])->group(function () {
     Route::get('allocation/{driver}', [DriverController::class , 'allocation'])->name('allocation');
     Route::get('vehicles/detachDriver/{vehicle}', [VehicleController::class , 'detachDriver'])->name('vehicles.detachDriver');
     Route::resource('cargos', CargoController::class);
+    Route::get('/cargos/{id}/type/{type}', [CargoController::class, 'setType'])->name('cargos.type');
 
 
 });
 
 Route::get('/get-cities/{province}', [CityController::class, 'getCities'])->name('getCities');
-
-
 Route::get('/get-city-scale/{city}', [CityController::class, 'getCityScale'])->name('getCityScale');
 
 

@@ -15,9 +15,10 @@
             label="طول جغرافیایی"
             type="text"
             placeholder="طول جغرافیایی را وارد کنید"
-            value="{{ old('lat' , $cargo->$locationType->lat ?? '') }}"
+            value="{{ old($locationType . '[lat]', $cargo->$locationType->lat ?? '') }}"
             :numberFormat="true"
             id="{{$locationType === 'destination' ? 'lat1' : 'lat'}}"
+            :readonly="true"
 
         />
 
@@ -29,9 +30,10 @@
             label="عرض جغرافیایی"
             type="text"
             placeholder="عرض جغرافیایی را وارد کنید"
-            value="{{ old('thickness' , $cargo->$locationType->lng ?? '') }}"
+            value="{{ old($locationType . '[lng]', $cargo->$locationType->lng ?? '') }}"
             :numberFormat="true"
             id="{{$locationType === 'destination' ? 'lng1' : 'lng'}}"
+            :readonly="true"
 
         />
 
@@ -43,7 +45,7 @@
             :options="$provinces ?? []"
             label="استان"
             placeholder="یک گزینه را انتخاب کنید"
-            :selected="old('province_id', $cargo->$locationType->province_id ?? '')"
+            :selected="old($locationType . '[province_id]', $cargo->$locationType->province_id ?? '')"
             :multiple="false"
             :required="true"
             :disabled="$isShow"
@@ -54,10 +56,10 @@
     <div class="">
         <x-form.select-box
             name="{{$locationType}}[city_id]"
-            :options="$cities ??[]"
+            :options="$cities ?? [] "
             label="شهر"
             placeholder="ابتدا استان را انتخاب کنید"
-            :selected="old('city_id', $cargo->$locationType->city_id ?? '')"
+            :selected=" old($locationType . '[city_id]', $cargo->$locationType->city_id ?? '') "
             :multiple="false"
             :required="true"
             :disabled="$isShow"
@@ -71,7 +73,7 @@
             label="توضیحات"
             type="textarea"
             placeholder="توضیحات را وارد کنید"
-            value="{{ old('description' , $cargo->$locationType->description ?? '') }}"
+            value="{{ old($locationType . '[description]', $cargo->$locationType->description ?? '') }}"
             :readonly="$isShow"
         />
 
@@ -83,7 +85,7 @@
             label="آدرس دقیق"
             type="textarea"
             placeholder="آدرس دقیق را وارد کنید"
-            value="{{ old('address' , $cargo->$locationType->address ?? '') }}"
+            value="{{ old($locationType . '[address]', $cargo->$locationType->address ?? '') }}"
             :readonly="$isShow"
         />
 
@@ -93,11 +95,12 @@
 
         <div class="">
             <x-form.input
+                id="date_at"
                 name="{{$locationType}}[date_at]"
                 label="تاریخ شروع"
                 type="date"
                 placeholder="تاریخ شروع را وارد کنید"
-                value="{{ old('date_at' ,  $cargo->$locationType->date_at  ?? '') }}"
+                value="{{ old($locationType . '[date_at]', $cargo->$locationType->date_at ?? '') }}"
                 :readonly="$isShow"
 
             />
@@ -108,11 +111,12 @@
 
         <div class="">
             <x-form.input
-                name="{{$locationType}}[date_at]"
+                id="date_to"
+                name="{{$locationType}}[date_to]"
                 label="تاریخ پایان"
                 type="date"
                 placeholder="تاریخ پایان را وارد کنید"
-                value="{{ old('date_at' ,  $cargo->$locationType->date_at  ?? '') }}"
+                value="{{ old($locationType . '[date_to]', $cargo->$locationType->date_to ?? '') }}"
                 :readonly="$isShow"
 
             />

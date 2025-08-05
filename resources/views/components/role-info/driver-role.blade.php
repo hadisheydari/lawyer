@@ -18,7 +18,7 @@
 @endphp
 
 <div class="text-blue-950 font-black text-2xl m-12 ">
-    {{$translate[$mode]}}  اطلاعات راننده
+    {{$translate[$mode]}} اطلاعات راننده
 </div>
 <x-form.base-form
     :action="$mode === 'edit' ? route('drivers.update', $driver->id) : route('drivers.store')"
@@ -36,7 +36,6 @@
         </div>
     @endif
     <div class="grid grid-cols-3 gap-4">
-
 
 
         <div class="">
@@ -118,7 +117,7 @@
             />
         </div>
 
-        <div class=" {{$driver->property === 'owned' ? '' : 'hidden' }}" id="company-field" >
+        <div class="{{ (optional($driver)->property === 'owned') ? '' : 'hidden' }}" id="company-field">
             <x-form.select-box
                 name="company_id"
                 :options="$companies ?? []"
@@ -143,6 +142,9 @@
             />
 
         </div>
+    </div>
+    <div class="grid grid-cols-3 gap-4 mt-5">
+
 
         <div class="">
             <x-form.image

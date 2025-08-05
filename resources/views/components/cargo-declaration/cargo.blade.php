@@ -139,7 +139,7 @@
                 :options="$insurances->pluck('name', 'id') ?? []"
                 label="نوع بیمه"
                 placeholder="یک گزینه را انتخاب کنید"
-                :selected="old('insurance_id', $vehicle->insurance_id ?? '')"
+                :selected="old('insurance_id', $cargo->insurance_id ?? '')"
                 :multiple="false"
                 :required="true"
                 :disabled="$isShow"
@@ -156,18 +156,17 @@
                 value="{{ old('insurance_value' , $cargo->insurance_value ?? '') }}"
                 :readonly="$isShow"
                 :numberFormat="true"
-
             />
 
         </div>
 
         <div class="">
             <x-form.input
-                name="fare_value"
+                name="fare"
                 label="مبلغ کرایه بر حسب (ریال)"
                 type="text"
                 placeholder="مبلغ کرایه را وارد کنید"
-                value="{{ old('fare_value' , $cargo->fare_value ?? '') }}"
+                value="{{ old('fare' , $cargo->fare ?? '') }}"
                 :readonly="$isShow"
                 :numberFormat="true"
 
@@ -177,11 +176,11 @@
 
         <div class="">
             <x-form.input
-                name="fare"
+                name="final_fare"
                 label="مبلغ کرایه محاسبه شده بر حسب (ریال)"
                 type="text"
                 placeholder="مبلغ کرایه را وارد کنید"
-                value="{{ old('fare' , $cargo->fare ?? '') }}"
+                value="{{ old('final_fare' , $cargo->final_fare ?? '') }}"
                 :readonly="true"
                 :numberFormat="true"
 
@@ -193,7 +192,7 @@
             <x-form.select-box
                 name="fare_type"
                 :options="__('cargo_enums.fare_type')"
-                label="مالکیت "
+                label="نوع پرداخت کرایه "
                 placeholder="یک گزینه را انتخاب کنید "
                 :selected="old('fare_type', $cargo->fare_type ?? '')"
                 :multiple="false"
@@ -209,12 +208,15 @@
         :cities="$cities"
         :locationType="'origin'"
         :isShow="$isShow"
+        :cargo="$cargo"
+
     />
     <x-cargo_declaration.cargo-information
         :provinces="$provinces"
-        :cities="$cities"
+        :cities="$cities1"
         :locationType="'destination'"
         :isShow="$isShow"
+        :cargo="$cargo"
     />
     <div class="">
         <x-form.input
@@ -222,7 +224,7 @@
             label="توضیحات"
             type="textarea"
             placeholder="توضیحات را وارد کنید"
-            value="{{ old('description' , $company->description ?? '') }}"
+            value="{{ old('description' , $cargo->description ?? '') }}"
             :readonly="$isShow"
         />
 

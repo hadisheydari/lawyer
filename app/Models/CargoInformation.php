@@ -58,8 +58,7 @@ class CargoInformation extends Model
         'type' => 'string',
         'lat' => 'float',
         'lng' => 'float',
-        'date_at' => 'timestamp',
-        'date_to' => 'timestamp',
+
     ];
 
     public function cargo(): BelongsTo
@@ -73,6 +72,6 @@ class CargoInformation extends Model
     }
     public function province(): BelongsTo
     {
-        return $this->belongsTo(province::class);
+        return $this->belongsTo(Province::class, 'province_id');
     }
 }

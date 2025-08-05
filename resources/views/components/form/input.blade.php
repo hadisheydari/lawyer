@@ -61,20 +61,20 @@
     @elseif($type === 'date')
         <input
             type="text"
-            id="{{ $name }}_display"
+            id="{{$id ?? $name }}_display"
             class="persian-datepicker px-4 py-2 border rounded-lg bg-blue-50 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
             placeholder="{{ $placeholder ?? '' }}"
             autocomplete="off"
             value="{{ old($name, isset($value) ? \Morilog\Jalali\Jalalian::forge($value)->format('Y/m/d') : '') }}"
             {{ $disabled ?? false ? 'disabled' : '' }}
-            data-pd-target="{{ $name }}"
+            data-pd-target="{{$id ?? $name }}"
         >
 
         <input
             type="hidden"
-            id="{{ $name }}"
+            id="{{$id ?? $name }}"
             name="{{ $name }}"
-            value="{{ old($name, isset($value) ? \Carbon\Carbon::parse(\Illuminate\Support\Str::of($value)
+            value="{{ old($id ?? $name, isset($value) ? \Carbon\Carbon::parse(\Illuminate\Support\Str::of($value)
             ->replace(['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'], ['0','1','2','3','4','5','6','7','8','9'])
         )->format('Y-m-d H:i:s') : '') }}"
         >

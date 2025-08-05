@@ -17,6 +17,7 @@ class Cargo extends Component
         public $insurances = null ,
         public iterable|null $provinces = [],
         public iterable|null $cities = [],
+        public iterable|null $cities1 = [],
         public string|null $mode = 'create',
         public $cargo = null
     )

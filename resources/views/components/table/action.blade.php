@@ -32,19 +32,21 @@
                     @method($item['method'] ?? 'DELETE')
                     <button type="button"
                             onclick="confirmDelete(this)"
-                            @if(isset($item['icon']))
-                                {{--                <x-dynamic-component :component="$item['icon']" class="w-4 h-4" />--}}
-                            @endif
                             class="w-full text-right flex items-center px-4 py-2 gap-2 hover:bg-gray-100 {{ $item['bg'] ?? 'text-gray-700' }}">
+                        @isset($item['icon'])
+                            <i class="fa fa-{{ $item['icon'] }} w-4 h-4"></i>
+                        @endisset
                         {{ $item['name'] }}
                     </button>
                 </form>
             @else
-                <a href="{{ $item['route'] }}"
-                   class="flex items-center px-4 py-2 gap-2 hover:bg-gray-100 {{ $item['bg'] ?? 'text-gray-700' }}">
-                    @if(isset($item['icon']))
-                        {{--                <x-dynamic-component :component="$item['icon']" class="w-4 h-4" />--}}
-                    @endif
+                <a href="{{ $item['route'] ?? '#' }}"
+                   class="flex items-center px-4 py-2 gap-2 hover:bg-gray-100 {{ $item['bg'] ?? 'text-gray-700' }}"
+                   @if(isset($item['action'])) onclick="{{ $item['action'] }}" @endif
+                >
+                    @isset($item['icon'])
+                        <i class="fa fa-{{ $item['icon'] }} w-4 h-4"></i>
+                    @endisset
                     {{ $item['name'] }}
                 </a>
             @endif

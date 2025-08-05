@@ -10,6 +10,7 @@ use App\Models\Packing;
 use App\Models\CargoType;
 use App\Models\Insurance;
 use App\Models\Province;
+use App\Models\City;
 
 class CargoController extends Controller
 {
@@ -43,48 +44,95 @@ class CargoController extends Controller
     public function store(CargoRequest $request)
     {
         $data = $request->validated();
+        $data['owner_id'] = auth()->id();
 
         $cargoData = collect($data)->except(['origin', 'destination'])->toArray();
 
         $cargo = Cargo::create($cargoData);
 
-        $cargo->cargoInformation()->create(array_merge($data['origin'], ['type' => 'origin']));
+        $cargo->origin()->create(array_merge($data['origin'], ['type' => 'origin']));
 
-        $cargo->cargoInformation()->create(array_merge($data['destination'], ['type' => 'destination']));
+        $cargo->destination()->create(array_merge($data['destination'], ['type' => 'destination']));
 
-        return response()->json(['message' => 'بار با موفقیت ثبت شد', 'data' => $cargo->load('cargoInformation'),]);
+        return redirect()->route('cargos.index')->with('success', ' بار با موفقیت ثبت شد.');
     }
 
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Cargo $cargo)
     {
-        //
-    }
+        $cargo->load(['origin.city', 'origin.province', 'destination.city', 'destination.province', 'cargoType', 'packing', 'insurance']);
 
+        $cargoTypes = CargoType::pluck('name', 'id');
+        $packings = Packing::pluck('name', 'id');
+        $insurances = Insurance::select('id', 'name', 'coefficient')->get();
+        $provinces = Province::pluck('name', 'id');
+
+        $cities = City::where('province_code', optional($cargo->origin->province)->code)->pluck('name', 'id');
+        $cities1 = City::where('province_code', optional($cargo->destination->province)->code)->pluck('name', 'id');
+
+        return view('cargo_declaration.cargos.show', compact('cargo', 'cargoTypes', 'packings', 'insurances', 'provinces', 'cities', 'cities1'));
+    }
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Cargo $cargo)
     {
-        //
+        $cargo->load([
+            'origin.city', 'origin.province',
+            'destination.city', 'destination.province',
+            'cargoType', 'packing', 'insurance'
+        ]);
+
+        $cargoTypes = CargoType::pluck('name', 'id');
+        $packings = Packing::pluck('name', 'id');
+        $insurances = Insurance::select('id', 'name', 'coefficient')->get();
+        $provinces = Province::pluck('name', 'id');
+
+        $cities = City::where('province_code', optional($cargo->origin->province)->code)->pluck('name', 'id');
+        $cities1 = City::where('province_code', optional($cargo->destination->province)->code)->pluck('name', 'id');
+
+        return view('cargo_declaration.cargos.edit', compact(
+            'cargo', 'cargoTypes', 'packings', 'insurances', 'provinces', 'cities', 'cities1'
+        ));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CargoRequest $request, Cargo $cargo)
     {
-        //
+        $data = $request->validated();
+
+        $cargoData = collect($data)->except(['origin', 'destination'])->toArray();
+
+        $cargo->update($cargoData);
+
+        $cargo->origin->update($data['origin']);
+
+        $cargo->destination->update($data['destination']);
+
+        return redirect()->route('cargos.index')->with('success', 'بار با موفقیت ویرایش شد.');
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Cargo $cargo)
     {
-        //
+
+        $cargo->origin()->delete();
+        $cargo->destination()->delete();
+        $cargo->delete();
+
+        return redirect()->route('cargos.index')->with('success', 'بار با موفقیت حذف شد.');
+    }
+
+    public function setType(Cargo $cargo , $type)
+    {
+        $cargo->update('');
     }
 }

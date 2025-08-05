@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
@@ -70,6 +71,7 @@ class Cargo extends Model
         'insurance_id',
         'insurance_value',
         'fare',
+        'final_fare',
         'fare_type',
         'cargo_type_id',
         'packing_id',
@@ -80,8 +82,8 @@ class Cargo extends Model
     protected function casts(): array
     {
         return [
-            'insurance' => 'integer',
             'fare' => 'integer',
+            'final_fare' => 'integer',
             'weight' => 'integer',
             'number' => 'integer',
             'thickness' => 'integer',
@@ -107,9 +109,17 @@ class Cargo extends Model
         return $this->belongsTo(Packing::class);
     }
 
-    public function cargoInformation(): HasMany
+    public function insurance(): BelongsTo
     {
-        return $this->hasMany(CargoInformation::class);
+        return $this->belongsTo(Insurance::class);
+    }
+    public function origin() :HasOne
+    {
+        return $this->hasOne(CargoInformation::class)->where('type' , 'origin');
+    }
+    public function destination() :HasOne
+    {
+        return $this->hasOne(CargoInformation::class)->where('type' , 'destination');
     }
 
     public function cargoReservations(): HasMany

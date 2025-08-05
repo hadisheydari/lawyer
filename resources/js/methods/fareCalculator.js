@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     const insuranceSelect = document.querySelector('select[name="insurance_id"]');
     const insuranceValueInput = document.querySelector('input[name="insurance_value"]');
-    const fareValueInput = document.querySelector('input[name="fare_value"]');
-    const fareInput = document.querySelector('input[name="fare"]');
+    const fareValueInput = document.querySelector('input[name="fare"]');
+    const fareInput = document.querySelector('input[name="final_fare"]');
 
     const baseInsuranceRate = 0.001;
 
