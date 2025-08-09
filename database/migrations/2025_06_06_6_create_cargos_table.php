@@ -85,6 +85,8 @@ return new class extends Migration
             $table->foreignIdFor(Cargo::class)->constrained()->cascadeOnDelete();
             $table->enum('status', ReservationStatus::STATUSES)->default(ReservationStatus::PENDING)->comment('وضعیت رزرو');
             $table->timestamps();
+            $table->unique(['cargo_id', 'company_id']);
+
         });
 
         Schema::create('cargo_bids', function (Blueprint $table) {

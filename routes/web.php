@@ -11,6 +11,7 @@ use App\Http\Controllers\Setting\InsuranceController;
 use App\Http\Controllers\Setting\CargoTypeController;
 use App\Http\Controllers\Vehicle\VehicleController;
 use App\Http\Controllers\CargoDeclaration\CargoController;
+use App\Http\Controllers\CargoDeclaration\CargoReservationController;
 
 
 require __DIR__.'/auth.php';
@@ -29,7 +30,10 @@ Route::middleware(['auth', 'role.selected'])->group(function () {
     Route::get('allocation/{driver}', [DriverController::class , 'allocation'])->name('allocation');
     Route::get('vehicles/detachDriver/{vehicle}', [VehicleController::class , 'detachDriver'])->name('vehicles.detachDriver');
     Route::resource('cargos', CargoController::class);
-    Route::get('/cargos/{id}/type/{type}', [CargoController::class, 'setType'])->name('cargos.type');
+    Route::get('/cargos/{cargo}/type/{type}', [CargoController::class, 'setType'])->name('cargos.type');
+    Route::get('/cargo_reservations/create/{cargo}', [CargoReservationController::class, 'create'])->name('cargo_reservations.create');
+    Route::get('/cargo_reservations/index/{cargo}', [CargoReservationController::class, 'index'])->name('cargo_reservations.index');
+    Route::resource('cargo_reservations', CargoReservationController::class)->except('create' , 'index');
 
 
 });

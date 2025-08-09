@@ -8,6 +8,11 @@
             {{ session('success') }}
         </p>
     @endif
+    @if (session('error'))
+        <p class="mb-4 text-sm text-red-600 bg-green-100 border border-red-300 rounded p-2">
+            {{ session('error') }}
+        </p>
+    @endif
     @can('write cargo declaration')
         <div class="!m-4 w-full grid justify-start">
             <x-form.button
@@ -42,23 +47,30 @@
             <div class="text-blue-800 font-black text-2xl m-12 ">
                 لطفا وضعیت بار را تایین کنید
             </div>
-            <x-form.button name="RoleInfo"
-                           action="goToCargoType('free')"
-                           text="آزاد" type="button">
-                <i class="fa fa-legal text-2xl"></i>
-            </x-form.button>
+            <div class="">
+                <x-form.button
+                               action="goToCargoType('free')"
+                               text="آزاد" type="button">
+                    <i class="fa fa-legal text-2xl"></i>
+                </x-form.button>
+            </div>
 
-            <x-form.button name="RoleInfo"
-                           action="goToCargoType('rfq')"
-                           text="rfq" type="button">
-                <i class="fa fa-id-badge text-2xl"></i>
-            </x-form.button>
+            <div class="">
+                <x-form.button
+                               action="goToCargoType('rfq')"
+                               text="rfq" type="button">
+                    <i class="fa fa-id-badge text-2xl"></i>
+                </x-form.button>
+            </div>
 
-            <x-form.button name="RoleInfo"
-                           action="goToCargoType('reserve')"
-                           text="رزرو" type="button">
-                <i class="fa fa-check-square text-2xl"></i>
-            </x-form.button>
+            <div class="mb-4">
+                <x-form.button
+                               action="goToCargoType('reserve')"
+                               text="رزرو" type="button">
+                    <i class="fa fa-check-square text-2xl"></i>
+                </x-form.button>
+            </div>
+
 
         </div>
     </div>

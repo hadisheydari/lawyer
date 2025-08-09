@@ -130,9 +130,19 @@ class CargoController extends Controller
 
         return redirect()->route('cargos.index')->with('success', 'بار با موفقیت حذف شد.');
     }
-
-    public function setType(Cargo $cargo , $type)
+    public function setType(Cargo $cargo, $type)
     {
-        $cargo->update('');
+        $cargo->update(['type' => $type]);
+
+        if (in_array($type, ['reserve', 'rfq'])) {
+            return redirect()->route('cargo_reservations.create', $cargo->id);
+        }
+
+        if ($type === 'free') {
+            return redirect()->route('cargo_bids.create', $cargo->id);
+        }
+
+        return redirect()->back()->with('error', 'وضعیت بار قابل شناسایی و معتبر نمی‌باشد.');
     }
+
 }
