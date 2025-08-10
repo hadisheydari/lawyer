@@ -11,22 +11,33 @@
         {{ $required ?? false ? 'required' : '' }}
         {{ $disabled ?? false ? 'disabled' : '' }}
     >
+        @php
+            $currentValue = old($name) ?? $selected;
+        @endphp
+
         @if(isset($placeholder))
-            <option value="">{{ $placeholder }}</option>
+            <option value="" disabled {{ (!$multiple && empty($currentValue)) ? 'selected' : '' }} hidden>
+                {{ $placeholder }}
+            </option>
         @endif
+        @php
+            $currentValue = old($name) ?? $selected;
+        @endphp
 
         @foreach($options as $key => $text)
-                @php
-                    $currentValue = old($name) ?? $selected;
-                @endphp
-
-                <option value="{{ $key }}" {{ (string)$key === (string)$currentValue ? 'selected' : '' }}>
-
-                    {{ $text }}
-                </option>
-
+            <option value="{{ $key }}"
+                {{
+                    (is_array($currentValue) && in_array($key, $currentValue)) || $key == $currentValue
+                    ? 'selected'
+                    : ''
+                }}>
+                {{ $text }}
+            </option>
         @endforeach
+
     </select>
+
+
 
     @error($name)
     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

@@ -225,7 +225,6 @@
                                     </ul>
                                 </li>
                             @endcan
-
                             @can('read cargo list')
 
                                 <li>
@@ -286,7 +285,7 @@
                                         @endcan
                                         @can('Reserve')
                                         <li>
-                                                <a href="#"
+                                                <a href="{{ route('cargo_reservations.index', 'reserve') }}"
                                                    class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
                                                     <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
                                                          viewBox="0 0 16 16">
@@ -295,13 +294,22 @@
                                                     <span class="ms-2">رزرو بار </span>
                                                 </a>
                                             </li>
+                                            <li>
+                                                <a href="{{ route('cargo_reservations.index', 'rfq') }}"
+                                                   class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
+                                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
+                                                         viewBox="0 0 16 16">
+                                                        <circle cx="8" cy="8" r="8"/>
+                                                    </svg>
+                                                    <span class="ms-2">rfq بار </span>
+                                                </a>
+                                            </li>
                                         @endcan
 
                                     </ul>
                                 </li>
 
                             @endcan
-
                             @can('read cargo delivery')
                             <li>
                                 <button

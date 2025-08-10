@@ -13,7 +13,7 @@ class CargoReservation extends Component
      */
     public function __construct(
         public $companies = null ,
-        public $cargoReservation = null ,
+        public $company = null ,
         public $cargo = null ,
         public string|null $mode = 'create',
 

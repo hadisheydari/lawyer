@@ -23,7 +23,10 @@ class RolePermissionSeeder extends Seeder
             'read cargo list',
             'write cargo list',
             'Reserve',
+            'accept Reserve',
             'bids',
+            'accept bids',
+            'write bids',
             'read cargo declaration',
             'write cargo declaration',
             'read cargo delivery',
@@ -41,6 +44,8 @@ class RolePermissionSeeder extends Seeder
         $productOwnerRole = Role::firstOrCreate(['name' => 'productOwner']);
 
         $companyRole->syncPermissions([
+            'accept Reserve',
+            'write bids',
             'manage users',
             'read drivers',
             'write drivers',
@@ -69,6 +74,7 @@ class RolePermissionSeeder extends Seeder
             'write complaints',
             ]);
         $productOwnerRole->syncPermissions([
+            'accept bids',
             'manage users',
             'read cargo list',
             'write cargo list',

@@ -122,9 +122,14 @@ class Cargo extends Model
         return $this->hasOne(CargoInformation::class)->where('type' , 'destination');
     }
 
-    public function cargoReservations(): HasMany
+    public function rfq(): HasMany
     {
         return $this->hasMany(CargoReservation::class);
+    }
+
+    public function reserve(): HasOne
+    {
+        return $this->hasOne(CargoReservation::class);
     }
 
     public function cargoBids(): HasMany
@@ -136,4 +141,41 @@ class Cargo extends Model
     {
         return $this->hasMany(Partition::class);
     }
+
+
+    public function getReservationStatusAttribute()
+    {
+        $type = $this->type;
+
+        if ($this->assigned_company_id) {
+            return 'accepted';
+        }
+
+        if (in_array($type, ['rfq', 'reserve'])) {
+            $relation = $this->$type;
+
+            if ($relation instanceof \Illuminate\Database\Eloquent\Collection) {
+                $statuses = $relation->pluck('status')->unique();
+
+                if ($statuses->count() === 1 && $statuses->contains('rejected')) {
+                    return 'rejected';
+                }
+                return 'pending';
+            }
+        }
+
+        return 'pending';
+    }
+
+    public function getReservationsAttribute()
+    {
+        if ($this->type === 'rfq') {
+            return $this->rfq;
+        }
+        if ($this->type === 'reserve') {
+            return $this->reserve ? collect([$this->reserve]) : collect([]);
+        }
+        return collect([]);
+    }
+
 }

@@ -19,3 +19,23 @@ function confirmDelete(button) {
 
 // اگه می‌خوای به صورت global در دسترس باشه:
 window.confirmDelete = confirmDelete;
+
+
+function SweetAlert(action  , title = null , icon  = null , confirmButtonText = null , cancelButtonText = null) {
+    Swal.fire({
+        title: title ?? 'آیا مطمئن هستید؟',
+        text: "این عملیات قابل بازگشت نیست!",
+        icon: icon ?? 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: confirmButtonText ?? 'بله!',
+        cancelButtonText: cancelButtonText ?? 'لغو'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            button.closest('form').submit();
+        }
+    });
+
+}
+window.SweetAlert = SweetAlert;

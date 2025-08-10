@@ -37,23 +37,34 @@ class CargoReservationRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            $cargoId = $this->cargo_id;
-            $companies = $this->company_id;
-
-            if (!is_array($companies)) {
-                $companies = [$companies];
-            }
-
-            foreach ($companies as $companyId) {
-                $exists = \DB::table('cargo_reservations')->where('cargo_id', $cargoId)->where('company_id', $companyId)->exists();
-
-                if ($exists) {
-                    $validator->errors()->add('company_id', "شرکت حمل قبلاً برای این بار رزرو شده است.");
-                }
-            }
-        });
-    }
+//    public function withValidator($validator)
+//    {
+//        $validator->after(function ($validator) {
+//            $cargoId = $this->cargo_id;
+//            $companies = $this->company_id;
+//
+//            if (!is_array($companies)) {
+//                $companies = [$companies];
+//            }
+//
+//            // فرض می‌کنیم آرایه‌ای از شناسه رزروهایی که می‌خوای استثنا کنی (مثلا از فرم ارسال می‌شود)
+//            $excludeIds = $this->input('exclude_reservation_ids', []);
+//
+//            foreach ($companies as $companyId) {
+//                $query = \DB::table('cargo_reservations')
+//                    ->where('cargo_id', $cargoId)
+//                    ->where('company_id', $companyId);
+//
+//                if (!empty($excludeIds)) {
+//                    $query->whereNotIn('id', $excludeIds);
+//                }
+//
+//                $exists = $query->exists();
+//
+//                if ($exists) {
+//                    $validator->errors()->add('company_id', "شرکت حمل قبلاً برای این بار رزرو شده است.");
+//                }
+//            }
+//        });
+//    }
 }

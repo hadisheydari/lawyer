@@ -6,7 +6,7 @@
     $isMultiple = $cargo->type === 'rfq'  ;
     $action = $isCreate
         ? route('cargo_reservations.store')
-        : ($isEdit ? route('cargo_reservations.update', $cargoReservation->id) : '#');
+        : ($isEdit ? route('cargo_reservations.update', $cargo->id) : '#');
 
     $method = $isCreate ? 'POST' : ($isEdit ? 'PUT' : 'GET');
 
@@ -21,11 +21,10 @@
     {{$translate[$mode]}}  {{ $cargo->type === 'rfq' ? 'rfq' : 'رزرو'}} بار
 </div>
 <x-form.base-form
-    :action="$mode === 'edit' ? route('cargo_reservations.update', $cargoReservation->id) : route('cargo_reservations.store')"
+    :action="$mode === 'edit' ? route('cargo_reservations.update', $cargo->id) : route('cargo_reservations.store')"
     :method="$mode === 'edit' ? 'PUT' : 'POST'"
     class="space-y-6">
     @csrf
-
     @if ($errors->any())
         <div class="rounded-md bg-red-50 p-4 text-red-700 text-sm font-medium space-y-1">
             <ul class="list-disc list-inside">
@@ -45,7 +44,6 @@
             </div>
         </div>
 
-
         <div class="">
             <div class="">
                 <x-form.select-box
@@ -53,7 +51,7 @@
                     :options="$companies ?? []"
                     label="شرکت حمل"
                     placeholder="یک گزینه را انتخاب کنید"
-                    :selected="old('company_id', $cargoReservation->company_id ?? '')"
+                    :selected="old('company_id', $isMultiple ? $company : ($company ?? ''))"
                     :multiple="$isMultiple"
                     :required="true"
                     :disabled="$isShow"

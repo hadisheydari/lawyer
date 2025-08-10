@@ -33,44 +33,16 @@ class CargoReservation extends Model
         'status',
     ];
 
-    /**
-     * رابطه با Cargo
-     */
     public function cargo(): BelongsTo
     {
         return $this->belongsTo(Cargo::class);
     }
 
-    /**
-     * رابطه با شرکت (کاربر)
-     */
+
     public function company(): BelongsTo
     {
         return $this->belongsTo(User::class, 'company_id');
     }
 
-    /**
-     * Scope: فیلتر بر اساس نوع cargo یا company_id
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param mixed $cargo
-     *      - 'rfq' => فقط رکوردهایی که cargo.type = rfq
-     *      - 'reserve' => فقط رکوردهایی که cargo.type = reserve
-     *      - عدد => فقط رکوردهایی که company_id = عدد
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeFilterByCargo($query, $cargo)
-    {
-        if (in_array($cargo, ['rfq', 'reserve'])) {
-            return $query->whereHas('cargo', function ($q) use ($cargo) {
-                $q->where('type', $cargo);
-            });
-        }
 
-        if (is_numeric($cargo)) {
-            return $query->where('company_id', $cargo);
-        }
-
-        return $query;
-    }
 }
