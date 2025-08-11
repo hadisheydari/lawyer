@@ -72,6 +72,8 @@ class Cargo extends Model
         'insurance_value',
         'fare',
         'final_fare',
+        'date_at',
+        'date_to',
         'fare_type',
         'cargo_type_id',
         'packing_id',
@@ -97,6 +99,10 @@ class Cargo extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
+    }
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_company_id');
     }
 
     public function cargoType(): BelongsTo
@@ -155,9 +161,15 @@ class Cargo extends Model
             $relation = $this->$type;
 
             if ($relation instanceof \Illuminate\Database\Eloquent\Collection) {
+                // حالت کالکشن (مثلاً rfq)
                 $statuses = $relation->pluck('status')->unique();
 
                 if ($statuses->count() === 1 && $statuses->contains('rejected')) {
+                    return 'rejected';
+                }
+                return 'pending';
+            } elseif ($relation instanceof \Illuminate\Database\Eloquent\Model) {
+                if ($relation->status === 'rejected') {
                     return 'rejected';
                 }
                 return 'pending';
@@ -166,6 +178,7 @@ class Cargo extends Model
 
         return 'pending';
     }
+
 
     public function getReservationsAttribute()
     {

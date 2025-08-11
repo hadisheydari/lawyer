@@ -28,7 +28,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-6">
         @foreach($cargos as $cargo)
             <div
-                class="bg-{{ $color[$cargo->reservation_status] }}-100 border border-{{ $color[$cargo->reservation_status] }}-300 rounded-lg shadow-md p-6 text-gray-800 relative">
+                class="bg-gray-100 border border-{{ $color[$cargo->reservation_status] }}-300 rounded-lg shadow-md p-6 text-gray-800 relative">
 
                 <div class="absolute top-4 right-4" x-data="{ open: false }">
                     <button @click="open = !open"
@@ -49,18 +49,22 @@
                         style="display: none;"
                     >
                         <a href="{{ route('cargos.show' , $cargo->id) }}"
-                           class="block px-4 py-2 hover:bg-{{ $color[$cargo->reservation_status] }}-100 transition">نمایش بار</a>
-                        <a href="{{ route('cargo_reservations.edit' , $cargo->id) }}"
-                           class="block px-4 py-2 hover:bg-{{ $color[$cargo->reservation_status] }}-100 transition">ویرایش</a>
-                        <form action="{{ route('cargo_reservations.destroy' , $cargo->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button"
-                                    onclick="confirmDelete(this)"
-                                    class="block px-4 py-2 hover:bg-{{ $color[$cargo->reservation_status] }}-100 transition">
-                                حذف
-                            </button>
-                        </form>
+                           class="block px-4 py-2 hover:bg-{{ $color[$cargo->reservation_status] }}-100 transition">نمایش
+                            بار</a>
+                        @cannot('accept Reserve')
+                            <a href="{{ route('cargo_reservations.edit' , $cargo->id) }}"
+                               class="block px-4 py-2 hover:bg-{{ $color[$cargo->reservation_status] }}-100 transition">ویرایش</a>
+                            <form action="{{ route('cargo_reservations.destroy' , $cargo->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button"
+                                        onclick="confirmDelete(this)"
+                                        class="block px-4 py-2 hover:bg-{{ $color[$cargo->reservation_status] }}-100 transition">
+                                    حذف
+                                </button>
+                            </form>
+                        @endcan
+
 
                     </div>
                 </div>
@@ -76,13 +80,15 @@
                         </button>
 
                         @can('accept Reserve')
-                            <button
-                                @click="tab = 'accept'"
-                                :class="tab === 'accept' ? 'border-b-4 border-{{ $color[$cargo->reservation_status] }}-600 text-{{ $color[$cargo->reservation_status] }}-700 font-bold' : 'text-gray-500'"
-                                class="flex-1 py-3 text-center transition"
-                            >
-                                تایید بار
-                            </button>
+                            @if($cargo->reservation_status === 'pending')
+                                <button
+                                    @click="tab = 'accept'"
+                                    :class="tab === 'accept' ? 'border-b-4 border-{{ $color[$cargo->reservation_status] }}-600 text-{{ $color[$cargo->reservation_status] }}-700 font-bold' : 'text-gray-500'"
+                                    class="flex-1 py-3 text-center transition"
+                                >
+                                    تایید بار
+                                </button>
+                            @endif
                         @endcan
                         @cannot('accept Reserve')
                             <button
@@ -94,13 +100,13 @@
                             </button>
                         @endcannot
 
-                            <button
-                                @click="tab = 'status'"
-                                :class="tab === 'status' ? 'border-b-4 border-{{ $color[$cargo->reservation_status] }}-600 text-{{ $color[$cargo->reservation_status] }}-700 font-bold' : 'text-gray-500'"
-                                class="flex-1 py-3 text-center transition"
-                            >
-                                وضعیت
-                            </button>
+                        <button
+                            @click="tab = 'status'"
+                            :class="tab === 'status' ? 'border-b-4 border-{{ $color[$cargo->reservation_status] }}-600 text-{{ $color[$cargo->reservation_status] }}-700 font-bold' : 'text-gray-500'"
+                            class="flex-1 py-3 text-center transition"
+                        >
+                            وضعیت
+                        </button>
                     </div>
 
                     <div x-show="tab === 'info'" class="space-y-3 px-2" x-cloak>
@@ -118,6 +124,7 @@
                                     حمل: {{ $relation->company->name ?? '---' }}</p>
                                 <p class="text-sm text-gray-700">
                                     وضعیت: {{ __('cargo_enums.reservation_status.' . $relation->status) ?? $relation->status }}</p>
+
                             </div>
                         @empty
                             <p class="text-gray-500">هیچ شرکت حملی ثبت نشده است.</p>
@@ -128,15 +135,21 @@
                     <div x-show="tab === 'accept'" class="space-y-3 px-2" x-cloak>
                         <div class="grid grid-cols-2 gap-2">
                             <a
-{{--                                onclick="SweetAlert($this , null , null , 'بله تایید بار  ' , null , route('confirmCargo') )"--}}
-                                href="#" class="inline-block w-full text-center py-2 px-4 rounded bg-green-500 text-white hover:bg-green-600 transition"
-
+                                onclick="SweetAlert(this, null, null, 'بله تایید بار', null, '{{ route('cargo_reservations.confirmCargo', ['cargo' => $cargo->id, 'status' => 'accepted']) }}')"
+                                href="#"
+                                class="inline-block w-full text-center py-2 px-4 rounded bg-green-500 text-white hover:bg-green-600 transition"
                             >
                                 تایید بار
                             </a>
-                            <a href="#" class="inline-block w-full text-center py-2 px-4 rounded bg-red-500 text-white hover:bg-red-600 transition">
+
+                            <a
+                                onclick="SweetAlert(this, null, null, 'بله رد بار', null, '{{ route('cargo_reservations.confirmCargo', ['cargo' => $cargo->id, 'status' => 'rejected']) }}')"
+                                href="#"
+                                class="inline-block w-full text-center py-2 px-4 rounded bg-red-500 text-white hover:bg-red-600 transition"
+                            >
                                 رد بار
                             </a>
+
 
                         </div>
 
@@ -146,6 +159,10 @@
                     <div x-show="tab === 'status'" class="space-y-3 px-2" x-cloak>
                         <p class="text-lg font-semibold text-{{ $color[$cargo->reservation_status] }}-700">وضعیت
                             کلی: {{ __('cargo_enums.reservation_status.' . $cargo->reservation_status )?? '---' }}</p>
+                        @if($cargo->company?->name)
+                            <p class="text-sm text-gray-700">
+                                توسط: {{$cargo->company->name ?? '-'}}</p>
+                        @endif
                     </div>
                 </div>
             </div>

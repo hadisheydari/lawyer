@@ -15,19 +15,22 @@ class CargoReservationController extends Controller
      */
     public function index($cargo = null)
     {
+        $cargos = null;
+
         if ($cargo && is_string($cargo)) {
-            $cargos = Cargo::where('type', $cargo)->where('owner_id', auth()->id())->orWhere('assigned_company_id', auth()->id())
-                ->orWhere(function ($query) use ($cargo) {
-                    $query->whereHas($cargo, function ($q) {
-                        $q->where('company_id', auth()->id());
-                    });
-                })->with([$cargo, $cargo . '.company',  'origin.province' , 'destination.province'])->paginate(10);
-        } else {
-            $cargos = Cargo::paginate(10);
+            $cargos = Cargo::where('type', $cargo)
+                ->where(function ($query) use ($cargo) {
+                    $query->where('owner_id', auth()->id())
+                        ->orWhere('assigned_company_id', auth()->id())
+                        ->orWhereHas($cargo, function ($q) {
+                            $q->where('company_id', auth()->id())->whereNot('status' , 'rejected');
+                        });
+                })->with([$cargo, $cargo . '.company', 'origin.province', 'destination.province' , 'company'])->paginate(10);
         }
 
-        return view('cargo_declaration.cargo_reservations.index', compact('cargos' ,'cargo' ));
+        return view('cargo_declaration.cargo_reservations.index', compact('cargos', 'cargo'));
     }
+
 
 
     /**
@@ -132,4 +135,19 @@ class CargoReservationController extends Controller
         return redirect()->route('cargo_reservations.index', $type )->with('success', 'رزروها حذف  شد.');
 
     }
+
+    public function confirmCargo(Cargo $cargo, $status)
+    {
+        $reservation = CargoReservation::where('cargo_id', $cargo->id)->where('company_id', auth()->id())->first();
+
+        if (!$reservation) {
+            return back()->with('error', 'بار پیدا نشد.');
+        }
+        if($status === 'accepted'){$cargo->update(['assigned_company_id' => auth()->id()]);}
+        $reservation->update(['status' => $status]);
+
+
+        return back()->with('success', 'عملیات با موفقیت انجام شد.');
+    }
+
 }

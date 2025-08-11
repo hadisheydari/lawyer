@@ -273,7 +273,7 @@
                                         </li>
                                         @can('bids')
                                             <li>
-                                                <a href="#"
+                                                <a href="{{ route('cargo_bids.index') }}"
                                                    class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
                                                     <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
                                                          viewBox="0 0 16 16">

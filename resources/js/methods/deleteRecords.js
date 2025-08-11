@@ -21,7 +21,7 @@ function confirmDelete(button) {
 window.confirmDelete = confirmDelete;
 
 
-function SweetAlert(action  , title = null , icon  = null , confirmButtonText = null , cancelButtonText = null) {
+function SweetAlert(action, title = null, icon = null, confirmButtonText = null, cancelButtonText = null, href = null) {
     Swal.fire({
         title: title ?? 'آیا مطمئن هستید؟',
         text: "این عملیات قابل بازگشت نیست!",
@@ -33,9 +33,8 @@ function SweetAlert(action  , title = null , icon  = null , confirmButtonText = 
         cancelButtonText: cancelButtonText ?? 'لغو'
     }).then((result) => {
         if (result.isConfirmed) {
-            button.closest('form').submit();
+            window.location.href = href;
         }
     });
-
 }
 window.SweetAlert = SweetAlert;

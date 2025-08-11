@@ -12,7 +12,7 @@ use App\Http\Controllers\Setting\CargoTypeController;
 use App\Http\Controllers\Vehicle\VehicleController;
 use App\Http\Controllers\CargoDeclaration\CargoController;
 use App\Http\Controllers\CargoDeclaration\CargoReservationController;
-
+use App\Http\Controllers\CargoDeclaration\CargoBidController;
 
 require __DIR__.'/auth.php';
 
@@ -33,7 +33,15 @@ Route::middleware(['auth', 'role.selected'])->group(function () {
     Route::get('/cargos/{cargo}/type/{type}', [CargoController::class, 'setType'])->name('cargos.type');
     Route::get('/cargo_reservations/create/{cargo}', [CargoReservationController::class, 'create'])->name('cargo_reservations.create');
     Route::get('/cargo_reservations/index/{cargo}', [CargoReservationController::class, 'index'])->name('cargo_reservations.index');
+    Route::get('/cargo_reservations/confirmCargo/{cargo}/{status}', [CargoReservationController::class, 'confirmCargo'])->name('cargo_reservations.confirmCargo');
     Route::resource('cargo_reservations', CargoReservationController::class)->except('create' , 'index');
+
+    Route::get('/cargo_bids/bid/{cargo}', [CargoBidController::class, 'bid'])->name('cargo_bids.bid');
+    Route::put('/cargo_bids/set_bid/{cargo}', [CargoBidController::class, 'set_bid'])->name('cargo_bids.set_bid');
+    Route::get('/cargo_bids/list_of_bids/{cargo}', [CargoBidController::class, 'list_of_bids'])->name('cargo_bids.list_of_bids');
+    Route::get('/cargo_bids/create/{cargo}', [CargoBidController::class, 'create'])->name('cargo_bids.create');
+
+    Route::resource('cargo_bids', CargoBidController::class)->except('create');
 
 
 });

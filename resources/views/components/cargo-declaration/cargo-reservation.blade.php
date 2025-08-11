@@ -45,7 +45,6 @@
         </div>
 
         <div class="">
-            <div class="">
                 <x-form.select-box
                     name="company_id"
                     :options="$companies ?? []"
@@ -56,7 +55,6 @@
                     :required="true"
                     :disabled="$isShow"
                 />
-            </div>
         </div>
     </div>
 

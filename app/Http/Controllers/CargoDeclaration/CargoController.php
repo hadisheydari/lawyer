@@ -139,7 +139,7 @@ class CargoController extends Controller
         }
 
         if ($type === 'free') {
-            return redirect()->route('cargo_bids.create', $cargo->id);
+            return redirect()->route('cargo_bids.bid', $cargo->id);
         }
 
         return redirect()->back()->with('error', 'وضعیت بار قابل شناسایی و معتبر نمی‌باشد.');
