@@ -5,6 +5,7 @@ use App\Enums\Cargo\FareType;
 use App\Enums\Cargo\LocationType;
 use App\Enums\Cargo\ReservationStatus;
 use App\Enums\Cargo\Type;
+use App\Enums\Entity\PropertyType;
 use App\Models\Cargo;
 use App\Models\CargoType;
 use App\Models\City;
@@ -102,6 +103,7 @@ return new class extends Migration
 
         Schema::create('partitions', function (Blueprint $table) {
             $table->id();
+            $table->enum('property', PropertyType::TYPES)->nullable()->comment('owned -> ملکی, non_owned -> غیرملکی');
             $table->foreignIdFor(User::class, 'company_id')->nullable()->index()->constrained()->nullOnDelete();
             $table->foreignIdFor(Cargo::class)->nullable()->index()->constrained()->nullOnDelete();
             $table->foreignIdFor(Driver::class)->nullable()->index()->constrained()->nullOnDelete();

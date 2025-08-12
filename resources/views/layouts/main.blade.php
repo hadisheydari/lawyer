@@ -339,7 +339,7 @@
                                     class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out ps-8 mt-2 space-y-2"
                                     aria-labelledby="menu-button-2">
                                     <li>
-                                        <a href="#"
+                                        <a href="{{ route('partitions.index' , null) }}"
                                            class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
                                             <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
                                                  viewBox="0 0 16 16">

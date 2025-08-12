@@ -48,6 +48,7 @@ class Partition extends Model
         'fare',
         'commission',
         'status',
+        'property',
         'havaleFile',
         'barnamehFile',
     ];

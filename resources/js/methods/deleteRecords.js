@@ -21,14 +21,14 @@ function confirmDelete(button) {
 window.confirmDelete = confirmDelete;
 
 
-function SweetAlert(action, title = null, icon = null, confirmButtonText = null, cancelButtonText = null, href = null) {
+function SweetAlert(action, title = null, icon = null, confirmButtonText = null, cancelButtonText = null, href = null ) {
     Swal.fire({
         title: title ?? 'آیا مطمئن هستید؟',
         text: "این عملیات قابل بازگشت نیست!",
         icon: icon ?? 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
+        confirmButtonColor: '#26cc0e',
+        cancelButtonColor: '#ec0722',
         confirmButtonText: confirmButtonText ?? 'بله!',
         cancelButtonText: cancelButtonText ?? 'لغو'
     }).then((result) => {

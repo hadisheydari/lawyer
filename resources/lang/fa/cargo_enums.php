@@ -8,7 +8,7 @@ return [
 
     'cargo_status' => [
         'free' => 'آزاد',
-        'reserved' => 'رزرو شد۰',
+        'reserved' => 'رزرو شده',
         'havale' => 'حواله شده',
         'barnameh' => 'بارنامه شده',
         'delivered' => 'تحویل داده شده ',

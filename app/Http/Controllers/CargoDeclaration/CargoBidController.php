@@ -27,23 +27,33 @@ class CargoBidController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Cargo $cargo)
     {
-        //
+        $cargo->load(['cargoType' , 'origin.province' , 'destination.province']);
+        return view('cargo_declaration.cargo_bid.create', compact('cargo'));
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CargoBidRequest $request)
     {
-        //
+        $data = $request->validated() + ['company_id' => auth()->id()];
+
+        if (CargoBid::where('company_id', $data['company_id'])->where('cargo_id', $data['cargo_id'])->exists()) {
+            return redirect()->route('cargo_bids.list_of_bids' , $data['cargo_id'])->with('error', 'پیشنهاد شما قبلا برای این بار ثبت شده');
+        }
+
+        CargoBid::create($data);
+
+        return redirect()->route('cargo_bids.list_of_bids' , $data['cargo_id'])->with('success', 'پیشنهاد با موفقیت ثبت شد.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(CargoBid $cargo_bid)
     {
         //
     }
@@ -51,25 +61,30 @@ class CargoBidController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(CargoBid $cargo_bid)
     {
-        //
+        return view('cargo_declaration.cargo_bid.edit', compact('cargo_bid'));
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CargoBidRequest $request, CargoBid $cargo_bid)
     {
-        //
+        $cargo_bid->update($request->validated());
+
+        return redirect()->route('cargo_bids.list_of_bids' ,$cargo_bid->cargo_id)->with('success', 'پیشنهاد با موفقیت بروزرسانی شد.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(CargoBid $cargo_bid)
     {
-        //
+        $cargo_bid->delete();
+
+        return back()->with('success', 'پیشنهاد با موفقیت حذف شد.');
     }
 
     public function bid(Cargo $cargo)
@@ -99,5 +114,21 @@ class CargoBidController extends Controller
         $cargo = $cargo->id;
         return view('cargo_declaration.cargo_bid.list_of_bids', compact('cargo_bids' , 'cargo'));
     }
+
+    public function confirmCargo(CargoBid $cargo_bid, string $status)
+    {
+
+        $cargo_bid->update(['status' => $status]);
+
+        if ($status === 'accepted') {
+            $cargo_bid->cargo()->update(['assigned_company_id' => $cargo_bid->company_id]);
+
+            return redirect()->route('cargo_bids.index')->with('success', 'عملیات با موفقیت انجام شد.');
+
+        }
+
+        return back()->with('success', 'عملیات با موفقیت انجام شد.');
+    }
+
 
 }

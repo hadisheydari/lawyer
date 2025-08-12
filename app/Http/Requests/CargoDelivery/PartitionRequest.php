@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\CargoDeclaration;
+namespace App\Http\Requests\CargoDelivery;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CargoBidRequest extends FormRequest
+class PartitionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,9 +22,7 @@ class CargoBidRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'offered_fare' => numeric_rules(),
-            'note'=> string_rules(),
-            'cargo_id' => foreign_id_rules('cargos' , true),
+            //
         ];
     }
 }
