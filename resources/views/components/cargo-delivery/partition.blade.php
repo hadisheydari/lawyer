@@ -8,20 +8,20 @@
         : ($isEdit ? route('partitions.update', $partition->id) : '#');
 
     $method = $isCreate ? 'POST' : ($isEdit ? 'PUT' : 'GET');
-
+    $statusFree = false ;
     $translate=[
-        'edit' => $partition ? 'ویرایش پارتیش' : 'ویرایش' . __('cargo_enums.cargo_status.' . $partition->status ?? null)  ,
+        'edit' => $statusFree ? 'ویرایش پارتیش' : 'ویرایش' . __('cargo_enums.cargo_status.' . $partition->status)  ,
         'show' => 'نمایش پارتیشن ',
-        'upload' =>'اپلود' . __('cargo_enums.cargo_status.' . $partition->status ?? null),
+        'upload' =>'اپلود' . __('cargo_enums.cargo_status.' . $partition->status),
         'create' => 'ثبت پارتیشن ',
 
 ];
 @endphp
 <div class="text-blue-950 font-black text-2xl m-12 ">
-    {{$translate[ $mode]}}
+    {{$translate[$status ?? $mode]}}
 </div>
 <x-form.base-form
-    :action="$mode === 'edit' ? route('partitions.update', $cargoType->id) : route('partitions.store')"
+    :action="$mode === 'edit' ? route('partitions.update', $partition->id) : route('partitions.store')"
     :method="$mode === 'edit' ? 'PUT' : 'POST'"
     class="space-y-6">
     @csrf
@@ -45,7 +45,7 @@
                 type="text"
                 placeholder="وزن بار  را وارد کنید"
                 value="{{ old('weight' , $partition->weight ?? '') }}"
-                :readonly="($isCreate || isset($partition->status) ? $partition->status === 'free' : false )"
+                :readonly="($isCreate || $statusFree )"
                 :numberFormat="true"
 
             />
@@ -61,7 +61,7 @@
                 :selected="old('vehicle_detail_id', $partition->vehicle_detail_id ?? '')"
                 :multiple="false"
                 :required="true"
-                :disabled="($isCreate || isset($partition->status) ? $partition->status === 'free' : false )"
+                :disabled="($isCreate || $statusFree)"
             />
         </div>
 
@@ -88,8 +88,8 @@
                 label="کمیسیون پارتیشن"
                 type="text"
                 placeholder="کمیسیون پارتیشن را وارد کنید"
-                value="{{ old('commission' , $cargo->commission ?? '') }}"
-                :readonly="($isCreate || isset($partition->status) ? $partition->status === 'free' : false )"
+                value="{{ old('commission' , $partition->commission ?? '') }}"
+                :readonly="($isCreate || $statusFree)"
                 :numberFormat="true"
 
             />
@@ -99,13 +99,13 @@
     </div>
 
 
-    @if(!($isCreate || isset($partition->status) ? $partition->status === 'free' : false ))
+    @if(!($isCreate || $statusFree ))
         <div class="grid grid-cols-{{$partition->status === 'reserved' ? '1' : '2' }} gap-4 mt-5">
             <div class="">
                 <x-form.image
-                    name="national_card_file"
+                    name="havaleFile"
                     label="فایل حواله نامه"
-                    :currentImage="$partition->national_card_file ?? null"
+                    :currentImage="$partition->havaleFile ?? null"
                     :required="$mode === 'create'"
                     :readonly="($isShow || $partition->status === 'reserved')"
 
@@ -115,9 +115,9 @@
 
             <div class="">
                 <x-form.image
-                    name="national_card_file"
+                    name="barnamehFile"
                     label="فایل بارنامه"
-                    :currentImage="$partition->national_card_file ?? null"
+                    :currentImage="$partition->barnamehFile ?? null"
                     :required="$mode === 'create'"
                     :readonly="($isShow || $partition->status === 'havale')"
 
