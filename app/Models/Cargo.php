@@ -191,4 +191,8 @@ class Cargo extends Model
         return collect([]);
     }
 
+    public function getPartitionWeightAttribute()
+    {
+        return $this->partitions()->sum('weight');
+    }
 }

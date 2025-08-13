@@ -2,8 +2,8 @@
 @php
     $text = ( !empty($status) && $status !== 'all') ?  ' لیست تمامی پارتیشن‌های ' .  __('cargo_enums.cargo_status.' . $status): 'لیست تمامی پارتیشن ها ';
 @endphp
-@section('title', $text)
-@section('header', $text)
+@section('title', 'لیست بار های تخصیص داده شده' )
+@section('header', 'لیست بار های تخصیص داده شده' )
 
 @section('content')
     @if (session('success'))
@@ -19,9 +19,9 @@
 
 
     <x-table.base-table
-        :headers="[ 'نوع بار' , 'وزن پارتیشن' , 'کرایه', 'وضعیت' ,  ]"
-        :columns="['cargo.cargoType.name' , 'weight' , 'fare' , 'type' ]"
-        :rows="$partitions"
+        :headers="[ 'نوع بار' , 'وزن حمل شده' , 'کرایه', 'وضعیت'   ]"
+        :columns="['cargoType.name' , 'partition_weight' , 'fare' , 'type' ]"
+        :rows="$cargos"
         :with-index="true"
         :actions="fn($row) => view('components.table.action',[
         'items' => array_filter([

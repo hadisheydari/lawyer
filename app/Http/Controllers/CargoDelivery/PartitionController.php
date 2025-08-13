@@ -15,7 +15,7 @@ class PartitionController extends Controller
      */
     public function index(?string $status = null)
     {
-        $cargos = Cargo::where('owner_id', auth()->id())->orWhere('assigned_company_id')
+        $cargos = Cargo::where('owner_id', auth()->id())->orWhere('assigned_company_id', auth()->id())
             ->with(['owner', 'company', 'origin.province', 'destination.province', 'cargoType'])->get();
 
         return view('cargo_delivery.partition.index', compact('cargos', 'status'));
@@ -27,7 +27,8 @@ class PartitionController extends Controller
      */
     public function create(Cargo $cargo)
     {
-        //
+        return view('cargo_delivery.partition.create', compact('cargo'));
+
     }
 
     /**
@@ -49,10 +50,14 @@ class PartitionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Partition $partition)
+
+
+    public function edit(Partition $partition , ?string $status)
     {
-        //
+        return view('cargo_delivery.partition.edit', compact('partition', 'status'));
     }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -73,8 +78,9 @@ class PartitionController extends Controller
     {
         $partitions = $cargo->partitions()->when($status !== 'all', fn($q) => $q->where('status', $status))
             ->with('cargo.cargoType')->get();
+        $cargo = $cargo->id;
 
-        return view('cargo_delivery.partition.index_of_partition', compact('partitions', 'status'));
+        return view('cargo_delivery.partition.index_of_partition', compact('partitions', 'status' , 'cargo'));
 
     }
 }

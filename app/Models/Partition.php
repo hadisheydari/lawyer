@@ -44,6 +44,7 @@ class Partition extends Model
         'cargo_id',
         'company_id',
         'driver_id',
+        'vehicle_detail_id',
         'weight',
         'fare',
         'commission',
@@ -67,4 +68,6 @@ class Partition extends Model
     {
         return $this->belongsTo(Driver::class);
     }
+
+
 }

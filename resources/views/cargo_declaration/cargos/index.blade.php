@@ -35,7 +35,7 @@
             ['name' => 'نمایش', 'route' => route('cargos.show', $row->id), 'bg' => 'text-blue-600', 'icon' => 'eye'],
             auth()->user()?->can('write cargo declaration') ? ['name' => 'ویرایش', 'route' => route('cargos.edit', $row->id), 'bg' => 'text-yellow-600', 'icon' => 'pencil'] : null,
             $row->type === null && auth()->user()?->can('write cargo declaration')  ? ['name' => 'تعیین نوع بار',  'action' => 'openCargoTypeModal('.$row->id.')', 'bg' => 'text-indigo-600', 'icon' => 'upload']: null,
-            auth()->user()?->can('write cargo declaration') ? ['name' => 'حذف', 'route' => route('cargos.destroy', $row->id), 'bg' => 'text-red-600', 'icon' => 'trash' ,  'method' => 'delete',] : null,
+            auth()->user()?->can('write cargo declaration') ? ['name' => 'حذف', 'route' => route('cargos.destroy', $row->id), 'bg' => 'text-red-600', 'icon' => 'trash' ,  'method' => 'delete'] : null,
     ])
     ])"
     />
