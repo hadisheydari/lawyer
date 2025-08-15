@@ -35,7 +35,7 @@
             </ul>
         </div>
     @endif
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-2 gap-4">
         <input type="hidden" name="cargo_id" value="{{$partition->cargo_id ?? $cargo->id ?? '' }}">
 
         <div class="">
@@ -45,7 +45,7 @@
                 type="text"
                 placeholder="وزن بار  را وارد کنید"
                 value="{{ old('weight' , $partition->weight ?? '') }}"
-                :readonly="($isCreate || $statusFree )"
+                :readonly="!($isCreate || $statusFree )"
                 :numberFormat="true"
 
             />
@@ -61,7 +61,7 @@
                 :selected="old('vehicle_detail_id', $partition->vehicle_detail_id ?? '')"
                 :multiple="false"
                 :required="true"
-                :disabled="($isCreate || $statusFree)"
+                :disabled="!($isCreate || $statusFree)"
             />
         </div>
 
@@ -89,7 +89,7 @@
                 type="text"
                 placeholder="کمیسیون پارتیشن را وارد کنید"
                 value="{{ old('commission' , $partition->commission ?? '') }}"
-                :readonly="($isCreate || $statusFree)"
+                :readonly="!($isCreate || $statusFree)"
                 :numberFormat="true"
 
             />

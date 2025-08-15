@@ -14,6 +14,7 @@ class Partition extends Component
     public function __construct(
         public $cargo = null,
         public $partition = null,
+        public $vehicleDetails = null,
         public $status = null,
         public string|null $mode = 'create',
 

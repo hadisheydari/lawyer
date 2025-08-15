@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Partition;
 use App\Models\Cargo;
+use App\Models\VehicleDetail;
 use App\Http\Requests\CargoDelivery\PartitionRequest;
 
 class PartitionController extends Controller
@@ -27,16 +28,23 @@ class PartitionController extends Controller
      */
     public function create(Cargo $cargo)
     {
-        return view('cargo_delivery.partition.create', compact('cargo'));
-
+        $partition = new Partition();
+        $vehicleDetails = VehicleDetail::pluck('name', 'id');
+        return view('cargo_delivery.partition.create', compact('cargo', 'partition' , 'vehicleDetails'));
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(PartitionRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['company_id'] = auth()->id();
+        Partition::create($data);
+        return redirect()->route('partitions.index_of_partition' ,['cargo' => $data['cargo_id'], 'status' => 'free'])
+            ->with('success', 'راننده با موفقیت ساخته شد.');
+
     }
 
     /**

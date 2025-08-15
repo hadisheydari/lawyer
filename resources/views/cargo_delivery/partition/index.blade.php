@@ -19,8 +19,8 @@
 
 
     <x-table.base-table
-        :headers="[ 'نوع بار' , 'وزن حمل شده' , 'کرایه', 'وضعیت'   ]"
-        :columns="['cargoType.name' , 'partition_weight' , 'fare' , 'type' ]"
+        :headers="[ 'نوع بار' , 'وزن حمل شده' , 'وزن' ,'کرایه', 'وضعیت'   ]"
+        :columns="['cargoType.name' , 'partition_weight' ,'weight', 'fare' , 'type' ]"
         :rows="$cargos"
         :with-index="true"
         :actions="fn($row) => view('components.table.action',[

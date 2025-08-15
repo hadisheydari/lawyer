@@ -61,6 +61,7 @@ Route::middleware(['auth', 'role.selected'])->group(function () {
     Route::get('/partitions/create/{cargo}', [PartitionController::class, 'create'])->name('partitions.create');
     Route::get('/partitions/index_of_partition/{cargo}/{status}', [PartitionController::class, 'index_of_partition'])->name('partitions.index_of_partition');
     Route::get('/partitions/{status?}/edit', [PartitionController::class, 'edit'])->name('partitions.edit');
+    Route::get('/partitions/driver/{partiton}', [PartitionController::class, 'driver'])->name('partitions.driver');
 
     Route::resource('partitions', PartitionController::class)->except('index' , 'create' , 'edit');
 

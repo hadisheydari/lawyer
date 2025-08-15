@@ -102,7 +102,7 @@ class CargoBidController extends Controller
 
         $cargo->update($validated);
 
-        return back()->with('success', 'عملیات با موفقیت انجام شد.');
+        return redirect()->route('cargo_bids.list_of_bids' , $cargo->id)->with('success', 'عملیات با موفقیت انجام شد.');
     }
 
     public function list_of_bids( Cargo $cargo)

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\CargoDelivery;
 
+use App\Enums\Cargo\CargoStatus;
+use App\Enums\Entity\PropertyType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PartitionRequest extends FormRequest
@@ -11,7 +13,7 @@ class PartitionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,18 @@ class PartitionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'cargo_id'=> foreign_id_rules('cargos' , true),
+            'driver_id'=> foreign_id_rules('users' , false),
+            'company_id' => foreign_id_rules('users' , false),
+            'vehicle_detail_id'  => foreign_id_rules('vehicle_details' , true),
+            'weight'=> numeric_rules(true , 1 , 65534),
+            'fare'=>  numeric_rules(),
+            'commission'=>   numeric_rules(),
+            'status'=>  enum_rules(CargoStatus::STATUSES , false),
+            'property'=> enum_rules(PropertyType::TYPES , false),
+            'havaleFile' => file_rules(false),
+            'barnamehFile' => file_rules(false),
+
         ];
     }
 }
