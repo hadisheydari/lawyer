@@ -136,7 +136,7 @@ class CompanyController extends Controller
 
         $companyIds = $companies->pluck('id');
 
-        $drivers = Driver::with('vehicle')->whereIn('company_id', $companyIds)->paginate(10);
+        $drivers = Driver::with('vehicle')->whereIn('company_id', $companyIds)->OrWhereNull('company_id')->paginate(10);
 
         return view('driver_management.index', compact('companies', 'drivers'));
     }

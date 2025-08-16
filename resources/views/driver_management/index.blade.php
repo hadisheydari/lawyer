@@ -10,8 +10,8 @@
     @endif
 
     <x-table.base-table
-        :headers="['نام', 'تلفن', 'دارای مکانیزم']"
-        :columns="['user.name', 'user.phone', 'vehicle.vehicleDetail.name']"
+        :headers="['نام', 'تلفن','نوع رانده', 'دارای مکانیزم']"
+        :columns="['user.name', 'user.phone', 'property' , 'vehicle.vehicleDetail.name']"
         :rows="$drivers"
         :with-index="true"
         :actions="fn($row) => view('components.table.action', [

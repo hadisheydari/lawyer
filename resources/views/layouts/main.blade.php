@@ -349,7 +349,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#"
+                                        <a href="{{ route('partitions.index' , 'free') }}"
                                            class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
                                             <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
                                                  viewBox="0 0 16 16">
@@ -359,7 +359,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#"
+                                        <a href="{{ route('partitions.index' , 'reserved') }}"
                                            class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
                                             <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
                                                  viewBox="0 0 16 16">
@@ -369,7 +369,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#"
+                                        <a href="{{ route('partitions.index' , 'havale') }}"
                                            class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
                                             <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
                                                  viewBox="0 0 16 16">
@@ -379,7 +379,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#"
+                                        <a href="{{ route('partitions.index' , 'barnameh') }}"
                                            class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
                                             <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
                                                  viewBox="0 0 16 16">
@@ -389,7 +389,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#"
+                                        <a href="{{ route('partitions.index' , 'delivered') }}"
                                            class="flex items-center p-2 text-gray-700 hover:text-gray-900 hover:bg-blue-200 focus:bg-blue-300 rounded-lg focus:outline-none">
                                             <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor"
                                                  viewBox="0 0 16 16">

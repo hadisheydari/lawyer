@@ -13,6 +13,10 @@ return [
         'barnameh' => 'بارنامه شده',
         'delivered' => 'تحویل داده شده ',
     ],
+    'partition_upload' => [
+        'reserved' => 'حواله',
+        'havale' => 'بارنامه',
+    ],
 
     'location_type' => [
         'origin' => 'مشخصات بارگیری',

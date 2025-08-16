@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const maxPartitionWeight = parseInt(window.cargoData.maxPartitionWeight) || 0;
 
     const formatNumber = (num) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
     const cleanNumber = (str) => parseInt(str.replace(/,/g, '')) || 0;
 
     const calculateFare = () => {
@@ -31,11 +30,19 @@ document.addEventListener('DOMContentLoaded', function () {
         weightInput.value = enteredWeight;
 
         // کرایه پایه
-        let baseFare = fareType === 'service' ? fare : (fare / maxPartitionWeight) * enteredWeight;
+        let baseFare = fareType === 'service'
+            ? fare
+            : (fare / maxPartitionWeight) * enteredWeight;
 
-        // اعمال کمیسیون درصدی
+        // کمیسیون مبلغی
         let commission = parseFloat(commissionInput.value.replace(/,/g, '')) || 0;
-        let finalFare = baseFare + (baseFare * commission / 100);
+
+        let finalFare = baseFare;
+        if (fareType === 'service') {
+            finalFare += commission / 100;
+        } else if (fareType === 'tonnage') {
+            finalFare +=  enteredWeight * commission / 100; // مبلغ ثابت بر اساس وزن
+        }
 
         fareInput.value = formatNumber(finalFare);
     };

@@ -16,10 +16,10 @@
 <script>
 
     window.cargoData = {
-        fareType: "{{ $cargo->fare_type }}", // 'service' یا 'tonnage'
+        fareType: "{{ $cargo->fare_type }}",
         fare: {{ $cargo->fare }},
         weight: {{ $cargo->weight }},
-        partitionWeightSum: {{ $cargo->partitions->sum('weight') ?? 0 }},
+        partitionWeightSum: {{ $cargo->partition_weight ?? 0 }},
         maxPartitionWeight: {{ $cargo->weight }}
     };
 

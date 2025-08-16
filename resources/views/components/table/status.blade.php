@@ -6,6 +6,10 @@
         'reserve' => 'bg-blue-600 text-white',
         'free' => 'bg-yellow-600 text-white',
         'rqf' => 'bg-green-600 text-white',
+        'reserved' => 'bg-blue-600 text-white',
+        'havale' => 'bg-yellow-600 text-white',
+        'barnameh' => 'bg-green-600 text-white',
+        'delivered' => 'bg-gray-600 text-white',
 
 
 
@@ -17,6 +21,11 @@
         'unknown' => 'تنظیم نشده',
         'reserve' => 'رزرو شده',
         'free' => 'آزاد',
+        'reserved' => 'رزرو شده',
+        'havale' => 'حواله شده',
+        'barnameh' => 'بارنامه شده',
+        'delivered' => 'تحویل داده شده',
+
     ];
 
     $key = $value ?? 'unknown';

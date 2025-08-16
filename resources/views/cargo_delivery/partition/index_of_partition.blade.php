@@ -36,14 +36,14 @@
     @endcan
 
     <x-table.base-table
-        :headers="['نوع بار', 'وزن پارتیشن', 'کرایه', 'وضعیت']"
-        :columns="['cargo.cargoType.name', 'weight', 'fare', 'status']"
+        :headers="['نوع بار', 'وزن پارتیشن', 'کرایه','نوع راننده' ,'وضعیت']"
+        :columns="['cargo.cargoType.name', 'weight', 'fare','property', 'status']"
         :rows="$partitions"
         :with-index="true"
         :actions="fn($row) => view('components.table.action', [
             'items' => array_filter([
                 (auth()->user()?->can('write cargo delivery') && $row->status === CargoStatus::FREE)
-                    ? ['name' => 'تعیین نوع راننده', 'route' => route('partitions.driver', $row->id), 'bg' => 'text-blue-600', 'icon' => 'driver'] : null,
+                    ? ['name' => 'تعیین نوع راننده', 'action' => 'PropertyDriver(this , '.$row->id.')' , 'bg' => 'text-blue-600', 'icon' => 'car'] : null,
 
                 (auth()->user()?->can('write cargo delivery') && $row->status === CargoStatus::FREE)
                     ? ['name' => 'ویرایش پارتیشن', 'route' => route('partitions.edit', $row->id), 'bg' => 'text-blue-600', 'icon' => 'pencil'] : null,
@@ -54,17 +54,19 @@
                 (auth()->user()?->can('write cargo delivery') && $row->status === CargoStatus::RESERVED)
                     ? ['name' => 'ثبت حواله', 'route' => route('partitions.edit', ['partition' => $row->id, 'status' => 'upload']), 'bg' => 'text-blue-600', 'icon' => 'sticky-note'] : null,
 
-                (auth()->user()?->can('write cargo delivery') && $row->status === CargoStatus::RESERVED)
+                (auth()->user()?->can('write cargo delivery') && $row->status === CargoStatus::HAVALE)
                     ? ['name' => 'ویرایش حواله', 'route' => route('partitions.edit', $row->id), 'bg' => 'text-blue-600', 'icon' => 'sticky-note'] : null,
 
                 (auth()->user()?->can('write cargo delivery') && $row->status === CargoStatus::HAVALE)
                     ? ['name' => 'ثبت بارنامه', 'route' => route('partitions.edit', ['partition' => $row->id, 'status' => 'upload']), 'bg' => 'text-blue-600', 'icon' => 'upload'] : null,
 
-                (auth()->user()?->can('write cargo delivery') && $row->status === CargoStatus::HAVALE)
+                (auth()->user()?->can('write cargo delivery') && $row->status === CargoStatus::BARNAMEH)
                     ? ['name' => 'ویرایش بارنامه', 'route' => route('partitions.edit', $row->id), 'bg' => 'text-blue-600', 'icon' => 'upload'] : null,
 
                 ($row->status === CargoStatus::DELIVERED)
-                    ? ['name' => 'ثبت امتیاز برای راننده', 'route' => route('partitions.', $row->status), 'bg' => 'text-blue-600', 'icon' => 'star'] : null,
+                    ? ['name' => 'ثبت امتیاز برای راننده', 'route' => route('partitions.rate', $row->status), 'bg' => 'text-blue-600', 'icon' => 'star'] : null,
+                ($row->status === CargoStatus::DELIVERED)
+                    ? ['name' => 'نمایش امتیاز راننده', 'route' => route('partitions.rate', $row->status), 'bg' => 'text-blue-600', 'icon' => 'star'] : null,
 
                 ['name' => 'نمایش پارتیشن', 'route' => route('partitions.show', $row->id), 'bg' => 'text-yellow-600', 'icon' => 'eye'],
             ])

@@ -8,6 +8,7 @@ use App\Models\Partition;
 use App\Models\Cargo;
 use App\Models\VehicleDetail;
 use App\Http\Requests\CargoDelivery\PartitionRequest;
+use Illuminate\Support\Facades\Storage;
 
 class PartitionController extends Controller
 {
@@ -43,7 +44,7 @@ class PartitionController extends Controller
         $data['company_id'] = auth()->id();
         Partition::create($data);
         return redirect()->route('partitions.index_of_partition' ,['cargo' => $data['cargo_id'], 'status' => 'free'])
-            ->with('success', 'راننده با موفقیت ساخته شد.');
+            ->with('success', 'پارتیشن با موفقیت ساخته شد.');
 
     }
 
@@ -52,7 +53,10 @@ class PartitionController extends Controller
      */
     public function show(Partition $partition)
     {
-        //
+        $vehicleDetails = VehicleDetail::pluck('name', 'id');
+        $partition->load(['cargo.cargoType']);
+        $status = null;
+        return view('cargo_delivery.partition.show', compact('partition' , 'status','vehicleDetails'));
     }
 
     /**
@@ -60,9 +64,12 @@ class PartitionController extends Controller
      */
 
 
-    public function edit(Partition $partition , ?string $status)
+    public function edit(Partition $partition , ?string $status = null)
     {
-        return view('cargo_delivery.partition.edit', compact('partition', 'status'));
+        $vehicleDetails = VehicleDetail::pluck('name', 'id');
+        $partition->load(['cargo.cargoType']);
+
+        return view('cargo_delivery.partition.edit', compact('partition', 'status' , 'vehicleDetails'));
     }
 
 
@@ -72,7 +79,37 @@ class PartitionController extends Controller
      */
     public function update(PartitionRequest $request, Partition $partition)
     {
-        //
+
+        $data = $request->validated();
+        $fileFields = [
+            'havaleFile' => 'havale',
+            'barnamehFile' => 'barnameh',
+        ];
+
+        foreach ($fileFields as $field => $status) {
+            if ($request->boolean("remove_{$field}")) {
+                if ($partition->$field && Storage::disk('public')->exists($partition->$field)) {
+                    Storage::disk('public')->delete($partition->$field);
+                }
+                $data[$field] = null;
+            }
+
+            if ($request->hasFile($field)) {
+                if ($partition->$field && Storage::disk('public')->exists($partition->$field)) {
+                    Storage::disk('public')->delete($partition->$field);
+                }
+                $data[$field] = $request->file($field)->store('partition/'.$field , 'public');
+                if ($partition->status !== 'barnameh'){
+                    $data['status'] = $status;
+                }
+            }
+        }
+        $partition->update($data);
+
+        return redirect()->route('partitions.index_of_partition' ,['cargo' => $partition->cargo_id, 'status' => $partition->status])
+            ->with('success', 'عملیات با موفقیت انجام شد.');
+
+
     }
 
     /**
@@ -90,5 +127,11 @@ class PartitionController extends Controller
 
         return view('cargo_delivery.partition.index_of_partition', compact('partitions', 'status' , 'cargo'));
 
+    }
+    public function driver(Partition $partition , string $property )
+    {
+        $partition->property = $property;
+        $partition->save();
+        return back();
     }
 }

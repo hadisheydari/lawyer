@@ -27,7 +27,7 @@ class PartitionRequest extends FormRequest
             'cargo_id'=> foreign_id_rules('cargos' , true),
             'driver_id'=> foreign_id_rules('users' , false),
             'company_id' => foreign_id_rules('users' , false),
-            'vehicle_detail_id'  => foreign_id_rules('vehicle_details' , true),
+            'vehicle_detail_id'  => foreign_id_rules('vehicle_details' , false),
             'weight'=> numeric_rules(true , 1 , 65534),
             'fare'=>  numeric_rules(),
             'commission'=>   numeric_rules(),

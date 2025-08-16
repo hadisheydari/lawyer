@@ -12,8 +12,11 @@
             <x-table.cell>
                 <x-table.status :value="$cellValue" />
             </x-table.cell>
+        @elseif($col === 'fare')
+                <x-table.cell :value="number_format($cellValue) ?? 'تنظیم نشده'" :class="$loop->even ? '' : 'bg-blue-200'" />
+
         @else
-            <x-table.cell :value="$cellValue ?? '-'" :class="$loop->even ? '' : 'bg-blue-200'" />
+            <x-table.cell :value="$cellValue ?? 'تنظیم نشده'" :class="$loop->even ? '' : 'bg-blue-200'" />
         @endif
     @endforeach
 

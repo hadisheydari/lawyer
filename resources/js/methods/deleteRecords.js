@@ -38,3 +38,25 @@ function SweetAlert(action, title = null, icon = null, confirmButtonText = null,
     });
 }
 window.SweetAlert = SweetAlert;
+
+function PropertyDriver(action, id) {
+    Swal.fire({
+        title: "نوع راننده را تعیین کنید",
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "ملکی",
+        denyButtonText: `غیرملکی`,
+        cancelButtonText: `لغو`,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire("تغییرات با موفقیت اعمال شد!", "", "success").then(() => {
+                window.location.href = '/partitions/driver/' + id + '/owned';
+            });
+        } else if (result.isDenied) {
+            Swal.fire("تغییرات با موفقیت اعمال شد!", "", "success").then(() => {
+                window.location.href = '/partitions/driver/' + id + '/non_owned';
+            });
+        }
+    });
+}
+window.PropertyDriver = PropertyDriver;
