@@ -157,7 +157,7 @@ class DriverController extends Controller
     public function allocation(Driver $driver)
     {
         $driver->load([ 'vehicle' , 'vehicle.vehicleDetail' , 'user']);
-        $vehicles = Vehicle::with('vehicleDetail')->get()->mapWithKeys(function ($vehicle) {
+        $vehicles = Vehicle::with('vehicleDetail')->whereNull('driver_id')->get()->mapWithKeys(function ($vehicle) {
             return [$vehicle->id => $vehicle->vehicleDetail->name ?? '---'];
         });
         return view('driver_management.mechanism_allocation', compact('driver' , 'vehicles'));

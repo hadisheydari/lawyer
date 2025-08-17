@@ -17,18 +17,24 @@ class CargoResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'cargoName' => (string) ($this->cargo?->cargoType?->name ?? ''),
-            'companyName' => (string) ($this->cargo?->company?->name ?? ''),
-            'dateAt' => $this->cargo?->origin?->date_at ? (string) Jalalian::fromTimestamp($this->cargo->origin->date_at)->format('Y/m/d') : '',
-            'originCity' => (string) ($this->cargo?->origin?->city?->name ?? ''),
-            'destinationCity' => (string) ($this->cargo?->origin?->city?->name ?? ''),
-            'fare' => (Int) ($this->fare ?? ''),
-            'commission' => (Int) ($this->fare ?? ''),
-            'status' => (string) ($this->status ?? ''),
-            'partitionWeight' => (Int) ($this->fare ?? ''),
-            'packName'=> (string) ($this->cargo?->packing?->name ?? ''),
-            'dateTo' => $this->cargo?->destination?->date_to ? (string) Jalalian::fromTimestamp($this->cargo->destination->date_to)->format('Y/m/d') : '',
-
+            'cargoTypeName' => (string) ($this->cargo?->cargoType?->name ?? ''),
+            'cargoCompanyName' => (string) ($this->cargo?->company?->name ?? ''),
+            'cargoOriginDateAt' => $this->cargo?->origin?->date_at
+                ? (string) Jalalian::forge($this->cargo->origin->date_at)->format('Y/m/d')
+                : '',
+            'cargoOriginCity' => (string) ($this->cargo?->origin?->city?->name ?? ''),
+            'cargoDestinationCity' => (string) ($this->cargo?->destination?->city?->name ?? ''),
+            'partitionFare' => (int) ($this->fare ?? 0),
+            'partitionCommission' => (int) ($this->commission ?? 0),
+            'partitionStatus' => (string) ($this->status ?? ''),
+            'partitionWeight' => (int) ($this->weight ?? 0),
+            'cargoPackName'=> (string) ($this->cargo?->packing?->name ?? ''),
+            'cargoDestinationDateTo' => $this->cargo?->destination?->date_to
+                ? (string) Jalalian::forge($this->cargo->destination->date_to)->format('Y/m/d')
+                : '',
+            'cargoInsuranceCost' => (int) ($this->cargo?->insurance_value ?? 0),
+            'cargoDescription' => (string) ($this->cargo?->description ?? ''),
         ];
     }
+
 }

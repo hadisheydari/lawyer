@@ -5,7 +5,7 @@ namespace App\Http\Requests\CargoDelivery;
 use App\Enums\Cargo\CargoStatus;
 use App\Enums\Entity\PropertyType;
 use Illuminate\Foundation\Http\FormRequest;
-
+use App\Models\Cargo;
 class PartitionRequest extends FormRequest
 {
     /**
@@ -37,5 +37,27 @@ class PartitionRequest extends FormRequest
             'barnamehFile' => file_rules(false),
 
         ];
+    }
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $cargoId   = $this->input('cargo_id');
+            $newWeight = (float) $this->input('weight');
+
+            if ($cargoId && $newWeight) {
+                $cargo = Cargo::find($cargoId);
+
+                if ($cargo) {
+                    $totalWeight = $cargo->partition_weight + $newWeight;
+                    $maxWeight = $cargo->weight -  $cargo->partition_weight  ;
+                    if ($totalWeight > $cargo->weight) {
+                        $validator->errors()->add(
+                            'weight',
+                            'وزن وارد شده بیشتر از ظرفیت کل محموله است. (حداکثر: ' . $maxWeight . ')'
+                        );
+                    }
+                }
+            }
+        });
     }
 }

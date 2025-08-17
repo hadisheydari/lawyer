@@ -30,7 +30,7 @@ class PartitionController extends Controller
     public function create(Cargo $cargo)
     {
         $partition = new Partition();
-        $vehicleDetails = VehicleDetail::pluck('name', 'id');
+        $vehicleDetails = VehicleDetail::whereHas('vehicles')->pluck('name', 'id');
         return view('cargo_delivery.partition.create', compact('cargo', 'partition' , 'vehicleDetails'));
     }
 
@@ -42,6 +42,7 @@ class PartitionController extends Controller
     {
         $data = $request->validated();
         $data['company_id'] = auth()->id();
+
         Partition::create($data);
         return redirect()->route('partitions.index_of_partition' ,['cargo' => $data['cargo_id'], 'status' => 'free'])
             ->with('success', 'پارتیشن با موفقیت ساخته شد.');
@@ -117,7 +118,8 @@ class PartitionController extends Controller
      */
     public function destroy(Partition $partition)
     {
-        //
+        $partition->delete();
+        return back()->with('success', 'پارتیشن با موفقیت حذف شد.');
     }
     public function index_of_partition(Cargo $cargo , string $status)
     {
