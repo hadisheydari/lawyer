@@ -1,6 +1,6 @@
 @extends('layouts.auth')
-@section('title', 'ورود به بازارگاه')
-@section('header', 'ورود به بازارگاه')
+@section('title', 'ورود به ')
+@section('header', 'ورود به ')
 
 @section('content')
 

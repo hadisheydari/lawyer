@@ -10,7 +10,16 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::middleware('auth:sanctum')->get('/partitionDetail', [CargoController::class, 'partitionDetail']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/freePartitions', [CargoController::class, 'freePartitions']);
+    Route::Put('/partitions/acceptByDriver/{partition}', [CargoController::class, 'acceptByDriver']);
+    Route::get('/driverPartitions', [CargoController::class, 'driverPartitions']);
+    Route::Put('/partitions/confirmation/{partition}', [CargoController::class, 'confirmationDriver']);
+    Route::Put('/partitions/evacuated/{partition}/{cade}', [CargoController::class, 'evacuatedDriver']);
+
+
+
+});
 
 
 

@@ -37,6 +37,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoInformation whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoInformation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CargoInformation whereProvinceId($value)
+ * @property-read \App\Models\Province|null $province
  * @mixin \Eloquent
  */
 class CargoInformation extends Model

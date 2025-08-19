@@ -1,6 +1,6 @@
 @extends('layouts.auth')
-@section('title', 'ثبت نام در بازارگاه')
-@section('header', 'ثبت نام در بازارگاه')
+@section('title', 'ثبت نام در ')
+@section('header', 'ثبت نام در ')
 
 @section('content')
     <x-form.base-form action="{{ route('registerAction') }}" method="POST" class="space-y-6">

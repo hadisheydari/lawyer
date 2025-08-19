@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title')</title>
+    <title>{{ config('app.market_name') }}    @yield('title') </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     @vite(['resources/css/app.css', 'resources/js/app.js' , 'resources/js/methods/oldImage.js', 'resources/js/methods/cities.js', 'resources/js/methods/deleteRecords.js'  ])
     @stack('imports')
@@ -124,7 +124,7 @@
                         <ul class="space-y-4 font-medium">
 
                             <li>
-                                <a href="#"
+                                <a href="{{ route('dashboard') }}"
                                    class="flex items-center p-3 text-gray-900 rounded-lg hover:bg-blue-200 focus:bg-blue-300 group">
                                     <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-900" fill="currentColor"
                                          viewBox="0 0 22 21" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -463,7 +463,7 @@
             <div class="flex-1 flex flex-col space-y-6 p-8">
 
                 <div class="text-right text-3xl font-semibold text-blue-950 m-1 mb-4">
-                    @yield('header')
+                    {{ config('app.market_name') }}  @yield('header')
                 </div>
                 @yield('content')
 
@@ -471,7 +471,16 @@
             </div>
 
         </div>
+        <p class="mt-6 text-sm text-center text-gray-600">
+            کلیه حقوق وب سایت مربوط به
+            <span
+                class="text-blue-500 hover:text-blue-600 font-medium transition-colors duration-200">
+            {{ config('app.market_name') }}
+        </span>
+            میباشد
+        </p>
     </div>
+
 </div>
 
 

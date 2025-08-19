@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Complaint whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Complaint whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Complaint whereUserId($value)
+ * @property int $complainant_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Complaint whereComplainantId($value)
  * @mixin \Eloquent
  */
 class Complaint extends Model
@@ -35,12 +38,16 @@ class Complaint extends Model
         'status',
     ];
 
-    protected $casts = [
-        'status' => 'نه',
-    ];
+
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
+
+    public function responses(): HasMany
+    {
+        return $this->hasMany(ComplaintResponse::class);
+    }
+
 }

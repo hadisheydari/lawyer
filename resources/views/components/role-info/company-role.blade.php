@@ -18,7 +18,7 @@
 @endphp
 
 <div class="text-blue-950 font-black text-2xl m-12 ">
-           {{$translate[$mode]}}  اطلاعات شرکت حمل
+    {{ config('app.market_name') }}        {{$translate[$mode]}}  اطلاعات شرکت حمل
 </div>
 <x-form.base-form
     :action="$mode === 'edit' ? route('companies.update', $company->id) : route('companies.store')"

@@ -24,6 +24,9 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserOtp whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserOtp whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserOtp whereUserId($value)
+ * @property int|null $partition_id شناسه پارتیشن
+ * @property-read \App\Models\Partition|null $partition
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserOtp wherePartitionId($value)
  * @mixin \Eloquent
  */
 class UserOtp extends Model
@@ -33,6 +36,7 @@ class UserOtp extends Model
     protected $table = 'user_otps';
 
     protected $fillable = [
+        'partition_id',
         'user_id',
         'code',
         'expires_at',
@@ -43,6 +47,11 @@ class UserOtp extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    public function partition()
+    {
+        return $this->belongsTo(Partition::class);
+    }
 
     public function user()
     {

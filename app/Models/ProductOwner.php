@@ -53,6 +53,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwner whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwner whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductOwner whereProvinceId($value)
+ * @property-read \App\Models\Province|null $province
  * @mixin \Eloquent
  */
 class ProductOwner extends Model

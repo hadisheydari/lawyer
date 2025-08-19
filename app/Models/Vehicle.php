@@ -36,6 +36,8 @@ use App\Models\Driver;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vehicle whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vehicle whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vehicle whereVehicleDetailId($value)
+ * @property-read Driver|null $driver
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vehicle whereDriverId($value)
  * @mixin \Eloquent
  */
 class Vehicle extends Model

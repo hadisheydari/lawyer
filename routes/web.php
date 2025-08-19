@@ -14,6 +14,7 @@ use App\Http\Controllers\CargoDeclaration\CargoController;
 use App\Http\Controllers\CargoDeclaration\CargoReservationController;
 use App\Http\Controllers\CargoDeclaration\CargoBidController;
 use App\Http\Controllers\CargoDelivery\PartitionController;
+use App\Http\Controllers\Rating\RatingController;
 
 
 require __DIR__.'/auth.php';
@@ -66,7 +67,9 @@ Route::middleware(['auth', 'role.selected'])->group(function () {
 
     Route::resource('partitions', PartitionController::class)->except('index' , 'create' , 'edit');
 
-
+    //
+    //امتیازدهی
+    Route::resource('ratings', RatingController::class);
 
 
 

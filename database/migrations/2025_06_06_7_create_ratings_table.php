@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\Rating\Rating;
 
 return new class extends Migration
 {
@@ -14,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->comment('شناسه کاربر')->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Partition::class)->comment('شناسه پارتیشن')->constrained()->cascadeOnDelete();
-            $table->unsignedTinyInteger('rating')->nullable()->comment('امتیاز');
+            $table->enum('rating', Rating::RATINGS)->nullable()->comment('امتیاز');
             $table->timestamps();
         });
     }

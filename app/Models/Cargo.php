@@ -56,6 +56,25 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereWidth($value)
  * @property string|null $date_to تاریخ پایان مناقصه
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereDateTo($value)
+ * @property int|null $insurance_id شرکت بیمه
+ * @property int|null $final_fare  مبلغ کرایه محاسبه شده بر حسب ریال
+ * @property string|null $date_at تاریخ شروع مناقصه
+ * @property int|null $assigned_company_id
+ * @property-read \App\Models\User|null $company
+ * @property-read \App\Models\CargoInformation|null $destination
+ * @property-read mixed $partition_weight
+ * @property-read mixed $reservation_status
+ * @property-read mixed $reservations
+ * @property-read \App\Models\Insurance|null $insurance
+ * @property-read \App\Models\CargoInformation|null $origin
+ * @property-read \App\Models\CargoReservation|null $reserve
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CargoReservation> $rfq
+ * @property-read int|null $rfq_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereAssignedCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereDateAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereFinalFare($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereInsuranceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cargo whereInsuranceValue($value)
  * @mixin \Eloquent
  */
 class Cargo extends Model

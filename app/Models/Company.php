@@ -50,6 +50,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Company whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Company whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Company whereProvinceId($value)
+ * @property-read \App\Models\Province|null $province
  * @mixin \Eloquent
  */
 class Company extends Model

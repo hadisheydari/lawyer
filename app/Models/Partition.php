@@ -36,6 +36,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Partition whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Partition whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Partition whereWeight($value)
+ * @property string|null $property owned -> ملکی, non_owned -> غیرملکی
+ * @property int|null $vehicle_detail_id شناسه نوع بار گیری
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Partition whereProperty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Partition whereVehicleDetailId($value)
  * @mixin \Eloquent
  */
 class Partition extends Model
@@ -66,7 +70,7 @@ class Partition extends Model
 
     public function driver(): BelongsTo
     {
-        return $this->belongsTo(Driver::class);
+        return $this->belongsTo(User::class , 'driver_id');
     }
 
 

@@ -43,6 +43,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Driver whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Driver whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Driver whereProvinceId($value)
+ * @property-read \App\Models\Province|null $province
+ * @property-read \App\Models\Vehicle|null $vehicle
  * @mixin \Eloquent
  */
 class Driver extends Model

@@ -18,7 +18,7 @@
 @endphp
 
 <div class="text-blue-950 font-black text-2xl m-12 ">
-    {{$translate[$mode]}}  اطلاعات صاحب کالا(حقوقی)
+    {{ config('app.market_name') }}  {{$translate[$mode]}}  اطلاعات صاحب کالا(حقوقی)
 </div>
 <x-form.base-form
     :action="$mode === 'edit' ? route('product-owners.update', $productOwner->id) : route('product-owners.store')"

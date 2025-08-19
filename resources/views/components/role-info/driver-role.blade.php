@@ -18,7 +18,7 @@
 @endphp
 
 <div class="text-blue-950 font-black text-2xl m-12 ">
-    {{$translate[$mode]}} اطلاعات راننده
+    {{ config('app.market_name') }}   {{$translate[$mode]}} اطلاعات راننده
 </div>
 <x-form.base-form
     :action="$mode === 'edit' ? route('drivers.update', $driver->id) : route('drivers.store')"

@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'market_name' => env('BAZARGAH_NAME', 'بازارگاه پیش‌فرض'),
+
 ];

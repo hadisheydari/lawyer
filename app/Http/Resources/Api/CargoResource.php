@@ -17,6 +17,7 @@ class CargoResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'partitionId' => (Int) ($this->id ?? ''),
             'cargoTypeName' => (string) ($this->cargo?->cargoType?->name ?? ''),
             'cargoCompanyName' => (string) ($this->cargo?->company?->name ?? ''),
             'cargoOriginDateAt' => $this->cargo?->origin?->date_at
