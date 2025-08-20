@@ -22,7 +22,9 @@ class RatingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            ''
+            'user_id' => foreign_id_rules('users' , false),
+            'partition_id' => foreign_id_rules('partitions' , true),
+            'rating' => numeric_rules(),
         ];
     }
 }

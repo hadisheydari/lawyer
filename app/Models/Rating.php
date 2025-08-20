@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\Rating\RatingEnum;
+
 
 /**
  * @property int $id
@@ -36,6 +38,11 @@ class Rating extends Model
     protected $casts = [
         'rating' => 'integer',
     ];
+
+    public function getRatingEnumAttribute(): RatingEnum
+    {
+        return RatingEnum::from($this->rating);
+    }
 
     public function user(): BelongsTo
     {

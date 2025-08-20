@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @push('imports')
-    @vite(['resources/js/methods/numberFormat.js' , 'resources/js/methods/partition-fare.js'  ])
+    @vite(['resources/js/methods/numberFormat.js'   ])
 @endpush
 @section('title', 'نمایش پارتیشن ')
 @section('content')

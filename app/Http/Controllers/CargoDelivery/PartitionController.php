@@ -124,7 +124,7 @@ class PartitionController extends Controller
     public function index_of_partition(Cargo $cargo , string $status)
     {
         $partitions = $cargo->partitions()->when($status !== 'all', fn($q) => $q->where('status', $status))
-            ->with('cargo.cargoType')->get();
+            ->with(['cargo.cargoType' , 'ratingOwner' , 'ratingDriver'])->get();
         $cargo = $cargo->id;
 
         return view('cargo_delivery.partition.index_of_partition', compact('partitions', 'status' , 'cargo'));

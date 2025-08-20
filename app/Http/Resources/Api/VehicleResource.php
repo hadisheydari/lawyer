@@ -4,10 +4,8 @@ namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Morilog\Jalali\Jalalian;
 
-
-class CargoResource extends JsonResource
+class VehicleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,13 +15,12 @@ class CargoResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'partitionId' => (Int) ($this->id ?? ''),
-            'cargoTypeName' => (string) ($this->cargo?->cargoType?->name ?? ''),
-            'cargoCompanyName' => (string) ($this->cargo?->company?->name ?? ''),
-            'cargoOriginDateAt' => $this->cargo?->origin?->date_at
-                ? (string) Jalalian::forge($this->cargo->origin->date_at)->format('Y/m/d')
-                : '',
-            'cargoOriginCity' => (string) ($this->cargo?->origin?->city?->name ?? ''),
+            'vehicleId' => (Int) ($this->id ?? ''),
+            'vehicleName' => (string) ($this->vehicleDetail?->name ?? ''),
+            'vehicleLicensePlate' => (string) ($this->plate_first?? '' . $this->plate_letter?? '' . $this->plate_second?? ''),
+            'vehicleProvincePlate' => (string) ($this->plate_third?? ''),
+            'vehiclePlateType' => (string) (__('vehicle_enums.plate_types')?? ''),
+
             'cargoDestinationCity' => (string) ($this->cargo?->destination?->city?->name ?? ''),
             'partitionFare' => (int) ($this->fare ?? 0),
             'partitionCommission' => (int) ($this->commission ?? 0),
@@ -31,12 +28,7 @@ class CargoResource extends JsonResource
             'persianCargoStatus' => (string) ( __('cargo_enums.cargo_status.' . $this->status ) ?? ''),
             'partitionWeight' => (int) ($this->weight ?? 0),
             'cargoPackName'=> (string) ($this->cargo?->packing?->name ?? ''),
-            'cargoDestinationDateTo' => $this->cargo?->destination?->date_to
-                ? (string) Jalalian::forge($this->cargo->destination->date_to)->format('Y/m/d')
-                : '',
             'cargoInsuranceCost' => (int) ($this->cargo?->insurance_value ?? 0),
             'cargoDescription' => (string) ($this->cargo?->description ?? ''),
-        ];
-    }
-
+        ];    }
 }

@@ -3,10 +3,19 @@
 namespace App\Http\Controllers\Rating;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Models\Rating;
+use App\Models\Partition;
+use App\Http\Requests\Rating\RatingRequest;
+use App\Traits\ApiResponseTrait;
+
 
 class RatingController extends Controller
 {
+    use ApiResponseTrait;
+
     /**
      * Display a listing of the resource.
      */
@@ -18,31 +27,42 @@ class RatingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(string $partition)
     {
-        return view('rating.create');
+        return view('rating.create', compact('partition'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(RatingRequest $request): JsonResponse|RedirectResponse
     {
-        //
+        $userId = $request->user()->id;
+        $data = $request->validated();
+        $data['user_id'] = $userId;
+        Rating::create($data);
+        $partition = Partition::where('id' , $request['partition_id'])->first();
+        if ($request->expectsJson()) {
+            return $this->success('امتیاز با موفقیت برای شما ثبت شد .', 200 , null);
+        }
+
+        return redirect()->route('partitions.index_of_partition' ,['cargo' => $partition->cargo_id, 'status' => 'delivered'])
+            ->with('success', 'امتیاز با موفقیت ساخته شد.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Rating $rating)
     {
-        //
+        return view('rating.create' , compact('rating'));
+
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Rating $rating)
     {
         //
     }
@@ -50,7 +70,7 @@ class RatingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Rating $rating)
     {
         //
     }
@@ -58,7 +78,7 @@ class RatingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Rating $rating)
     {
         //
     }

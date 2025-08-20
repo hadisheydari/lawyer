@@ -61,7 +61,6 @@ class RolePermissionSeeder extends Seeder
             'read cargo delivery',
             'write cargo delivery',
             'read complaints',
-            'write complaints',
             ]);
         $driverRole->syncPermissions([
             'manage users',

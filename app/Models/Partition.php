@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
@@ -73,5 +74,21 @@ class Partition extends Model
         return $this->belongsTo(User::class , 'driver_id');
     }
 
+    public function ratingDriver(): HasOne
+    {
+        return $this->hasOne(Rating::class, 'partition_id')
+            ->whereHas('user.roles', function ($query) {
+                $query->where('name', 'driver');
+            });
+    }
+
+
+    public function ratingOwner(): HasOne
+    {
+        return $this->hasOne(Rating::class, 'partition_id')
+            ->whereHas('user.roles', function ($query) {
+                $query->where('name', 'productOwner');
+            });
+    }
 
 }

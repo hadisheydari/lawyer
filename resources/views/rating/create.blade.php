@@ -7,8 +7,8 @@
 
         <x-form.base-form
             id="assignForm"
-            :action="''"
-            :method="'PUT'"
+            :action="route('ratings.store')"
+            :method="'POST'"
             class="space-y-6">
             @csrf
 
@@ -22,13 +22,12 @@
                 </div>
             @endif
 
-            <!-- ستاره‌ها با label و glow -->
             <div x-data="{ rating: 0, ratingText: '' }" class="flex flex-col items-center mb-6 space-y-2 rtl:space-x-reverse">
                 <div class="flex space-x-2 rtl:space-x-reverse">
                     <template x-for="i in 5" :key="i">
                         <button type="button" @mouseover="ratingText = ['خیلی بد','بد','خوب','خیلی خوب','عالی'][i-1]" @mouseleave="ratingText = ''" @click="rating = i; ratingText = ['خیلی بد','بد','خوب','خیلی خوب','عالی'][i-1]" class="focus:outline-none relative">
                             <svg
-                                :class="i <= rating ? 'text-yellow-400 drop-shadow-lg' : 'text-gray-300'"
+                                :class="i <=  {{$rating->rating ?? 'rating'}}? 'text-yellow-400 drop-shadow-lg' : 'text-gray-300'"
                                 class="w-32 h-32 transition-colors duration-300 transform hover:scale-110"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
@@ -39,29 +38,31 @@
                     </template>
                 </div>
 
-                <!-- متن امتیاز -->
                 <div class="text-gray-700 font-semibold text-lg min-h-[1.5rem]" x-text="ratingText"></div>
 
                 <input type="hidden" name="rating" :value="rating">
+
+                <input type="hidden" name="partition_id" value="{{$partition ?? ''}}">
+
             </div>
 
 
 
             <div>
-{{--                @if($mode === 'show')--}}
-{{--                    <x-form.button--}}
-{{--                        type="button"--}}
-{{--                        text="بازگشت"--}}
-{{--                        :mode="$mode"--}}
-{{--                        :action="'window.history.back()'"--}}
-{{--                    />--}}
-{{--                @else--}}
+                @if(isset($rating->rating))
+                    <x-form.button
+                        type="button"
+                        text="بازگشت"
+                        :mode="'show'"
+                        :action="'window.history.back()'"
+                    />
+                @else
                     <x-form.button
                         type="submit"
                         text="ثبت امتیاز"
                         :mode="'create'"
                     />
-{{--                @endif--}}
+                @endif
             </div>
         </x-form.base-form>
 
