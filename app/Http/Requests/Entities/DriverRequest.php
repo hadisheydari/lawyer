@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Enums\Entity\PropertyType;
 
 
-class DriverRequest extends FormRequest
+class  DriverRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

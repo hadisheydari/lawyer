@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Rating;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -55,7 +56,11 @@ class RatingController extends Controller
      */
     public function show(Rating $rating)
     {
-        return view('rating.create' , compact('rating'));
+        $user = User::find($rating->user_id);
+
+        $role = $user->getRoleNames()->first();
+
+        return view('rating.create' , compact('rating' , 'role'));
 
     }
 

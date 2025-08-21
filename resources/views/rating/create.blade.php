@@ -1,6 +1,19 @@
 @extends('layouts.main')
+@php
 
-@section('title', 'امتیاز برای راننده')
+if(!isset($role)){
+  $text ='ثبت امتیاز برای راننده ';
+
+}elseif($role === 'productOwner'){
+  $text ='نمایش امتیاز صاحب کالا ';
+
+}elseif($role === 'driver'){
+  $text ='نمایش امتیاز راننده ';
+
+}
+@endphp
+@section('title', $text)
+@section('header', $text)
 
 @section('content')
 
