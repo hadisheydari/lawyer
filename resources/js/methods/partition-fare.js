@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const formatNumber = (num) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const cleanNumber = (str) => parseInt(str.replace(/,/g, '')) || 0;
-
+    console.log(partitionWeightSum);
     const calculateFare = () => {
         let enteredWeight = cleanNumber(weightInput.value);
 

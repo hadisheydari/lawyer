@@ -13,6 +13,7 @@ return new class extends Migration
         Schema::create('complaints', function (Blueprint $table) {
             $table->id();
             $table->foreignId('complainant_id')->constrained('users')->cascadeOnDelete()->comment('شاکی');
+            $table->foreignId('receiver_id')->constrained('users')->cascadeOnDelete()->comment('شناسه ی کاربر دریافت کننده');
             $table->string('title')->comment('عنوان شکایت');
             $table->text('description')->comment('توضیحات شکایت');
             $table->enum('status', Status::STATUSES)->default(Status::NOT_READ)->comment('وضعیت');            $table->timestamps();
@@ -21,7 +22,6 @@ return new class extends Migration
         Schema::create('complaint_responses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('complaint_id')->constrained()->cascadeOnDelete()->comment('شناسه شکایت');
-            $table->foreignId('responder_id')->constrained('users')->cascadeOnDelete()->comment('کاربری که پاسخ داده');
             $table->text('message')->comment('متن پاسخ');
             $table->timestamps();
         });

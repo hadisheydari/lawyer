@@ -41,23 +41,33 @@ class PartitionRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $cargoId   = $this->input('cargo_id');
-            $newWeight = (float) $this->input('weight');
+            $cargoId      = $this->input('cargo_id');
+            $newWeight    = (float) $this->input('weight');
+            $partitionWeight  = $this->route('partition')->weight ?? 0;
 
-            if ($cargoId && $newWeight) {
-                $cargo = Cargo::find($cargoId);
-
-                if ($cargo) {
-                    $totalWeight = $cargo->partition_weight + $newWeight;
-                    $maxWeight = $cargo->weight -  $cargo->partition_weight  ;
-                    if ($totalWeight > $cargo->weight) {
-                        $validator->errors()->add(
-                            'weight',
-                            'وزن وارد شده بیشتر از ظرفیت کل محموله است. (حداکثر: ' . $maxWeight . ')'
-                        );
-                    }
-                }
+            if (!$cargoId || !$newWeight) {
+                return;
             }
+
+            $cargo = Cargo::with('partitions')->find($cargoId);
+
+            if (!$cargo) {
+                return;
+            }
+
+
+            $totalWeight = ($cargo->partition_weight - $partitionWeight) + $newWeight;
+
+            $maxWeight = $cargo->weight;
+
+            if ($totalWeight > $maxWeight) {
+                $validator->errors()->add(
+                    'weight',
+                    'وزن وارد شده بیشتر از ظرفیت کل محموله است. (حداکثر: ' . ($maxWeight - ($cargo->partition_weight - $partitionWeight)) . ')'
+                );
+            }
+
         });
     }
+
 }

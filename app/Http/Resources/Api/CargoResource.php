@@ -25,6 +25,8 @@ class CargoResource extends JsonResource
                 : '',
             'cargoOriginCity' => (string) ($this->cargo?->origin?->city?->name ?? ''),
             'cargoDestinationCity' => (string) ($this->cargo?->destination?->city?->name ?? ''),
+            'cargoOriginDescription' => (string) ($this->cargo?->origin?->description?? ''),
+            'cargoDestinationDescription' => (string) ($this->cargo?->destination?->description ?? ''),
             'partitionFare' => (int) ($this->fare ?? 0),
             'partitionCommission' => (int) ($this->commission ?? 0),
             'partitionStatus' => (string) ($this->status ?? ''),
@@ -36,6 +38,9 @@ class CargoResource extends JsonResource
                 : '',
             'cargoInsuranceCost' => (int) ($this->cargo?->insurance_value ?? 0),
             'cargoDescription' => (string) ($this->cargo?->description ?? ''),
+            'partitionHavaleFile' => (string) ($this->havaleFile ?? ''),
+            'partitionBarnamehFile' => (string) ($this->barnamehFile ?? ''),
+
         ];
     }
 

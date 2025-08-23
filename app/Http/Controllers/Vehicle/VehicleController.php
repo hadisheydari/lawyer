@@ -45,7 +45,6 @@ class VehicleController extends Controller
      */
     public function show(Vehicle $vehicle)
     {
-
         $vehicleDetails = VehicleDetail::pluck('name', 'id');
         return view('vehicles.show', compact('vehicleDetails' , 'vehicle'));
     }

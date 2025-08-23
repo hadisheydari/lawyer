@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OtpRequest;
 use App\Http\Resources\UserOtpResource;
+use App\Models\Vehicle;
 use App\Services\OtpService;
 use Illuminate\Http\Request;
 use App\Models\Cargo;
@@ -12,11 +13,15 @@ use App\Models\Partition;
 use App\Enums\Entity\PropertyType;
 use App\Models\Driver;
 use App\Http\Resources\Api\CargoResource;
+use App\Http\Resources\Api\VehicleResource;
 use App\Enums\Cargo\CargoStatus;
 use Illuminate\Http\JsonResponse;
+use App\Traits\ApiResponseTrait;
 
 class CargoController extends Controller
 {
+    use ApiResponseTrait;
+
     public function freePartitions(Request $request)
     {
         $userId = $request->user()->id;
@@ -41,12 +46,8 @@ class CargoController extends Controller
                 });
             })
             ->get();
+        return $this->success('با موفقیت انجام شد .', 200, CargoResource::collection($partitions));
 
-        return response()->json([
-            'success' => true,
-            'message' => 'با موفقیت انجام شد .',
-            'data'=> CargoResource::collection($partitions)
-        ], 200);
     }
 
     public function acceptByDriver(Request $request, Partition $partition): JsonResponse
@@ -57,21 +58,16 @@ class CargoController extends Controller
         $partition->driver_id = $userId;
         $partition->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'پارتیشن با موفقیت رزرو شد.',
-        ], 200);
+        return $this->success( 'پارتیشن با موفقیت رزرو شد.', 200, null);
+
     }
 
     public function driverPartitions(Request $request)
     {
         $userId = $request->user()->id;
         $partitions = Partition::query()->where('driver_id', $userId)->get();
-        return response()->json([
-            'success' => true,
-            'message' => 'با موفقیت انجام شد .',
-            'data'=> CargoResource::collection($partitions)
-        ], 200);
+        return $this->success('با موفقیت انجام شد .', 200,  CargoResource::collection($partitions));
+
 
     }
 
@@ -87,11 +83,10 @@ class CargoController extends Controller
                 ]
             );
         } catch (\Throwable $e) {
+            return $this->success('کد با موفقیت ارسال شد .', 200, null);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'کد با موفقیت ارسال شد .',
-            ], 200);        }
+
+        }
     }
 
 
@@ -100,12 +95,31 @@ class CargoController extends Controller
         if ($otpService->verifyPartition($partition, $code)) {
             $partition->status = CargoStatus::DELIVERED;
             $partition->save();
+            return $this->success('پارتیشن با موفقیت تحویل داده شد.', 200, null);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'پارتیشن با موفقیت تحویل داده شد.',
-            ], 200);
         }
     }
+    public function driverVehicle(Request $request)
+    {
+        $driver = $request->user()->driver;
+
+        if (! $driver) {
+            return $this->error('راننده‌ای برای این کاربر یافت نشد.', 404);
+        }
+
+        $vehicle = $driver->vehicle()->first();
+
+        if (! $vehicle) {
+            return $this->error('وسیله نقلیه‌ای یافت نشد.', 404);
+        }
+
+        return $this->success(
+            'با موفقیت انجام شد.',
+            200,
+            new VehicleResource($vehicle)
+        );
+    }
+
+
 
 }

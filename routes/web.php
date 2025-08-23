@@ -15,6 +15,7 @@ use App\Http\Controllers\CargoDeclaration\CargoReservationController;
 use App\Http\Controllers\CargoDeclaration\CargoBidController;
 use App\Http\Controllers\CargoDelivery\PartitionController;
 use App\Http\Controllers\Rating\RatingController;
+use App\Http\Controllers\Complaint\ComplaintController;
 
 
 require __DIR__.'/auth.php';
@@ -70,8 +71,11 @@ Route::middleware(['auth', 'role.selected'])->group(function () {
 
     Route::resource('ratings', RatingController::class)->except('create');
     Route::get('/ratings/create/{partition}', [RatingController::class, 'create'])->name('ratings.create');
+   //
+    //شکایت
+    Route::resource('complaints', ComplaintController::class);
 
-
+    //
 
 });
 

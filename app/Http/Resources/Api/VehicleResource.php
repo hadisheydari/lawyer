@@ -17,18 +17,14 @@ class VehicleResource extends JsonResource
         return [
             'vehicleId' => (Int) ($this->id ?? ''),
             'vehicleName' => (string) ($this->vehicleDetail?->name ?? ''),
-            'vehicleLicensePlate' => (string) ($this->plate_first?? '' . $this->plate_letter?? '' . $this->plate_second?? ''),
+            'vehiclePlateFirst' => (string) ($this->plate_first?? ''),
+            'vehiclePlateLetter' => (string) ($this->plate_letter?? ''),
+            'vehiclePlateSecond' => (string) ($this->plate_second?? ''),
             'vehicleProvincePlate' => (string) ($this->plate_third?? ''),
-            'vehiclePlateType' => (string) (__('vehicle_enums.plate_types')?? ''),
+            'vehiclePlateType' => (string) (__('vehicle_enums.plate_types.'.$this->plate_type)?? ''),
+            'vehicleCostCenter' => (string) ($this->cost_center?? ''),
+            'vehicleSmartNumber' => (string) ($this->smart_number?? ''),
 
-            'cargoDestinationCity' => (string) ($this->cargo?->destination?->city?->name ?? ''),
-            'partitionFare' => (int) ($this->fare ?? 0),
-            'partitionCommission' => (int) ($this->commission ?? 0),
-            'partitionStatus' => (string) ($this->status ?? ''),
-            'persianCargoStatus' => (string) ( __('cargo_enums.cargo_status.' . $this->status ) ?? ''),
-            'partitionWeight' => (int) ($this->weight ?? 0),
-            'cargoPackName'=> (string) ($this->cargo?->packing?->name ?? ''),
-            'cargoInsuranceCost' => (int) ($this->cargo?->insurance_value ?? 0),
-            'cargoDescription' => (string) ($this->cargo?->description ?? ''),
-        ];    }
+        ];
+    }
 }

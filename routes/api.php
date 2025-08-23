@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::Put('/partitions/confirmation/{partition}', [CargoController::class, 'confirmationDriver']);
     Route::Put('/partitions/evacuated/{partition}/{cade}', [CargoController::class, 'evacuatedDriver']);
     Route::post('/rating',  [RatingController::class, 'store']);
+    Route::get('/driverVehicle', [CargoController::class, 'driverVehicle']);
 
 
 
