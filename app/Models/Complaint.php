@@ -32,7 +32,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Complaint extends Model
 {
     protected $fillable = [
-        'user_id',
+        'complainant_id',
+        'receiver_id',
         'title',
         'description',
         'status',
@@ -40,9 +41,14 @@ class Complaint extends Model
 
 
 
-    public function user(): BelongsTo
+    public function complainant(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class , 'complainant_id');
+    }
+
+    public function receiver(): BelongsTo
+    {
+        return $this->belongsTo(User::class , 'receiver_id');
     }
 
     public function responses(): HasMany

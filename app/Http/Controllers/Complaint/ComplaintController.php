@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Complaint;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Models\Complaint;
+use App\Models\ComplaintResponse;
 class ComplaintController extends Controller
 {
     /**
@@ -12,7 +13,8 @@ class ComplaintController extends Controller
      */
     public function index()
     {
-        //
+        $complaints = Complaint::where('complainant_id', auth()->id())->orWhere('receiver_id' , auth()->id() )->latest()->paginate(10);
+        return view('complaints.index', compact('complaints'));
     }
 
     /**
@@ -59,6 +61,10 @@ class ComplaintController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
+    {
+        //
+    }
+    public function store_review()
     {
         //
     }

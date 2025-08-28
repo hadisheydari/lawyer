@@ -73,8 +73,8 @@ Route::middleware(['auth', 'role.selected'])->group(function () {
     Route::get('/ratings/create/{partition}', [RatingController::class, 'create'])->name('ratings.create');
    //
     //شکایت
-    Route::resource('complaints', ComplaintController::class);
-
+    Route::post('/complaints/review/{cargo}', [ComplaintController::class, 'store_review'])->name('complaints.review');
+    Route::resource('complaints', ComplaintController::class)->except('create');
     //
 
 });

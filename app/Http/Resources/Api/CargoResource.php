@@ -40,6 +40,7 @@ class CargoResource extends JsonResource
             'cargoDescription' => (string) ($this->cargo?->description ?? ''),
             'partitionHavaleFile' => (string) ($this->havaleFile ?? ''),
             'partitionBarnamehFile' => (string) ($this->barnamehFile ?? ''),
+            'partitionHasRating' => (bool) $this->ratingDriver,
 
         ];
     }

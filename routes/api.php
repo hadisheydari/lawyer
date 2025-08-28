@@ -17,7 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::Put('/partitions/acceptByDriver/{partition}', [CargoController::class, 'acceptByDriver']);
     Route::get('/driverPartitions', [CargoController::class, 'driverPartitions']);
     Route::Put('/partitions/confirmation/{partition}', [CargoController::class, 'confirmationDriver']);
-    Route::Put('/partitions/evacuated/{partition}/{cade}', [CargoController::class, 'evacuatedDriver']);
+    Route::Put('/partitions/evacuated/{partition}/{code}', [CargoController::class, 'evacuatedDriver']);
     Route::post('/rating',  [RatingController::class, 'store']);
     Route::get('/driverVehicle', [CargoController::class, 'driverVehicle']);
 

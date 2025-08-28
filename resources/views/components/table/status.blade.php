@@ -4,13 +4,14 @@
         'pending' => 'bg-yellow-500 text-white',
         'rejected' => 'bg-red-600 text-white',
         'reserve' => 'bg-blue-600 text-white',
-        'free' => 'bg-yellow-600 text-white',
+        'free' => 'bg-indigo-600 text-white',
         'rqf' => 'bg-green-600 text-white',
         'reserved' => 'bg-blue-600 text-white',
         'havale' => 'bg-yellow-600 text-white',
         'barnameh' => 'bg-green-600 text-white',
         'delivered' => 'bg-gray-600 text-white',
-
+        'read'=> 'bg-green-600 text-white' ,
+        'not_read'=> 'bg-red-600 text-white' ,
 
 
     ];
@@ -25,6 +26,8 @@
         'havale' => 'حواله شده',
         'barnameh' => 'بارنامه شده',
         'delivered' => 'تحویل داده شده',
+        'read'=> 'بررسی شده' ,
+        'not_read'=> 'بررسی نشده' ,
 
     ];
 
