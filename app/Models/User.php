@@ -2,59 +2,26 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 
-/**
- * @property int $id
- * @property string $name
- * @property string $phone
- * @property string|null $email
- * @property string $password
- * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $verified_at
- * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
- * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
- * @property-read int|null $roles_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User permission($permissions, $without = false)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User role($roles, $guard = null, $without = false)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhone($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
- * @property-read \App\Models\Company|null $company
- * @property-read \App\Models\Driver|null $driver
- * @property-read \App\Models\ProductOwner|null $productOwner
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
- * @property-read int|null $tokens_count
- * @mixin \Eloquent
- */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasRoles;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
-        'phone',
         'email',
+        'phone',
+        'national_code',
         'password',
+        'status',
+        'user_type',
+        'approved_at',
+        'approved_by',
+        'rejection_reason',
     ];
 
     protected $hidden = [
@@ -65,23 +32,89 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'verified_at' => 'datetime',
             'email_verified_at' => 'datetime',
+            'approved_at' => 'datetime',
+            'password' => 'hashed',
         ];
     }
 
-    public function company():HasOne
+    // Relations
+    public function subscriptions()
     {
-        return $this->hasOne(Company::class);
+        return $this->hasMany(UserSubscription::class);
     }
 
-    public function productOwner():HasOne
+    public function activeSubscription()
     {
-        return $this->hasOne(ProductOwner::class);
+        return $this->hasOne(UserSubscription::class)
+            ->where('status', 'active')
+            ->where('expires_at', '>', now());
     }
 
-    public function driver():HasOne
+    public function articles()
     {
-        return $this->hasOne(Driver::class);
+        return $this->hasMany(Article::class, 'author_id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(ArticleComment::class);
+    }
+
+    public function reactions()
+    {
+        return $this->hasMany(ArticleReaction::class);
+    }
+
+    public function consultations()
+    {
+        return $this->hasMany(Consultation::class);
+    }
+
+    public function conversations()
+    {
+        return $this->hasMany(ChatConversation::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    // Scopes
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    // Helpers
+    public function isApproved(): bool
+    {
+        return $this->status === 'approved';
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function isSpecial(): bool
+    {
+        return $this->user_type === 'special';
+    }
+
+    public function isPremium(): bool
+    {
+        return $this->user_type === 'premium';
+    }
+
+    public function hasActiveSubscription(): bool
+    {
+        return $this->activeSubscription()->exists();
     }
 }
