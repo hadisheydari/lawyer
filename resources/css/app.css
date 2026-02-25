@@ -1,0 +1,23 @@
+@import './font.css';
+@import './select2-custom.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Optional: custom base layer */
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+
+    * {
+        font-family: 'Vazir', sans-serif;
+        direction: rtl;
+    }
+}
+
+
