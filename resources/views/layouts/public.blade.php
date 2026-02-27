@@ -223,7 +223,9 @@
                 <li><a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">درباره وکلا</a></li>
                 <li><a href="{{ route('services.index') }}" class="nav-link {{ request()->routeIs('services*') ? 'active' : '' }}">حوزه‌های وکالت</a></li>
                 <li><a href="{{ route('articles.index') }}" class="nav-link {{ request()->routeIs('articles*') ? 'active' : '' }}">مقالات</a></li>
-                <li><a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">تماس با ما</a></li>
+                <li><a href="{{ route(name: 'calculators.index') }}" class="nav-link {{ request()->routeIs('calculators') ? 'active' : '' }}">ماشین‌حساب حقوقی</a></li>
+                <li><a href="{{ route(name: 'contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">تماس با ما</a></li>
+
             </ul>
         </nav>
 
@@ -261,8 +263,8 @@
         <a href="{{ route('about') }}">درباره ما</a>
         <a href="{{ route('services.index') }}">خدمات</a>
         <a href="{{ route('articles.index') }}">مقالات</a>
-        <a href="{{ route('contact') }}">تماس با ما</a>
         <a href="{{ route('calculators.index') }}">ماشین‌حساب حقوقی</a>
+        <a href="{{ route('contact') }}">تماس با ما</a>
     </div>
 
     <div class="footer-socials">
