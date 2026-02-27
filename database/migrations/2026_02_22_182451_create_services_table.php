@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
             $table->unsignedTinyInteger('order')->default(0);
-
+            $table->decimal('base_price', 15, 0)->nullable();
             // SEO
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
