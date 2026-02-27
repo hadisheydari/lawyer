@@ -18,6 +18,7 @@ class Article extends Model
         'excerpt',
         'content',
         'featured_image',
+        'category',
         'tags',
         'status',
         'published_at',
@@ -37,6 +38,8 @@ class Article extends Model
         ];
     }
 
+
+    // ─── Relations ────────────────────────────────────────────────────────────
 
     public function lawyer()
     {
@@ -66,16 +69,13 @@ class Article extends Model
     }
 
 
+    // ─── Accessors ────────────────────────────────────────────────────────────
+
     public function getImageUrlAttribute(): string
     {
         return $this->featured_image
             ? asset('storage/' . $this->featured_image)
             : asset('images/default-article.jpg');
-    }
-
-    public function incrementViewCount(): void
-    {
-        $this->increment('view_count');
     }
 
     public function getRouteKeyName(): string
@@ -84,11 +84,32 @@ class Article extends Model
     }
 
 
+    // ─── Methods ──────────────────────────────────────────────────────────────
+
+    public function incrementViewCount(): void
+    {
+        $this->increment('view_count');
+    }
+
+
+    // ─── Scopes ───────────────────────────────────────────────────────────────
+
     public function scopePublished($query)
     {
         return $query->where('status', 'published')
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now());
+    }
+
+    /**
+     * فیلتر بر اساس دسته‌بندی — اگر $category خالی یا null بود، همه رو برمیگردونه
+     */
+    public function scopeByCategory($query, ?string $category)
+    {
+        if ($category && $category !== '') {
+            return $query->where('category', $category);
+        }
+        return $query;
     }
 
     public function scopeRecent($query)

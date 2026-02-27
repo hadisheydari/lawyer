@@ -113,6 +113,22 @@
         }
         .nav-login-btn:hover { background: var(--gold-main); color: #fff; }
 
+        /* ─── Dropdown Menu ────────────────────────────────────────── */
+        .nav-item-dropdown { position: relative; display: flex; align-items: center; height: 100%; padding: 10px 0; }
+        .dropdown-menu {
+            position: absolute; top: 100%; right: 0; background: #fff;
+            min-width: 220px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(207,168,110,0.2);
+            opacity: 0; visibility: hidden; transform: translateY(10px);
+            transition: all 0.3s ease; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .nav-item-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu a {
+            padding: 12px 20px; color: var(--text-body); font-size: 0.88rem;
+            font-weight: 600; border-bottom: 1px solid #f5f5f5; transition: 0.3s;
+        }
+        .dropdown-menu a:last-child { border-bottom: none; }
+        .dropdown-menu a:hover { background: #fdfbf7; color: var(--gold-main); padding-right: 26px; }
         /* همبرگر موبایل */
         .hamburger { display: none; cursor: pointer; font-size: 1.3rem; color: var(--navy); }
 

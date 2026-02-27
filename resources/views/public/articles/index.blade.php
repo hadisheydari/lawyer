@@ -17,6 +17,7 @@
         color: var(--text-body); font-size: 0.85rem; font-weight: 600;
         cursor: pointer; transition: 0.3s;
         background: #fff; font-family: 'Vazirmatn', sans-serif;
+        text-decoration: none; display: inline-block;
     }
     .filter-btn:hover, .filter-btn.active {
         background: var(--navy); color: #fff; border-color: var(--navy);
@@ -78,6 +79,12 @@
         font-size: 0.72rem; font-weight: 700; padding: 4px 12px; border-radius: 20px;
         backdrop-filter: blur(5px);
     }
+    /* placeholder وقتی عکس نداره */
+    .ac-img-placeholder {
+        height: 200px; background: linear-gradient(135deg, #0a1c2e, #1e3a5f);
+        display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .ac-img-placeholder i { font-size: 3rem; color: rgba(207,168,110,0.4); }
 
     .ac-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
     .ac-meta { font-size: 0.78rem; color: var(--text-body); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
@@ -93,16 +100,31 @@
     .article-card-page:hover .ac-read-more { gap: 10px; }
     .ac-read-time { font-size: 0.75rem; color: var(--text-body); display: flex; align-items: center; gap: 5px; }
 
+    /* ─── Empty State ────────────────────────────────────────────── */
+    .empty-state {
+        grid-column: 1 / -1; text-align: center;
+        padding: 80px 20px; color: var(--text-body);
+    }
+    .empty-state i { font-size: 3.5rem; color: var(--gold-main); opacity: 0.4; margin-bottom: 20px; display: block; }
+    .empty-state h3 { font-size: 1.3rem; color: var(--text-heading); margin-bottom: 10px; }
+    .empty-state p { font-size: 0.9rem; }
+
     /* ─── Pagination ─────────────────────────────────────────────── */
-    .pagination-wrap { display: flex; justify-content: center; gap: 8px; margin-top: 50px; }
-    .page-btn {
+    .pagination-wrap {
+        display: flex; justify-content: center; align-items: center;
+        gap: 8px; margin-top: 50px; flex-wrap: wrap;
+    }
+    .pagination-wrap .page-link {
         width: 40px; height: 40px; border-radius: 10px;
         display: flex; align-items: center; justify-content: center;
         font-weight: 700; font-size: 0.9rem;
         border: 1.5px solid #e0e0e0; color: var(--text-body);
-        transition: 0.3s; text-decoration: none;
+        transition: 0.3s; text-decoration: none; background: #fff;
     }
-    .page-btn:hover, .page-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .pagination-wrap .page-link:hover,
+    .pagination-wrap .page-link.active,
+    .pagination-wrap span.page-link { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .pagination-wrap .page-link.disabled { opacity: 0.4; pointer-events: none; }
 
     @media (max-width: 900px) {
         .article-featured { grid-template-columns: 1fr; }
@@ -127,83 +149,172 @@
 
 <div class="articles-page">
 
-    {{-- Filter Bar --}}
+    {{-- ─── Filter Bar — dynamic از دیتابیس ──────────────────── --}}
     <div class="filter-bar">
         <span>دسته‌بندی:</span>
-        <button class="filter-btn active">همه مقالات</button>
-        <button class="filter-btn">حقوق خانواده</button>
-        <button class="filter-btn">دعاوی ملکی</button>
-        <button class="filter-btn">امور تجاری</button>
-        <button class="filter-btn">حقوق کیفری</button>
-        <button class="filter-btn">چک و برات</button>
-    </div>
 
-    <div class="articles-layout">
-
-        {{-- ─── Featured Article ─── --}}
-        <a href="{{ route('articles.show', 'mahrieh-1404') }}" class="article-featured">
-            <div class="af-img">
-                <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=70" alt="مهریه">
-                <span class="af-badge">مقاله ویژه</span>
-            </div>
-            <div class="af-content">
-                <div class="af-meta">
-                    <i class="far fa-calendar-alt"></i> ۱۴۰۴/۰۲/۱۲
-                    &nbsp;|&nbsp; حقوق خانواده
-                    &nbsp;|&nbsp; <i class="fas fa-clock"></i> ۸ دقیقه مطالعه
-                </div>
-                <h2 class="af-title">راهنمای جامع مطالبه مهریه در سال ۱۴۰۴: شرایط، مراحل و نکات کلیدی</h2>
-                <p class="af-excerpt">
-                    با تغییر نرخ شاخص بانک مرکزی، ارزش ریالی مهریه به‌طور قابل‌توجهی تغییر کرده است.
-                    در این مقاله جامع، تمام جنبه‌های حقوقی مطالبه مهریه، از نحوه محاسبه تا مراحل اجرایی را
-                    به زبان ساده بررسی می‌کنیم...
-                </p>
-                <span class="btn-read">
-                    خواندن مقاله <i class="fas fa-arrow-left"></i>
-                </span>
-            </div>
+        {{-- دکمه «همه» --}}
+        <a href="{{ route('articles.index') }}"
+           class="filter-btn {{ is_null($category) ? 'active' : '' }}">
+            همه مقالات
         </a>
 
-        @php
-        $articles = [
-            ['slug' => 'sayyadi-check', 'cat' => 'چک و برات', 'date' => '۱۴۰۴/۰۲/۰۵', 'time' => '۵ دقیقه', 'title' => 'قانون جدید چک‌های صیادی و روش رفع سوءاثر', 'excerpt' => 'همه آنچه باید درباره چک‌های بنفش، نحوه پیگیری قضایی و رفع سوءاثر در سیستم بانکی بدانید...', 'img' => 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=70'],
-            ['slug' => 'real-estate-guide', 'cat' => 'دعاوی ملکی', 'date' => '۱۴۰۴/۰۱/۲۸', 'time' => '۶ دقیقه', 'title' => 'راهنمای خرید ملک: نکاتی که قبل از امضا باید بدانید', 'excerpt' => 'نکات کلیدی و حیاتی که پیش از امضای هرگونه قرارداد ملکی باید بدانید تا متضرر نشوید...', 'img' => 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=600&q=70'],
-            ['slug' => 'dieh-1404', 'cat' => 'حقوق کیفری', 'date' => '۱۴۰۴/۰۱/۱۵', 'time' => '۴ دقیقه', 'title' => 'دیه سال ۱۴۰۴: مبلغ رسمی و نحوه محاسبه', 'excerpt' => 'دیه کامل مرد مسلمان در سال ۱۴۰۴ و نحوه محاسبه انواع دیات جراحات و اعضا به تفصیل...', 'img' => 'https://images.unsplash.com/photo-1589994965851-a8f479c573a9?auto=format&fit=crop&w=600&q=70'],
-            ['slug' => 'inheritance-steps', 'cat' => 'ارث و ترکه', 'date' => '۱۴۰۳/۱۲/۲۰', 'time' => '۷ دقیقه', 'title' => 'انحصار وراثت: مراحل، مدارک و هزینه‌ها', 'excerpt' => 'فرآیند گرفتن گواهی انحصار وراثت قدم به قدم، از تهیه مدارک تا صدور گواهی رسمی...', 'img' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=70'],
-        ];
-        @endphp
-
-        @foreach($articles as $a)
-        <a href="{{ route('articles.show', $a['slug']) }}" class="article-card-page">
-            <div class="ac-img">
-                <img src="{{ $a['img'] }}" alt="{{ $a['title'] }}" loading="lazy">
-                <span class="ac-cat">{{ $a['cat'] }}</span>
-            </div>
-            <div class="ac-content">
-                <div class="ac-meta">
-                    <i class="far fa-calendar-alt"></i> {{ $a['date'] }}
-                    <span style="color:#ddd;">|</span>
-                    <i class="fas fa-clock"></i> {{ $a['time'] }} مطالعه
-                </div>
-                <h3 class="ac-title">{{ $a['title'] }}</h3>
-                <p class="ac-excerpt">{{ $a['excerpt'] }}</p>
-                <div class="ac-footer">
-                    <span class="ac-read-more">ادامه مطلب <i class="fas fa-arrow-left"></i></span>
-                    <span class="ac-read-time"><i class="fas fa-eye"></i> ۲.۴k بازدید</span>
-                </div>
-            </div>
-        </a>
+        {{-- دسته‌بندی‌های واقعی از دیتابیس --}}
+        @foreach($categories as $cat)
+            <a href="{{ route('articles.index', ['cat' => $cat]) }}"
+               class="filter-btn {{ $category === $cat ? 'active' : '' }}">
+                {{ $cat }}
+            </a>
         @endforeach
-
     </div>
 
-    {{-- Pagination --}}
-    <div class="pagination-wrap">
-        <a href="#" class="page-btn active">۱</a>
-        <a href="#" class="page-btn">۲</a>
-        <a href="#" class="page-btn">۳</a>
-        <a href="#" class="page-btn"><i class="fas fa-chevron-left"></i></a>
-    </div>
+    @if($articles->isEmpty())
+
+        {{-- ─── Empty State ───────────────────────────────────── --}}
+        <div class="articles-layout">
+            <div class="empty-state">
+                <i class="fas fa-newspaper"></i>
+                <h3>مقاله‌ای یافت نشد</h3>
+                <p>
+                    @if($category)
+                        در دسته‌بندی «{{ $category }}» هنوز مقاله‌ای منتشر نشده است.
+                        <a href="{{ route('articles.index') }}" style="color:var(--gold-main);font-weight:700;">همه مقالات</a>
+                    @else
+                        هنوز هیچ مقاله‌ای منتشر نشده است.
+                    @endif
+                </p>
+            </div>
+        </div>
+
+    @else
+
+        <div class="articles-layout">
+
+            {{-- ─── Featured Article — اولین مقاله به عنوان ویژه ─── --}}
+            @php $featured = $articles->first(); @endphp
+            <a href="{{ route('articles.show', $featured->slug) }}" class="article-featured">
+                <div class="af-img">
+                    @if($featured->featured_image)
+                        <img src="{{ asset('storage/' . $featured->featured_image) }}"
+                             alt="{{ $featured->title }}" loading="lazy">
+                    @else
+                        <div style="width:100%;height:100%;background:linear-gradient(135deg,#0a1c2e,#1e3a5f);display:flex;align-items:center;justify-content:center;">
+                            <i class="fas fa-newspaper" style="font-size:5rem;color:rgba(207,168,110,0.3);"></i>
+                        </div>
+                    @endif
+                    <span class="af-badge">مقاله ویژه</span>
+                </div>
+                <div class="af-content">
+                    <div class="af-meta">
+                        @if($featured->published_at)
+                            <i class="far fa-calendar-alt"></i>
+                            {{ \Morilog\Jalali\Jalalian::fromCarbon($featured->published_at)->format('Y/m/d') }}
+                            &nbsp;|&nbsp;
+                        @endif
+                        @if($featured->category)
+                            {{ $featured->category }}
+                            &nbsp;|&nbsp;
+                        @endif
+                        @if($featured->reading_time)
+                            <i class="fas fa-clock"></i> {{ $featured->reading_time }} دقیقه مطالعه
+                        @endif
+                    </div>
+                    <h2 class="af-title">{{ $featured->title }}</h2>
+                    @if($featured->excerpt)
+                        <p class="af-excerpt">{{ $featured->excerpt }}</p>
+                    @endif
+                    <span class="btn-read">
+                        خواندن مقاله <i class="fas fa-arrow-left"></i>
+                    </span>
+                </div>
+            </a>
+
+            {{-- ─── بقیه مقالات ─────────────────────────────────── --}}
+            @foreach($articles->slice(1) as $article)
+                <a href="{{ route('articles.show', $article->slug) }}" class="article-card-page">
+
+                    @if($article->featured_image)
+                        <div class="ac-img">
+                            <img src="{{ asset('storage/' . $article->featured_image) }}"
+                                 alt="{{ $article->title }}" loading="lazy">
+                            @if($article->category)
+                                <span class="ac-cat">{{ $article->category }}</span>
+                            @endif
+                        </div>
+                    @else
+                        <div class="ac-img-placeholder">
+                            <i class="fas fa-newspaper"></i>
+                            @if($article->category)
+                                <span class="ac-cat">{{ $article->category }}</span>
+                            @endif
+                        </div>
+                    @endif
+
+                    <div class="ac-content">
+                        <div class="ac-meta">
+                            @if($article->published_at)
+                                <i class="far fa-calendar-alt"></i>
+                                {{ \Morilog\Jalali\Jalalian::fromCarbon($article->published_at)->format('Y/m/d') }}
+                            @endif
+                            @if($article->reading_time)
+                                <span style="color:#ddd;">|</span>
+                                <i class="fas fa-clock"></i> {{ $article->reading_time }} دقیقه
+                            @endif
+                        </div>
+                        <h3 class="ac-title">{{ $article->title }}</h3>
+                        @if($article->excerpt)
+                            <p class="ac-excerpt">{{ Str::limit($article->excerpt, 100) }}</p>
+                        @endif
+                        <div class="ac-footer">
+                            <span class="ac-read-more">ادامه مطلب <i class="fas fa-arrow-left"></i></span>
+                            @if($article->view_count)
+                                <span class="ac-read-time">
+                                    <i class="fas fa-eye"></i>
+                                    {{ number_format($article->view_count) }} بازدید
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </a>
+            @endforeach
+
+        </div>
+
+        {{-- ─── Pagination — از Laravel Paginator ─────────────── --}}
+        @if($articles->hasPages())
+            <div class="pagination-wrap">
+
+                {{-- دکمه قبلی --}}
+                @if($articles->onFirstPage())
+                    <span class="page-link disabled"><i class="fas fa-chevron-right"></i></span>
+                @else
+                    <a href="{{ $articles->previousPageUrl() }}" class="page-link">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                @endif
+
+                {{-- شماره صفحات --}}
+                @foreach($articles->getUrlRange(1, $articles->lastPage()) as $page => $url)
+                    @if($page == $articles->currentPage())
+                        <span class="page-link active">{{ $page }}</span>
+                    @else
+                        <a href="{{ $url }}" class="page-link">{{ $page }}</a>
+                    @endif
+                @endforeach
+
+                {{-- دکمه بعدی --}}
+                @if($articles->hasMorePages())
+                    <a href="{{ $articles->nextPageUrl() }}" class="page-link">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                @else
+                    <span class="page-link disabled"><i class="fas fa-chevron-left"></i></span>
+                @endif
+
+            </div>
+        @endif
+
+    @endif
 
 </div>
 @endsection

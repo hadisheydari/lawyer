@@ -14,30 +14,36 @@ class ArticleController extends Controller
 
         $articles = Article::published()
             ->byCategory($category)
+            ->recent()
             ->with('lawyer')
             ->paginate(9);
 
-        // دسته‌بندی‌های موجود برای فیلتر
+        // دسته‌بندی‌های موجود برای فیلتر — از مقالات published واقعی
         $categories = Article::published()
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
             ->distinct()
-            ->pluck('category')
-            ->sort()
-            ->values();
+            ->orderBy('category')
+            ->pluck('category');
 
         return view('public.articles.index', compact('articles', 'category', 'categories'));
     }
 
     public function show(string $slug)
     {
-        $article = Article::where('slug', $slug)->where('is_published', true)->with('lawyer')->firstOrFail();
+        $article = Article::published()
+            ->where('slug', $slug)
+            ->with('lawyer')
+            ->firstOrFail();
 
         // افزایش بازدید
-        $article->increment('views');
+        $article->incrementViewCount();
 
         // مقالات مرتبط همان دسته
         $related = Article::published()
             ->where('category', $article->category)
             ->where('id', '!=', $article->id)
+            ->recent()
             ->take(3)
             ->get();
 
