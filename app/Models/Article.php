@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Article extends Model
 {
@@ -16,31 +16,28 @@ class Article extends Model
         'title',
         'slug',
         'excerpt',
-        'content',
+        'body',
         'featured_image',
+        'status',           // ✅ اضافه شد
+        'published_at',     // ✅ اضافه شد
+        'view_count',       // ✅ اضافه شد
+        'reading_time',     // ✅ اضافه شد
         'category',
         'tags',
-        'status',
-        'published_at',
-        'view_count',
-        'reading_time',
         'meta_title',
         'meta_description',
         'meta_keywords',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'tags'          => 'array',
-            'meta_keywords' => 'array',
-            'published_at'  => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'tags'          => 'array',
+        'meta_keywords' => 'array',
+        'published_at'  => 'datetime',
+        'view_count'    => 'integer',   // ✅ اضافه شد
+        'reading_time'  => 'integer',   // ✅ اضافه شد
+    ];
 
-
-    // ─── Relations ────────────────────────────────────────────────────────────
-
+    // ─── Relations ───────────────────────────────────────────
     public function lawyer()
     {
         return $this->belongsTo(Lawyer::class);
@@ -59,8 +56,10 @@ class Article extends Model
     public function approvedComments()
     {
         return $this->hasMany(ArticleComment::class)
-            ->where('status', 'approved')
-            ->whereNull('parent_id');
+                    ->whereNull('parent_id')        // فقط کامنت‌های اصلی
+                    ->where('status', 'approved')
+                    ->with('replies')               // لود کردن جواب‌ها
+                    ->latest();
     }
 
     public function reactions()
@@ -68,48 +67,18 @@ class Article extends Model
         return $this->hasMany(ArticleReaction::class);
     }
 
-
-    // ─── Accessors ────────────────────────────────────────────────────────────
-
-    public function getImageUrlAttribute(): string
-    {
-        return $this->featured_image
-            ? asset('storage/' . $this->featured_image)
-            : asset('images/default-article.jpg');
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
-
-    // ─── Methods ──────────────────────────────────────────────────────────────
-
-    public function incrementViewCount(): void
-    {
-        $this->increment('view_count');
-    }
-
-
-    // ─── Scopes ───────────────────────────────────────────────────────────────
-
+    // ─── Scopes ──────────────────────────────────────────────
     public function scopePublished($query)
     {
         return $query->where('status', 'published')
-            ->whereNotNull('published_at')
-            ->where('published_at', '<=', now());
+                     ->where('published_at', '<=', now());
     }
 
-    /**
-     * فیلتر بر اساس دسته‌بندی — اگر $category خالی یا null بود، همه رو برمیگردونه
-     */
-    public function scopeByCategory($query, ?string $category)
+    public function scopeByCategory($query, $category)
     {
-        if ($category && $category !== '') {
-            return $query->where('category', $category);
-        }
-        return $query;
+        return $category
+            ? $query->where('category', $category)
+            : $query;
     }
 
     public function scopeRecent($query)
@@ -120,5 +89,19 @@ class Article extends Model
     public function scopePopular($query)
     {
         return $query->orderBy('view_count', 'desc');
+    }
+
+    // ─── Accessors ───────────────────────────────────────────
+    public function getImageUrlAttribute(): string
+    {
+        return $this->featured_image
+            ? asset('assets/images/' . $this->featured_image)
+            : asset('assets/images/default-article.jpg');
+    }
+
+    // ─── Methods ─────────────────────────────────────────────
+    public function incrementViewCount(): void
+    {
+        $this->increment('view_count');
     }
 }

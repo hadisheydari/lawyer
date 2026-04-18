@@ -232,12 +232,12 @@
 @section('content')
 
 {{-- بنر بالای صفحه --}}
-<div class="page-banner">
+<div class="page-banner" style="margin-right: 3%; margin-top: 3%;">
     <div class="page-banner-inner">
         <h1><i class="fas fa-balance-scale" style="color:var(--gold-main);margin-left:12px;"></i>خدمات تخصصی حقوقی</h1>
         <div class="breadcrumb">
             <a href="{{ route('home') }}">صفحه اصلی</a>
-            <i class="fas fa-chevron-left"></i>
+            <i class="fas fa-chevron-right"></i>
             <span>حوزه‌های وکالت</span>
         </div>
     </div>
@@ -258,7 +258,7 @@
                 
                 {{-- عکس و آیکون شناور --}}
                 <div class="pc-img-box">
-                    <img src="{{ $service->image ? asset('storage/' . $service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80' }}" 
+                    <img src="{{ $service->image ? asset('assets/images/' . $service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80' }}" 
                          alt="{{ $service->title }}" loading="lazy"
                          onerror="this.src='https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80'">
                     

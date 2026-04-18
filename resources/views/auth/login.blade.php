@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ورود به پورتال | دفتر وکالت ابدالی و جوشقانی</title>
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}">
     <style>
         :root {
             --bg-body: #fdfbf7;
@@ -154,7 +153,7 @@
             <div class="auth-divider">یا</div>
             <div class="auth-footer">
                 حساب کاربری ندارید؟
-                <a href="{{ route('register') }}">ثبت نام کنید</a>
+                <a href="{{ route('register-show') }}">ثبت نام کنید</a>
             </div>
         </div>
 
@@ -198,7 +197,7 @@
                 <i class="fas fa-arrow-right"></i> تغییر شماره
             </button>
 
-            <form id="clearForm" method="POST" action="{{ route('auth.clear-session') }}" style="display:none;">
+            <form id="clearForm" method="POST" action="#" style="display:none;">
                 @csrf
             </form>
         </div>

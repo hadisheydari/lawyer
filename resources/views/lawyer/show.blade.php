@@ -108,7 +108,7 @@
             <a href="{{ route('home') }}">صفحه اصلی</a>
             <i class="fas fa-chevron-left"></i>
             <a href="{{ route('lawyers.index') }}">وکلا</a>
-            <i class="fas fa-chevron-left"></i>
+            <i class="fas fa-chevron-right"></i>
             <span>{{ $lawyer['name'] }}</span>
         </div>
     </div>

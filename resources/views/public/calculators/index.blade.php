@@ -145,12 +145,12 @@
 
 @section('content')
 
-<div class="page-banner">
+<div class="page-banner" style="margin-right: 3%; margin-top: 3%;">
     <div class="page-banner-inner">
         <h1><i class="fas fa-calculator" style="color:var(--gold-main);margin-left:12px;"></i>محاسبات حقوقی</h1>
         <div class="breadcrumb">
             <a href="{{ route('home') }}">صفحه اصلی</a>
-            <i class="fas fa-chevron-left"></i>
+            <i class="fas fa-chevron-right"></i>
             <span>ماشین‌حساب‌های حقوقی</span>
         </div>
     </div>

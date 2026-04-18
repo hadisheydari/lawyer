@@ -1,12 +1,18 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Public\ArticleController;
+use App\Http\Controllers\Public\ArticleReactionController;
+use App\Http\Controllers\Public\ArticleCommentController;
 use App\Http\Controllers\Public\CalculatorController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\LawyerController;
 use App\Http\Controllers\Public\ReserveController;
 use App\Http\Controllers\Public\ServiceController;
+
+use App\Http\Controllers\Client\DashboardController as ClientDashoboard;
+
 use Illuminate\Support\Facades\Route;
 
 // ═══════════════════════════════════════════════════════════════
@@ -28,6 +34,8 @@ Route::prefix('services')->name('services.')->group(function () {
 Route::prefix('articles')->name('articles.')->group(function () {
     Route::get('/', [ArticleController::class, 'index'])->name('index');
     Route::get('/{slug}', [ArticleController::class, 'show'])->name('show');
+
+    // articles.reactions.store
 });
 
 Route::get('/calculators', [CalculatorController::class, 'index'])->name('calculators.index');
@@ -39,7 +47,7 @@ Route::prefix('reserve')->name('reserve.')->group(function () {
     Route::get('/', [ReserveController::class, 'index'])->name('index');
     Route::post('/', [ReserveController::class, 'store'])->name('store');
     // این روت رو زیر روت‌های قبلی رزرو اضافه کن
-    Route::get('verify/{payment}', [ReserveController::class, 'verifyPayment'])->name('reserve.verify');
+    Route::get('verify/{payment}', [ReserveController::class, 'verifyPayment'])->name('verify');
 });
 
 Route::get('/about', fn () => redirect()->route('lawyers.index'))->name('about');
@@ -56,9 +64,40 @@ Route::prefix('api/calculators')->name('api.calc.')->group(function () {
 // ═══════════════════════════════════════════════════════════════
 // AUTH ROUTES
 // ═══════════════════════════════════════════════════════════════
-Route::get('/login', fn () => view('auth.login'))->name('login');
-Route::get('/register', fn () => view('auth.register'))->name('register');
-Route::post('/logout', fn () => redirect('/')->name('logout'));
+// routes/web.php
+
+Route::middleware(['auth'])->group(function () {
+
+    // ری‌اکشن
+    Route::post('/articles/reactions', [ArticleReactionController::class, 'store'])
+        ->name('articles.reactions.store');
+
+    // کامنت
+    Route::post('/articles/comments', [ArticleCommentController::class, 'store'])
+        ->name('articles.comments.store');
+
+    Route::put('/articles/comments/{comment}', [ArticleCommentController::class, 'update'])
+        ->name('articles.comments.update');
+
+    Route::delete('/articles/comments/{comment}', [ArticleCommentController::class, 'destroy'])
+        ->name('articles.comments.destroy');
+
+});
+
+
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register-show');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::prefix('auth')->name('auth.')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register-show');
+    Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('send-otp');
+    Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify-otp');
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+});
 
 // ═══════════════════════════════════════════════════════════════
 // DASHBOARD (Auth Required)
@@ -66,7 +105,11 @@ Route::post('/logout', fn () => redirect('/')->name('logout'));
 Route::middleware(['auth'])->group(function () {
 
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
-        Route::get('/', fn () => view('client.dashboard'))->name('index');
+        Route::get('/',[ClientDashoboard::class ,'simple'])->name('index');
+    });
+
+    Route::prefix('client')->name('client.')->group(function () {
+        Route::get('/', fn () => view('public.chat'))->name('chat.index');
     });
 
     Route::prefix('special')->name('special.')->group(function () {

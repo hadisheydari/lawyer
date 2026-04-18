@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Lawyer;
 use Illuminate\Http\Request;
 use Morilog\Jalali\Jalalian;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Consultation;
+use App\Models\Payment;
 
 class ReserveController extends Controller
 {

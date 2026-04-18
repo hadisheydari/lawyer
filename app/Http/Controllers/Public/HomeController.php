@@ -14,7 +14,6 @@ class HomeController extends Controller
         $lawyers  = Lawyer::active()->get();
         $services = Service::active()->take(4)->get();
         $articles = Article::published()->take(3)->with('lawyer')->get();
-
-        return view('public.home', compact('lawyers', 'services', 'articles'));
+        return view('home', compact('lawyers', 'services', 'articles'));
     }
 }

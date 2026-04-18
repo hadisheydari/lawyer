@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\ArticleReaction;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
@@ -31,22 +32,65 @@ class ArticleController extends Controller
 
     public function show(string $slug)
     {
-        $article = Article::published()
+        $article = Article::with(['lawyer']) // ✅ فقط lawyer که رابطه واقعیه
+            ->published()
             ->where('slug', $slug)
-            ->with('lawyer')
             ->firstOrFail();
 
-        // افزایش بازدید
-        $article->incrementViewCount();
+        // ✅ جلوگیری از شمارش تکراری با کوکی
+        $cookieKey = 'viewed_article_'.$article->id;
 
-        // مقالات مرتبط همان دسته
+        if (! request()->cookie($cookieKey)) {
+            $article->incrementViewCount();
+            cookie()->queue($cookieKey, true, 60 * 24);
+        }
+
+        // ─── کامنت‌های تایید شده ─────────────────────────
+        $comments = $article->comments()
+            ->with([
+                'user',
+                'replies' => fn ($q) => $q->approved()
+                    ->with('user')
+                    ->oldest(),
+            ])
+            ->roots()
+            ->approved()
+            ->latest()
+            ->get();
+
+        // ─── مقالات مرتبط ─────────────────────────────────
         $related = Article::published()
-            ->where('category', $article->category)
+            ->byCategory($article->category)
             ->where('id', '!=', $article->id)
+            ->with('lawyer')
             ->recent()
             ->take(3)
             ->get();
 
-        return view('public.articles.show', compact('article', 'related'));
+        // ─── ری‌اکشن‌های جمع‌بندی شده ──────────────────────
+        $reactionCounts = $article->reactions()
+            ->selectRaw('type, count(*) as total')
+            ->groupBy('type')
+            ->pluck('total', 'type')
+            ->toArray();
+
+        foreach (ArticleReaction::TYPES as $type => $label) {
+            if (! isset($reactionCounts[$type])) {
+                $reactionCounts[$type] = 0;
+            }
+        }
+
+        // ─── ری‌اکشن کاربر لاگین شده ────────────────────────
+        $userReaction = auth()->check()
+            ? $article->reactions()->where('user_id', auth()->id())->value('type')
+            : null;
+
+        return view('public.articles.show', compact(
+            'article',
+            'comments',
+            'related',
+            'reactionCounts',
+            'userReaction'
+        ));
     }
 }

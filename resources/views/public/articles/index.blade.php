@@ -136,12 +136,12 @@
 
 @section('content')
 
-<div class="page-banner">
+<div class=" page-banner" style="margin-right: 3%; margin-top: 3%;">
     <div class="page-banner-inner">
         <h1><i class="fas fa-newspaper" style="color:var(--gold-main);margin-left:12px;"></i>مقالات حقوقی</h1>
         <div class="breadcrumb">
             <a href="{{ route('home') }}">صفحه اصلی</a>
-            <i class="fas fa-chevron-left"></i>
+            <i class="fas fa-chevron-right"></i>
             <span>مقالات</span>
         </div>
     </div>
@@ -194,8 +194,8 @@
             @php $featured = $articles->first(); @endphp
             <a href="{{ route('articles.show', $featured->slug) }}" class="article-featured">
                 <div class="af-img">
-                    @if($featured->featured_image)
-                        <img src="{{ asset('storage/' . $featured->featured_image) }}"
+                    @if(true)
+                        <img src="{{ asset('assets/images/' . $featured['featured_image']) }}"
                              alt="{{ $featured->title }}" loading="lazy">
                     @else
                         <div style="width:100%;height:100%;background:linear-gradient(135deg,#0a1c2e,#1e3a5f);display:flex;align-items:center;justify-content:center;">
@@ -235,7 +235,7 @@
 
                     @if($article->featured_image)
                         <div class="ac-img">
-                            <img src="{{ asset('storage/' . $article->featured_image) }}"
+                            <img src="{{ asset('assets/images/' . $article->featured_image) }}"
                                  alt="{{ $article->title }}" loading="lazy">
                             @if($article->category)
                                 <span class="ac-cat">{{ $article->category }}</span>
@@ -286,10 +286,10 @@
 
                 {{-- دکمه قبلی --}}
                 @if($articles->onFirstPage())
-                    <span class="page-link disabled"><i class="fas fa-chevron-right"></i></span>
+                    <span class="page-link disabled"><i class="fas fa-chevron-left"></i></span>
                 @else
                     <a href="{{ $articles->previousPageUrl() }}" class="page-link">
-                        <i class="fas fa-chevron-right"></i>
+                        <i class="fas fa-chevron-left"></i>
                     </a>
                 @endif
 
@@ -305,10 +305,10 @@
                 {{-- دکمه بعدی --}}
                 @if($articles->hasMorePages())
                     <a href="{{ $articles->nextPageUrl() }}" class="page-link">
-                        <i class="fas fa-chevron-left"></i>
+                        <i class="fas fa-chevron-right"></i>
                     </a>
                 @else
-                    <span class="page-link disabled"><i class="fas fa-chevron-left"></i></span>
+                    <span class="page-link disabled"><i class="fas fa-chevron-right"></i></span>
                 @endif
 
             </div>

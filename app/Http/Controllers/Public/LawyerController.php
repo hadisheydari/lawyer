@@ -17,7 +17,8 @@ class LawyerController extends Controller
     public function show(string $slug)
     {
         $lawyer = Lawyer::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $lawyer->load('cases');
 
-        return view('public.lawyers.show', compact('lawyer'));
+        return view('public.lawyers.show', compact('lawyer' , 'slug'));
     }
 }
