@@ -46,8 +46,9 @@ Route::post('/contact', [ContactController::class, 'send'])->name('contact.send'
 Route::prefix('reserve')->name('reserve.')->group(function () {
     Route::get('/', [ReserveController::class, 'index'])->name('index');
     Route::post('/', [ReserveController::class, 'store'])->name('store');
-    // این روت رو زیر روت‌های قبلی رزرو اضافه کن
     Route::get('verify/{payment}', [ReserveController::class, 'verifyPayment'])->name('verify');
+    Route::get('/slots', [ReserveController::class, 'getAvailableSlots'])->name('slots');
+
 });
 
 Route::get('/about', fn () => redirect()->route('lawyers.index'))->name('about');

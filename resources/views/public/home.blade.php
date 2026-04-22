@@ -64,9 +64,9 @@
             position: relative;
             padding: 80px 0 160px;
             overflow: hidden;
-            background:
-                linear-gradient(90deg, rgba(253, 251, 247, 1) 35%, rgba(253, 251, 247, 0.75) 100%),
-                url('https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80');
+            background-image:
+                linear-gradient(90deg, rgba(253, 251, 247, 0.85) 35%, rgba(253, 251, 247, 1) 100%),
+                url("{{ asset('assets/images/hero.png') }}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -806,7 +806,7 @@
                 <div class="hero-pattern-circle"></div>
 
                 <div class="hero-img-frame">
-                    <img src="{{ asset('images/babak.jpg') }}"
+                    <img src={{ asset('assets/images/babak.png') }}
                         onerror="this.style.background='linear-gradient(135deg,#cfa86e,#a67c52)';this.style.display='block'"
                         alt="بابک ابدالی" class="hero-img">
                     <div class="img-label">
@@ -816,7 +816,7 @@
                 </div>
 
                 <div class="hero-img-frame" style="margin-top: 40px;">
-                    <img src="{{ asset('images/zahra.jpg') }}"
+                    <img src={{ asset('assets/images/zahra.png') }}
                         onerror="this.style.background='linear-gradient(135deg,#c4a882,#967050)';this.style.display='block'"
                         alt="زهرا جوشقانی" class="hero-img">
                     <div class="img-label">
@@ -867,7 +867,7 @@
                 <a href="{{ route('services.show', $service->slug) }}" class="service-card">
 
                     {{-- لود کردن عکس از دیتابیس با قابلیت Fallback (اگر عکس نداشت یک عکس پیش‌فرض لود شود) --}}
-                    <img src="{{ $service->image ? asset('storage/' . $service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70' }}"
+                    <img src="{{ $service->image ? asset('assets/images/' . $service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70' }}"
                         alt="{{ $service->title }}" loading="lazy"
                         onerror="this.src='https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70'">
 
@@ -926,39 +926,12 @@
         </div>
 
         <div class="services-grid">
-            @php
-                $articles = [
-                    [
-                        'date' => '۱۴۰۴/۰۲/۱۲',
-                        'cat' => 'حقوق خانواده',
-                        'title' => 'شرایط جدید پرداخت مهریه در سال جاری',
-                        'excerpt' => 'بررسی قوانین جدید و بخشنامه‌های صادره در خصوص نحوه مطالبه و پرداخت مهریه در دستگاه قضایی...',
-                        'img' => 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=600&q=70',
-                        'slug' => 'mahrieh-1404',
-                    ],
-                    [
-                        'date' => '۱۴۰۴/۰۲/۰۵',
-                        'cat' => 'دعاوی ملکی',
-                        'title' => 'راهنمای جامع خرید ملک و تنظیم مبایعه‌نامه',
-                        'excerpt' => 'نکات کلیدی و حیاتی که پیش از امضای هرگونه قرارداد ملکی باید بدانید تا متضرر نشوید...',
-                        'img' => 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=600&q=70',
-                        'slug' => 'real-estate-guide',
-                    ],
-                    [
-                        'date' => '۱۴۰۴/۰۱/۲۸',
-                        'cat' => 'امور چک',
-                        'title' => 'قانون جدید چک‌های صیادی و روش‌های رفع سوءاثر',
-                        'excerpt' => 'همه آنچه باید درباره چک‌های بنفش و نحوه پیگیری قضایی آن‌ها در سیستم بانکی بدانید...',
-                        'img' => 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=70',
-                        'slug' => 'sayyadi-check',
-                    ],
-                ];
-            @endphp
 
             @foreach($articles as $article)
                 <a href="{{ route('articles.show', $article['slug']) }}" class="article-card">
                     <div class="article-img-box">
-                        <img src="{{ $article['img'] }}" class="article-img" alt="{{ $article['title'] }}" loading="lazy">
+                        <img src="{{'assets/images/' . $article['featured_image'] }}" class="article-img"
+                            alt="{{ $article['title'] }}" loading="lazy">
                     </div>
                     <div class="article-content">
                         <div class="article-meta">

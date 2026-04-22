@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Lawyer extends Authenticatable
 {
-    use HasFactory, SoftDeletes, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -38,10 +38,10 @@ class Lawyer extends Authenticatable
     protected function casts(): array
     {
         return [
-            'specializations'           => 'array',
-            'is_active'                 => 'boolean',
-            'available_for_chat'        => 'boolean',
-            'available_for_call'        => 'boolean',
+            'specializations' => 'array',
+            'is_active' => 'boolean',
+            'available_for_chat' => 'boolean',
+            'available_for_call' => 'boolean',
             'available_for_appointment' => 'boolean',
         ];
     }
@@ -83,12 +83,48 @@ class Lawyer extends Authenticatable
         return $this->hasMany(LawyerScheduleException::class);
     }
 
+    /**
+     * دریافت ساعت‌های آزاد یک روز خاص
+     */
+    public function getAvailableSlots($date)
+    {
+        $carbonDate = \Carbon\Carbon::parse($date);
+        $dayOfWeek = ($carbonDate->dayOfWeek + 1) % 7; // تبدیل به 0=شنبه
+
+        // چک استثنا
+        $exception = $this->scheduleExceptions()
+            ->where('exception_date', $date)
+            ->first();
+
+        if ($exception && ! $exception->is_available) {
+            return []; // روز تعطیل
+        }
+
+        // دریافت برنامه روزانه
+        $schedule = $this->schedules()
+            ->where('day_of_week', $dayOfWeek)
+            ->where('is_available', true)
+            ->first();
+
+        if (! $schedule) {
+            return [];
+        }
+
+        // تولید ساعت‌ها
+        $allSlots = $schedule->generateTimeSlots();
+
+        // فیلتر رزرو شده‌ها
+        return collect($allSlots)->filter(function ($slot) use ($date, $schedule) {
+            return ! $schedule->isBookedOn($date, $slot['start_time']);
+        })->values()->all();
+    }
+
     // ─── Accessors ────────────────────────────────────────────────────────────
 
     public function getImageUrlAttribute(): string
     {
         return $this->image
-            ? asset('storage/' . $this->image)
+            ? asset('storage/'.$this->image)
             : asset('images/default-lawyer.jpg');
     }
 
