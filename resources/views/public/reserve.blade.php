@@ -2,761 +2,1010 @@
 
 @section('title', 'رزرو نوبت مشاوره')
 
+@section('styles')
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1e40af;
+        --primary-light: #dbeafe;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Vazirmatn', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem 1rem;
+    }
+
+    .reserve-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .reserve-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 3rem;
+        animation: fadeInDown 0.6s ease;
+    }
+
+    .reserve-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .reserve-header p {
+        font-size: 1.125rem;
+        opacity: 0.95;
+    }
+
+    .reserve-content {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    .main-card {
+        background: white;
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .sidebar-card {
+        background: white;
+        border-radius: 24px;
+        padding: 2rem;
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        position: sticky;
+        top: 2rem;
+        animation: fadeInUp 0.6s ease 0.2s both;
+    }
+
+    /* Progress Steps */
+    .progress-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .progress-steps::before {
+        content: '';
+        position: absolute;
+        top: 20px;
+        right: 0;
+        left: 0;
+        height: 2px;
+        background: var(--gray-200);
+        z-index: 0;
+    }
+
+    .progress-line {
+        position: absolute;
+        top: 20px;
+        right: 0;
+        height: 2px;
+        background: var(--primary);
+        transition: width 0.4s ease;
+        z-index: 1;
+    }
+
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        position: relative;
+        z-index: 2;
+        flex: 1;
+    }
+
+    .step-circle {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--gray-400);
+        transition: all 0.3s ease;
+    }
+
+    .step.active .step-circle {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+        transform: scale(1.1);
+        box-shadow: 0 0 0 4px var(--primary-light);
+    }
+
+    .step.completed .step-circle {
+        background: var(--success);
+        border-color: var(--success);
+        color: white;
+    }
+
+    .step-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-500);
+        transition: color 0.3s ease;
+    }
+
+    .step.active .step-label {
+        color: var(--primary);
+    }
+
+    .step.completed .step-label {
+        color: var(--success);
+    }
+
+    /* Step Content */
+    .step-content {
+        display: none;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .step-content.active {
+        display: block;
+    }
+
+    .step-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .step-title svg {
+        width: 28px;
+        height: 28px;
+        color: var(--primary);
+    }
+
+    /* Calendar */
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: var(--gray-50);
+        border-radius: 12px;
+    }
+
+    .calendar-nav {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .calendar-nav button {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: none;
+        background: white;
+        color: var(--gray-700);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    .calendar-nav button:hover:not(:disabled) {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .calendar-nav button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .calendar-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--gray-800);
+    }
+
+    .calendar-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .weekday {
+        text-align: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-600);
+        padding: 0.75rem;
+    }
+
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.5rem;
+    }
+
+    .day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+    .day:hover:not(.disabled):not(.empty) {
+        background: var(--primary-light);
+        color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .day.selected {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        transform: scale(1.05);
+    }
+
+    .day.today {
+        border: 2px solid var(--primary);
+        font-weight: 700;
+    }
+
+    .day.disabled {
+        background: transparent;
+        color: var(--gray-300);
+        cursor: not-allowed;
+    }
+
+    .day.friday {
+        background: #fee2e2;
+        color: #991b1b;
+        cursor: not-allowed;
+    }
+
+    .day.booked::after {
+        content: '';
+        position: absolute;
+        bottom: 4px;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--warning);
+    }
+
+    .day.empty {
+        background: transparent;
+        cursor: default;
+    }
+
+    /* Time Slots */
+    .time-slots-container {
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 0.5rem;
+    }
+
+    .time-slots-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .time-slots-container::-webkit-scrollbar-track {
+        background: var(--gray-100);
+        border-radius: 10px;
+    }
+
+    .time-slots-container::-webkit-scrollbar-thumb {
+        background: var(--gray-300);
+        border-radius: 10px;
+    }
+
+    .time-slots-container::-webkit-scrollbar-thumb:hover {
+        background: var(--gray-400);
+    }
+
+    .time-slots {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .time-slot {
+        padding: 1rem;
+        border: 2px solid var(--gray-200);
+        border-radius: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: white;
+        font-weight: 600;
+        color: var(--gray-700);
+    }
+
+    .time-slot:hover {
+        border-color: var(--primary);
+        background: var(--primary-light);
+        color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .time-slot.selected {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+
+    .loading-state,
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--gray-500);
+    }
+
+    .loading-state svg,
+    .empty-state svg {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1rem;
+        opacity: 0.5;
+    }
+
+    .loading-state svg {
+        animation: spin 1s linear infinite;
+    }
+
+    /* Summary Card */
+    .summary-card {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: 16px;
+        padding: 1.5rem;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .summary-item:last-child {
+        border-bottom: none;
+    }
+
+    .summary-label {
+        font-size: 0.875rem;
+        opacity: 0.9;
+    }
+
+    .summary-value {
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .price-highlight {
+        background: rgba(255,255,255,0.2);
+        padding: 1rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .price-label {
+        font-size: 0.875rem;
+        opacity: 0.9;
+        margin-bottom: 0.25rem;
+    }
+
+    .price-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+    }
+
+    /* Lawyer Info */
+    .lawyer-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: var(--gray-50);
+        border-radius: 16px;
+        margin-bottom: 1.5rem;
+    }
+
+    .lawyer-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .lawyer-details h3 {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 0.25rem;
+    }
+
+    .lawyer-details p {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+    }
+
+    .lawyer-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-top: 0.5rem;
+    }
+
+    .lawyer-rating svg {
+        width: 16px;
+        height: 16px;
+        color: #fbbf24;
+    }
+
+    /* Buttons */
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        border: none;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+
+    .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn-secondary {
+        background: var(--gray-100);
+        color: var(--gray-700);
+    }
+
+    .btn-secondary:hover {
+        background: var(--gray-200);
+        transform: translateY(-2px);
+    }
+
+    .btn-success {
+        background: var(--success);
+        color: white;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .btn-success:hover:not(:disabled) {
+        background: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+
+    /* Alert Messages */
+    .alert {
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        animation: slideInDown 0.3s ease;
+    }
+
+    .alert svg {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+    }
+
+    .alert-success {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #6ee7b7;
+    }
+
+    .alert-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+
+    .alert-info {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 1px solid #93c5fd;
+    }
+
+    /* Confirmation Details */
+    .confirmation-details {
+        background: var(--gray-50);
+        border-radius: 16px;
+        padding: 2rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .detail-label svg {
+        width: 18px;
+        height: 18px;
+        color: var(--primary);
+    }
+
+    .detail-value {
+        font-weight: 700;
+        color: var(--gray-900);
+        font-size: 1rem;
+    }
+
+    .terms-checkbox {
+        display: flex;
+        align-items: start;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 12px;
+    }
+
+    .terms-checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        margin-top: 2px;
+    }
+
+    .terms-checkbox label {
+        font-size: 0.875rem;
+        color: var(--gray-700);
+        cursor: pointer;
+        line-height: 1.6;
+    }
+
+    .terms-checkbox a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .terms-checkbox a:hover {
+        text-decoration: underline;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .reserve-content {
+            grid-template-columns: 1fr;
+        }
+
+        .sidebar-card {
+            position: static;
+        }
+    }
+
+    @media (max-width: 640px) {
+        body {
+            padding: 1rem 0.5rem;
+        }
+
+        .reserve-header h1 {
+            font-size: 1.75rem;
+        }
+
+        .reserve-header p {
+            font-size: 1rem;
+        }
+
+        .main-card,
+        .sidebar-card {
+            padding: 1.5rem;
+            border-radius: 16px;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+        }
+
+        .step-circle {
+            width: 36px;
+            height: 36px;
+            font-size: 0.875rem;
+        }
+
+        .calendar-days {
+            gap: 0.25rem;
+        }
+
+        .day {
+            font-size: 0.875rem;
+            border-radius: 8px;
+        }
+
+        .time-slots {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .btn-group {
+            flex-direction: column;
+        }
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="reserve-container">
+    <!-- Header -->
     <div class="reserve-header">
-        <h1>رزرو نوبت مشاوره</h1>
-        @if($selectedLawyer)
-            <div class="lawyer-info">
-                <img src="{{ $selectedLawyer->avatar ?? '/images/default-avatar.png' }}" alt="{{ $selectedLawyer->name }}">
-                <div>
-                    <h3>{{ $selectedLawyer->name }}</h3>
-                    <p>{{ $selectedLawyer->specialty }}</p>
+        <h1>رزرو نوبت مشاوره حقوقی</h1>
+        <p>تاریخ و ساعت مناسب خود را انتخاب کنید</p>
+    </div>
+
+    <!-- Alert Messages -->
+    @if(session('success'))
+    <div class="alert alert-success">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span>{{ session('success') }}
                 </div>
-            </div>
-        @endif
-    </div>
-
+    @endif
     @if(session('error'))
-        <div class="alert alert-error">{{ session('error') }}</div>
-    @endif
-
-    @if($errors->any())
-        <div class="alert alert-error">
-            @foreach($errors->all() as $error)
-                <p>{{ $error }}</p>
-            @endforeach
-        </div>
-    @endif
-
-    <div class="reserve-steps">
-        <div class="step active" data-step="1">
-            <span class="step-number">1</span>
-            <span class="step-label">انتخاب تاریخ</span>
-        </div>
-        <div class="step" data-step="2">
-            <span class="step-number">2</span>
-            <span class="step-label">انتخاب ساعت</span>
-        </div>
-        <div class="step" data-step="3">
-            <span class="step-number">3</span>
-            <span class="step-label">تایید و پرداخت</span>
-        </div>
+    <div class="alert alert-error">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        <span>{{ session('error') }}</span>
     </div>
+    @endif
 
     <div class="reserve-content">
-        <!-- مرحله 1: انتخاب تاریخ -->
-        <div class="step-content active" id="step1">
-            <div class="calendar-wrapper">
+        <!-- Left (Main) -->
+        <div class="main-card">
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="step active">
+                    <div class="step-circle">۱</div>
+                    <div class="step-label">انتخاب تاریخ</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">۲</div>
+                    <div class="step-label">انتخاب ساعت</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">۳</div>
+                    <div class="step-label">تأیید و پرداخت</div>
+                </div>
+            </div>
+
+            <!-- Step: Calendar -->
+            <div class="step-content active" id="step-calendar">
+                <div class="step-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3M3 11h18M5 19h14" />
+                    </svg>
+                    انتخاب تاریخ مشاوره
+                </div>
+
                 <div class="calendar-header">
-                    <button type="button" class="nav-btn" onclick="changeMonth(-1)">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/>
-                        </svg>
-                    </button>
-                    <h2>{{ $monthName }} {{ $year }}</h2>
-                    <button type="button" class="nav-btn" onclick="changeMonth(1)">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/>
-                        </svg>
-                    </button>
+                    <div class="calendar-nav">
+                        <button id="prevMonth">‹</button>
+                        <button id="nextMonth">›</button>
+                    </div>
+                    <div class="calendar-title" id="calendarTitle"></div>
                 </div>
 
-                <div class="calendar-grid">
-                    <div class="day-name">ش</div>
-                    <div class="day-name">ی</div>
-                    <div class="day-name">د</div>
-                    <div class="day-name">س</div>
-                    <div class="day-name">چ</div>
-                    <div class="day-name">پ</div>
-                    <div class="day-name">ج</div>
+                <div class="calendar-weekdays">
+                    <div class="weekday">شـ</div>
+                    <div class="weekday">یـ</div>
+                    <div class="weekday">د</div>
+                    <div class="weekday">س</div>
+                    <div class="weekday">چ</div>
+                    <div class="weekday">پ</div>
+                    <div class="weekday">ج</div>
+                </div>
 
-                    @for($i = 0; $i < $firstDayOfWeek; $i++)
-                        <div class="day empty"></div>
-                    @endfor
+                <div class="calendar-days" id="calendarDays"></div>
+            </div>
 
-                    @for($day = 1; $day <= $daysInMonth; $day++)
-                        @php
-                            $isPast = ($year < $nowYear) || ($year == $nowYear && $month < $nowMonth) || ($year == $nowYear && $month == $nowMonth && $day < $nowDay);
-                            $isFriday = (($firstDayOfWeek + $day - 1) % 7) == 6;
-                            $isBooked = in_array($day, $bookedDates);
-                            $isDisabled = $isPast || $isFriday;
-                        @endphp
-                        <button 
-                            type="button"
-                            class="day {{ $isDisabled ? 'disabled' : '' }} {{ $isBooked ? 'booked' : '' }}"
-                            data-date="{{ $year }}-{{ str_pad($month, 2, '0', STR_PAD_LEFT) }}-{{ str_pad($day, 2, '0', STR_PAD_LEFT) }}"
-                            {{ $isDisabled ? 'disabled' : '' }}
-                            onclick="selectDate(this)"
-                        >
-                            {{ $day }}
+            <!-- Step: Time Slots -->
+            <div class="step-content" id="step-times">
+                <div class="step-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6 5H3V5h18v16z" />
+                    </svg>
+                    انتخاب ساعت مشاوره
+                </div>
+
+                <div class="loading-state" id="slotsLoading" style="display:none;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" stroke-width="4" />
+                    </svg>
+                    در حال بارگذاری ساعات...
+                </div>
+
+                <div class="empty-state" id="slotsEmpty" style="display:none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 9l3 3-3 3M16 9l-3 3 3 3" />
+                    </svg>
+                    هیچ ساعت خالی‌ای برای این روز وجود ندارد.
+                </div>
+
+                <div class="time-slots-container">
+                    <div class="time-slots" id="slotsContainer"></div>
+                </div>
+            </div>
+
+            <!-- Step: Confirmation -->
+            <div class="step-content" id="step-confirm">
+                <div class="step-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4M7 20h10a2 2 0 002-2V8a2 2 0 00-2-2h-4l-2-2H7a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    تأیید نهایی و پرداخت
+                </div>
+
+                <div class="confirmation-details">
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3M3 11h18" />
+                            </svg>
+                            تاریخ انتخاب‌شده:
+                        </div>
+                        <div class="detail-value" id="selectedDateDisplay">---</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3" />
+                            </svg>
+                            ساعت انتخاب‌شده:
+                        </div>
+                        <div class="detail-value" id="selectedTimeDisplay">---</div>
+                    </div>
+
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="acceptTerms" />
+                        <label for="acceptTerms">
+                            شرایط و <a href="#">قوانین استفاده از سامانه</a> را مطالعه کرده و قبول دارم.
+                        </label>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" id="backToTimes">
+                        بازگشت
+                    </button>
+                    <form id="confirmForm" action="{{ route('reserve.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="selected_date" id="dateInput" />
+                        <input type="hidden" name="selected_time" id="timeInput" />
+                        <input type="hidden" name="lawyer_id" value="{{ $lawyer->id }}" />
+                        <button class="btn btn-success" id="finalSubmit" disabled>
+                            پرداخت و رزرو نهایی
                         </button>
-                    @endfor
-                </div>
-
-                <div class="calendar-legend">
-                    <div class="legend-item">
-                        <span class="legend-color available"></span>
-                        <span>روز آزاد</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color booked"></span>
-                        <span>رزرو شده</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color disabled"></span>
-                        <span>غیرفعال</span>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- مرحله 2: انتخاب ساعت -->
-        <div class="step-content" id="step2">
-            <div class="selected-date-display">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"/>
-                </svg>
-                <span id="selectedDateText"></span>
-            </div>
-
-            <div class="slots-loading" id="slotsLoading">
-                <div class="spinner"></div>
-                <p>در حال بارگذاری ساعت‌های موجود...</p>
-            </div>
-
-            <div class="slots-container" id="slotsContainer"></div>
-
-            <div class="slots-empty" id="slotsEmpty" style="display: none;">
-                <svg width="48" height="48" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
-                </svg>
-                <p>متأسفانه ساعت خالی برای این روز وجود ندارد</p>
-                <button type="button" class="btn-secondary" onclick="goToStep(1)">انتخاب روز دیگر</button>
-            </div>
-
-            <div class="step-actions">
-                <button type="button" class="btn-secondary" onclick="goToStep(1)">بازگشت</button>
-            </div>
-        </div>
-
-        <!-- مرحله 3: تایید -->
-        <div class="step-content" id="step3">
+        <!-- Right Sidebar -->
+        <div class="sidebar-card">
             <div class="summary-card">
-                <h3>خلاصه رزرو شما</h3>
-                
-                <div class="summary-row">
-                    <span class="summary-label">تاریخ:</span>
-                    <span class="summary-value" id="summaryDate"></span>
+                <div class="summary-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3M3 11h18" />
+                    </svg>
+                    خلاصه نوبت
                 </div>
-
-                <div class="summary-row">
-                    <span class="summary-label">ساعت:</span>
-                    <span class="summary-value" id="summaryTime"></span>
+                <div class="summary-item">
+                    <div class="summary-label">تاریخ:</div>
+                    <div class="summary-value" id="summaryDate">---</div>
                 </div>
-
-                @if($selectedLawyer)
-                <div class="summary-row">
-                    <span class="summary-label">وکیل:</span>
-                    <span class="summary-value">{{ $selectedLawyer->name }}</span>
+                <div class="summary-item">
+                    <div class="summary-label">ساعت:</div>
+                    <div class="summary-value" id="summaryTime">---</div>
                 </div>
-                @endif
-
-                <div class="summary-row total">
-                    <span class="summary-label">مبلغ قابل پرداخت:</span>
-                    <span class="summary-value">{{ number_format($selectedLawyer->consultation_price ?? 50000) }} تومان</span>
+                <div class="price-highlight">
+                    <div class="price-label">مبلغ مشاوره</div>
+                    <div class="price-value">{{ number_format($lawyer->consultation_price ?? 500000) }} تومان</div>
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('reserve.store') }}" id="reserveForm">
-                @csrf
-                <input type="hidden" name="selected_date" id="selectedDateInput">
-                <input type="hidden" name="selected_time" id="selectedTimeInput">
-                @if($selectedLawyer)
-                    <input type="hidden" name="lawyer_id" value="{{ $selectedLawyer->id }}">
-                @endif
-
-                <div class="step-actions">
-                    <button type="button" class="btn-secondary" onclick="goToStep(2)">بازگشت</button>
-                    <button type="submit" class="btn-primary" id="submitBtn">
-                        <span class="btn-text">پرداخت و ثبت نوبت</span>
-                        <span class="btn-loading" style="display: none;">
-                            <span class="spinner-small"></span>
-                            در حال انتقال...
-                        </span>
-                    </button>
+            <div class="lawyer-info">
+                <img src="{{ $lawyer->avatar_url }}" alt="{{ $lawyer->name }}" class="lawyer-avatar" />
+                <div class="lawyer-details">
+                    <h3>{{ $lawyer->name }}</h3>
+                    <p>{{ $lawyer->specialty }}</p>
+                    <div class="lawyer-rating">
+                        @for($i=0;$i<5;$i++)
+                            <svg fill="{{ $i < $lawyer->rating ? '#fbbf24' : 'none' }}" stroke="#fbbf24"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 17l-5 3 2-5-4-4h6l2-5 2 5h6l-4 4 2 5z" />
+                            </svg>
+                        @endfor
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
 
-<style>
-.reserve-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-.reserve-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.reserve-header h1 {
-    font-size: 1.75rem;
-    color: #1a202c;
-    margin-bottom: 1rem;
-}
-
-.lawyer-info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: #f7fafc;
-    border-radius: 12px;
-}
-
-.lawyer-info img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.lawyer-info h3 {
-    font-size: 1.125rem;
-    color: #2d3748;
-    margin: 0;
-}
-
-.lawyer-info p {
-    font-size: 0.875rem;
-    color: #718096;
-    margin: 0.25rem 0 0;
-}
-
-.alert {
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-}
-
-.alert-error {
-    background: #fff5f5;
-    color: #c53030;
-    border: 1px solid #feb2b2;
-}
-
-.reserve-steps {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-    position: relative;
-}
-
-.reserve-steps::before {
-    content: '';
-    position: absolute;
-    top: 20px;
-    left: 25%;
-    right: 25%;
-    height: 2px;
-    background: #e2e8f0;
-    z-index: 0;
-}
-
-.step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    position: relative;
-    z-index: 1;
-}
-
-.step-number {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #e2e8f0;
-    color: #a0aec0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    transition: all 0.3s;
-}
-
-.step.active .step-number {
-    background: #3182ce;
-    color: white;
-}
-
-.step-label {
-    font-size: 0.875rem;
-    color: #718096;
-}
-
-.step.active .step-label {
-    color: #2d3748;
-    font-weight: 500;
-}
-
-.reserve-content {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    padding: 2rem;
-}
-
-.step-content {
-    display: none;
-}
-
-.step-content.active {
-    display: block;
-}
-
-.calendar-wrapper {
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.calendar-header h2 {
-    font-size: 1.25rem;
-    color: #2d3748;
-}
-
-.nav-btn {
-    background: #f7fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.nav-btn:hover {
-    background: #edf2f7;
-}
-
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 0.5rem;
-}
-
-.day-name {
-    text-align: center;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #4a5568;
-    padding: 0.5rem;
-}
-
-.day {
-    aspect-ratio: 1;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background: white;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.day:not(.disabled):not(.empty):hover {
-    background: #ebf8ff;
-    border-color: #3182ce;
-}
-
-.day.selected {
-    background: #3182ce;
-    color: white;
-    border-color: #3182ce;
-}
-
-.day.disabled {
-    background: #f7fafc;
-    color: #cbd5e0;
-    cursor: not-allowed;
-}
-
-.day.booked {
-    background: #fef5e7;
-    border-color: #f6ad55;
-}
-
-.day.empty {
-    border: none;
-    cursor: default;
-}
-
-.calendar-legend {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e2e8f0;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: #4a5568;
-}
-
-.legend-color {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
-    border: 1px solid #e2e8f0;
-}
-
-.legend-color.available {
-    background: white;
-}
-
-.legend-color.booked {
-    background: #fef5e7;
-    border-color: #f6ad55;
-}
-
-.legend-color.disabled {
-    background: #f7fafc;
-}
-
-.selected-date-display {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    background: #ebf8ff;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-    color: #2c5282;
-    font-weight: 500;
-}
-
-.slots-loading {
-    text-align: center;
-    padding: 3rem 1rem;
-}
-
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #e2e8f0;
-    border-top-color: #3182ce;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 1rem;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.slots-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.75rem;
-}
-
-.slot-btn {
-    padding: 1rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
-    background: white;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    font-size: 0.875rem;
-}
-
-.slot-btn:hover {
-    border-color: #3182ce;
-    background: #ebf8ff;
-}
-
-.slot-btn.selected {
-    background: #3182ce;
-    color: white;
-    border-color: #3182ce;
-}
-
-.slots-empty {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: #718096;
-}
-
-.slots-empty svg {
-    margin: 0 auto 1rem;
-    opacity: 0.5;
-}
-
-.summary-card {
-    background: #f7fafc;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.summary-card h3 {
-    font-size: 1.125rem;
-    color: #2d3748;
-    margin-bottom: 1rem;
-}
-
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.summary-row:last-child {
-    border-bottom: none;
-}
-
-.summary-row.total {
-    margin-top: 0.5rem;
-    padding-top: 1rem;
-    border-top: 2px solid #cbd5e0;
-    font-weight: 600;
-    font-size: 1.125rem;
-}
-
-.summary-label {
-    color: #718096;
-}
-
-.summary-value {
-    color: #2d3748;
-    font-weight: 500;
-}
-
-.step-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 1.5rem;
-}
-
-.btn-primary, .btn-secondary {
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-    font-size: 1rem;
-}
-
-.btn-primary {
-    background: #3182ce;
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #2c5282;
-}
-
-.btn-primary:disabled {
-    background: #cbd5e0;
-    cursor: not-allowed;
-}
-
-.btn-secondary {
-    background: white;
-    color: #4a5568;
-    border: 1px solid #e2e8f0;
-}
-
-.btn-secondary:hover {
-    background: #f7fafc;
-}
-
-.btn-loading {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.spinner-small {
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-}
-
-@media (max-width: 640px) {
-    .reserve-container {
-        padding: 0 0.5rem;
-    }
-    
-    .reserve-content {
-        padding: 1rem;
-    }
-    
-    .calendar-grid {
-        gap: 0.25rem;
-    }
-    
-    .slots-container {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    }
-    
-    .step-actions {
-        flex-direction: column-reverse;
-    }
-    
-    .btn-primary, .btn-secondary {
-        width: 100%;
-    }
-}
-</style>
-
 <script>
-let currentStep = 1;
-let selectedDate = null;
-let selectedTime = null;
-let selectedSlotDisplay = null;
+    // نمونه ساده برای تعامل مراحل و فرم
+    const stepCalendar = document.getElementById('step-calendar');
+    const stepTimes = document.getElementById('step-times');
+    const stepConfirm = document.getElementById('step-confirm');
+    const finalSubmit = document.getElementById('finalSubmit');
+    const acceptTerms = document.getElementById('acceptTerms');
 
-function goToStep(step) {
-    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
-    
-    document.querySelector(`.step[data-step="${step}"]`).classList.add('active');
-    document.getElementById(`step${step}`).classList.add('active');
-    
-    currentStep = step;
-}
+    acceptTerms.addEventListener('change', e => {
+        finalSubmit.disabled = !e.target.checked;
+    });
 
-function selectDate(el) {
-    if (el.classList.contains('disabled')) return;
-    
-    document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
-    el.classList.add('selected');
-    
-    selectedDate = el.dataset.date;
-    
-    loadTimeSlots(selectedDate);
-    goToStep(2);
-}
-
-function loadTimeSlots(date) {
-    const container = document.getElementById('slotsContainer');
-    const loading = document.getElementById('slotsLoading');
-    const empty = document.getElementById('slotsEmpty');
-    const dateDisplay = document.getElementById('selectedDateText');
-    
-    container.innerHTML = '';
-    container.style.display = 'none';
-    empty.style.display = 'none';
-    loading.style.display = 'block';
-    
-    const jDate = new Date(date).toLocaleDateString('fa-IR');
-    dateDisplay.textContent = jDate;
-    
-    const lawyerId = {{ $selectedLawyer->id ?? 'null' }};
-    
-    fetch(`/reserve/slots?date=${date}&lawyer_id=${lawyerId}`)
-        .then(res => res.json())
-        .then(data => {
-            loading.style.display = 'none';
-            
-            if (data.slots && data.slots.length > 0) {
-                container.style.display = 'grid';
-                data.slots.forEach(slot => {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'slot-btn';
-                    btn.textContent = slot.display;
-                    btn.onclick = () => selectSlot(btn, slot);
-                    container.appendChild(btn);
-                });
-            } else {
-                empty.style.display = 'block';
-            }
-        })
-        .catch(err => {
-            loading.style.display = 'none';
-            empty.style.display = 'block';
-            console.error(err);
-        });
-}
-
-function selectSlot(el, slot) {
-    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-    el.classList.add('selected');
-    
-    selectedTime = slot.start_time;
-    selectedSlotDisplay = slot.display;
-    
-    document.getElementById('selectedDateInput').value = selectedDate;
-    document.getElementById('selectedTimeInput').value = selectedTime;
-    document.getElementById('summaryDate').textContent = document.getElementById('selectedDateText').textContent;
-    document.getElementById('summaryTime').textContent = selectedSlotDisplay;
-    
-    goToStep(3);
-}
-
-function changeMonth(delta) {
-    const params = new URLSearchParams(window.location.search);
-    let year = parseInt(params.get('year') || {{ $year }});
-    let month = parseInt(params.get('month') || {{ $month }});
-    
-    month += delta;
-    if (month > 12) {
-        month = 1;
-        year++;
-    } else if (month < 1) {
-        month = 12;
-        year--;
-    }
-    
-    const now = new Date();
-    const nowJalali = new Date(now).toLocaleDateString('fa-IR-u-nu-latn').split('/');
-    const nowYear = parseInt(nowJalali[0]);
-    const nowMonth = parseInt(nowJalali[1]);
-    
-    if (year < nowYear || (year === nowYear && month < nowMonth)) {
-        return;
-    }
-    
-    params.set('year', year);
-    params.set('month', month);
-    window.location.search = params.toString();
-}
-
-document.getElementById('reserveForm').addEventListener('submit', function(e) {
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.querySelector('.btn-text').style.display = 'none';
-    btn.querySelector('.btn-loading').style.display = 'flex';
-});
+    // اینجا می‌توانید کد AJAX برای لود روزها و ساعت‌ها اضافه کنید.
 </script>
 @endsection
