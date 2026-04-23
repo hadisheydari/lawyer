@@ -352,23 +352,21 @@
                         @for ($i = 0; $i < $calendar['start_day_of_week']; $i++)
                             <div class="calendar-day empty border-0"></div>
                         @endfor
-                        @for ($day = 1; $day <= $calendar['days_in_month']; $day++)
-                            @php
-                                // تبدیل تاریخ شمسی این خانه به میلادی برای ارسال به بک‌اند
-                                $gregorianDate = new \Morilog\Jalali\Jalalian($currentYear, $currentMonth, $day)
-                                    ->toCarbon()
-                                    ->format('Y-m-d');
 
-                                $isFriday = ($calendar['start_day_of_week'] + $day - 1) % 7 == 6;
+                            @for ($day = 1; $day <= $calendar['days_in_month']; $day++)
+                                @php
+                                    // پرانتز ( قبل از new و پرانتز ) قبل از ->toCarbon اضافه شده است
+                                    $gregorianDate = (new \Morilog\Jalali\Jalalian($currentYear, $currentMonth, $day))->toCarbon()->format('Y-m-d');
 
-                                // حالا بررسی رزرو بودن با کلید میلادی انجام می‌شود
-                                $hasBooked = isset($calendar['booked_dates'][$gregorianDate]);
-                            @endphp
-                            <div class="calendar-day {{ $isFriday ? 'disabled' : '' }} {{ $hasBooked ? 'has-booked' : '' }}"
-                                onclick="selectDate(this, '{{ $gregorianDate }}', '{{ $day }} {{ $months[$currentMonth - 1] }}')">
-                                <span class="fw-bold">{{ $day }}</span>
-                            </div>
-                        @endfor
+                                    $isFriday = ($calendar['start_day_of_week'] + $day - 1) % 7 == 6;
+
+                                    $hasBooked = isset($calendar['booked_dates'][$gregorianDate]);
+                                @endphp
+                                <div class="calendar-day {{ $isFriday ? 'disabled' : '' }} {{ $hasBooked ? 'has-booked' : '' }}"
+                                    onclick="selectDate(this, '{{ $gregorianDate }}', '{{ $day }} {{ $months[$currentMonth - 1] }}')">
+                                    <span class="fw-bold">{{ $day }}</span>
+                                </div>
+                            @endfor
                     </div>
                 </div>
 

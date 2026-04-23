@@ -113,16 +113,14 @@ class AuthController extends Controller
         session()->forget(['otp_phone', 'otp_for_register', 'register_data']);
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard.index');
+        return redirect()->intended(route('dashboard.index'));
     }
 
-    // ─── نمایش صفحه ثبت نام ───────────────────────────────────────────────────
     public function showRegister()
     {
         return view('auth.register');
     }
 
-    // ─── ثبت نام ──────────────────────────────────────────────────────────────
     public function register(Request $request)
     {
         $request->validate([
@@ -183,7 +181,7 @@ class AuthController extends Controller
     // اگر API key نباشد، فقط در لاگ ثبت می‌کند — کرش نمی‌دهد
     private function sendSms(string $phone, string $code): void
     {
-        $apiKey = config("services.kavenegar.api_key");
+        $apiKey = config('services.kavenegar.api_key');
 
         try {
             $response = Http::timeout(10)->get("https://api.kavenegar.com/v1/{$apiKey}/sms/send.json", [

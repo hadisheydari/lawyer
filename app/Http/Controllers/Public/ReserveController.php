@@ -212,12 +212,9 @@ class ReserveController extends Controller
 
     private function handleGuestReservation(array $data)
     {
-        session([
-            'pending_reservation' => $data,
-            'intended_url' => route('reserve.index', ['lawyer' => request()->query('lawyer')]),
-        ]);
+        session(['pending_reservation' => $data]);
 
-        return redirect()->route('login')
+        return redirect()->guest(route('login'))
             ->with('info', 'برای ثبت نوبت، لطفاً ابتدا وارد شوید یا ثبت‌نام کنید');
     }
 
@@ -227,12 +224,10 @@ class ReserveController extends Controller
         $selectedDate = Carbon::parse($data['selected_date']);
         $startTime = $data['selected_time'];
 
-        // بررسی جمعه بودن در زمان پردازش
         if ($selectedDate->dayOfWeek === Carbon::FRIDAY) {
             throw new \Exception('روز جمعه تعطیل است');
         }
 
-        // بررسی موجود بودن زمان انتخاب شده در برنامه وکیل
         $availableSlots = $lawyer->getAvailableSlots($selectedDate->format('Y-m-d'));
         $slotExists = collect($availableSlots)->contains(fn ($slot) => $slot['start_time'] === $startTime);
 
@@ -242,7 +237,6 @@ class ReserveController extends Controller
 
         $scheduledDateTime = $selectedDate->setTimeFromTimeString($startTime);
 
-        // جلوگیری از رزرو همزمان (Double Booking)
         $exists = Consultation::where('lawyer_id', $lawyer->id)
             ->where('scheduled_at', $scheduledDateTime)
             ->whereNotIn('status', ['cancelled', 'rejected'])
@@ -253,10 +247,8 @@ class ReserveController extends Controller
             throw new \Exception('این ساعت هم‌اکنون توسط کاربر دیگری رزرو شد. لطفاً ساعت دیگری انتخاب کنید');
         }
 
-        // دریافت قیمت مشاوره حضوری از دیتابیس به جای مدل وکیل
         $appointmentPrice = Setting::where('key', 'pricing.appointment_price')->value('value') ?? 500000;
 
-        // ایجاد رکورد مشاوره
         $consultation = Consultation::create([
             'user_id' => $userId,
             'lawyer_id' => $lawyer->id,
@@ -267,15 +259,12 @@ class ReserveController extends Controller
             'scheduled_at' => $scheduledDateTime,
         ]);
 
-        // ایجاد رکورد پرداخت
         $payment = $this->createPayment($userId, $consultation);
 
-        // ارسال درخواست به زرین‌پال
         $authority = $this->requestZarinpalPayment($payment, $lawyer);
 
         $payment->update(['authority' => $authority]);
 
-        // پاک کردن کش زمان‌های آزاد برای اینکه نفر بعدی این ساعت را نبیند
         Cache::forget("slots_{$lawyer->id}_{$selectedDate->format('Y-m-d')}");
         Cache::forget("booked_dates_{$lawyer->id}_{$selectedDate->month}_{$selectedDate->year}");
 
@@ -299,28 +288,35 @@ class ReserveController extends Controller
     {
         $merchantId = config('services.zarinpal.merchant_id');
         $isSandbox = config('services.zarinpal.sandbox', true);
+
+        // آدرس صحیح نسخه 4 زرین‌پال
         $baseUrl = $isSandbox
             ? 'https://sandbox.zarinpal.com/pg/v4/payment'
             : 'https://api.zarinpal.com/pg/v4/payment';
 
-        $response = Http::timeout(self::ZARINPAL_TIMEOUT)
+        $response = Http::timeout(10)
             ->post("{$baseUrl}/request.json", [
                 'merchant_id' => $merchantId,
-                'amount' => $payment->amount * 10, // تبدیل تومان به ریال
-                'description' => "رزرو مشاوره با {$lawyer->name} - {$payment->tracking_code}",
+                'amount' => (int) ($payment->amount * 10), // حتما تومان به ریال تبدیل شود
+                'description' => "رزرو مشاوره با {$lawyer->name}",
                 'callback_url' => route('reserve.verify', $payment->id),
-                'mobile' => Auth::user()->phone ?? '',
-                'email' => Auth::user()->email ?? '',
+                'metadata' => [
+                    'mobile' => Auth::user()->phone ?? '',
+                    'email' => Auth::user()->email ?? '',
+                ],
             ]);
 
         if ($response->failed()) {
-            throw new \Exception('خطا در اتصال به درگاه پرداخت. لطفاً دوباره تلاش کنید');
+            Log::error('Zarinpal Connection Failed: '.$response->body());
+            throw new \Exception('خطا در اتصال به درگاه پرداخت. لطفاً وضعیت اینترنت سرور را چک کنید.');
         }
 
         $result = $response->json();
 
+        // در نسخه 4 پاسخ در آرایه data قرار دارد
         if (! isset($result['data']['code']) || $result['data']['code'] != 100) {
-            throw new \Exception('درگاه پرداخت پاسخ نامعتبر داد');
+            $msg = $result['errors']['message'] ?? 'خطای ناشناخته از درگاه';
+            throw new \Exception('درگاه پرداخت پاسخ نامعتبر داد: '.$msg);
         }
 
         return $result['data']['authority'];
