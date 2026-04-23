@@ -48,8 +48,8 @@ Route::prefix('reserve')->name('reserve.')->group(function () {
     Route::post('/', [ReserveController::class, 'store'])->name('store');
     Route::get('verify/{payment}', [ReserveController::class, 'verifyPayment'])->name('verify');
     Route::get('/slots', [ReserveController::class, 'getAvailableSlots'])->name('slots');
-
 });
+
 
 Route::get('/about', fn () => redirect()->route('lawyers.index'))->name('about');
 

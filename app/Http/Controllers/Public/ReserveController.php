@@ -3,40 +3,48 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Consultation;
 use App\Models\Lawyer;
 use App\Models\Payment;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
+use Morilog\Jalali\Jalalian;
 
 class ReserveController extends Controller
 {
     private const CACHE_TTL = 300; // 5 minutes
+
     private const ZARINPAL_TIMEOUT = 10;
-    
+
     public function index(Request $request)
     {
         $lawyerSlug = $request->query('lawyer');
-        $lawyer = $lawyerSlug 
-            ? Lawyer::where('slug', $lawyerSlug)->firstOrFail() 
-            : Lawyer::first();
 
-        if (!$lawyer) {
+        // اگر اسلاگ فرستاده شده بود، حتماً همان را پیدا کن یا ارور ۴۰۴ بده
+        if ($lawyerSlug) {
+            $lawyer = Lawyer::where('slug', $lawyerSlug)->firstOrFail();
+        } else {
+            // اگر کلاً پارامتری نبود، اولین وکیل را به عنوان پیش‌فرض بیاور
+            $lawyer = Lawyer::first();
+        }
+
+        if (! $lawyer) {
             return redirect()->route('home')->with('error', 'وکیلی یافت نشد');
         }
 
-        $currentMonth = (int) $request->query('month', jdate()->getMonth());
-        $currentYear = (int) $request->query('year', jdate()->getYear());
-
+        // بقیه کدها (قیمت و تقویم) ...
+        $appointmentPrice = Setting::where('key', 'pricing.appointment_price')->value('value') ?? 500000;
+        $currentMonth = (int) $request->query('month', Jalalian::now()->getMonth());
+        $currentYear = (int) $request->query('year', Jalalian::now()->getYear());
         $calendar = $this->generateCalendar($currentMonth, $currentYear, $lawyer->id);
 
-        return view('reserve', compact('lawyer', 'calendar', 'currentMonth', 'currentYear'));
+        return view('public.reserve', compact('lawyer', 'calendar', 'currentMonth', 'currentYear', 'appointmentPrice'));
     }
 
     public function getAvailableSlots(Request $request)
@@ -50,24 +58,24 @@ class ReserveController extends Controller
             $lawyer = Lawyer::findOrFail($request->lawyer_id);
             $date = Carbon::parse($request->date);
 
-            // Check if date is in the past
-            if ($date->isPast() && !$date->isToday()) {
+            // بررسی گذشته نبودن تاریخ
+            if ($date->isPast() && ! $date->isToday()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'نمی‌توانید برای تاریخ گذشته نوبت بگیرید'
+                    'message' => 'نمی‌توانید برای تاریخ گذشته نوبت بگیرید',
                 ], 400);
             }
 
-            // Check if it's Friday
+            // بررسی جمعه بودن (روز جمعه = 5 در Carbon)
             if ($date->dayOfWeek === Carbon::FRIDAY) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'روز جمعه تعطیل است'
+                    'message' => 'روز جمعه تعطیل است',
                 ], 400);
             }
 
             $cacheKey = "slots_{$lawyer->id}_{$date->format('Y-m-d')}";
-            
+
             $slots = Cache::remember($cacheKey, self::CACHE_TTL, function () use ($lawyer, $date) {
                 return $lawyer->getAvailableSlots($date->format('Y-m-d'));
             });
@@ -87,7 +95,7 @@ class ReserveController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'خطا در دریافت ساعات موجود'
+                'message' => 'خطا در دریافت ساعات موجود',
             ], 500);
         }
     }
@@ -105,7 +113,7 @@ class ReserveController extends Controller
             'lawyer_id.required' => 'وکیل انتخاب نشده است',
         ]);
 
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return $this->handleGuestReservation($validated);
         }
 
@@ -149,13 +157,16 @@ class ReserveController extends Controller
         }
     }
 
-    // Private Helper Methods
+    // ─── Private Helper Methods ───────────────────────────────────────────────
 
     private function generateCalendar(int $month, int $year, int $lawyerId): array
     {
-        $firstDay = jmktime(0, 0, 0, $month, 1, $year);
-        $daysInMonth = jdate('t', $firstDay);
-        $startDayOfWeek = (int) jdate('w', $firstDay);
+        $firstDayOfMonth = new Jalalian($year, $month, 1);
+        $daysInMonth = $firstDayOfMonth->getMonthDays();
+
+        // محاسبه روز شروع هفته (برای تقویم شمسی شنبه=0 و جمعه=6)
+        $carbonFirstDay = $firstDayOfMonth->toCarbon();
+        $startDayOfWeek = ($carbonFirstDay->dayOfWeek + 1) % 7;
 
         $prevMonth = $month === 1 ? 12 : $month - 1;
         $prevYear = $month === 1 ? $year - 1 : $year;
@@ -182,11 +193,12 @@ class ReserveController extends Controller
         $cacheKey = "booked_dates_{$lawyerId}_{$year}_{$month}";
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($lawyerId, $month, $year) {
-            $firstDay = jmktime(0, 0, 0, $month, 1, $year);
-            $lastDay = jmktime(23, 59, 59, $month, jdate('t', $firstDay), $year);
+            $firstDayOfMonth = new Jalalian($year, $month, 1);
+            $daysInMonth = $firstDayOfMonth->getMonthDays();
 
-            $startDate = jdate('Y-m-d', $firstDay);
-            $endDate = jdate('Y-m-d', $lastDay);
+            // تبدیل تاریخ شمسی به میلادی برای کوئری زدن درست روی دیتابیس
+            $startDate = $firstDayOfMonth->toCarbon()->startOfDay();
+            $endDate = (new Jalalian($year, $month, $daysInMonth))->toCarbon()->endOfDay();
 
             return Consultation::where('lawyer_id', $lawyerId)
                 ->whereBetween('scheduled_at', [$startDate, $endDate])
@@ -215,22 +227,22 @@ class ReserveController extends Controller
         $selectedDate = Carbon::parse($data['selected_date']);
         $startTime = $data['selected_time'];
 
-        // Validate Friday
+        // بررسی جمعه بودن در زمان پردازش
         if ($selectedDate->dayOfWeek === Carbon::FRIDAY) {
             throw new \Exception('روز جمعه تعطیل است');
         }
 
-        // Validate slot exists in schedule
+        // بررسی موجود بودن زمان انتخاب شده در برنامه وکیل
         $availableSlots = $lawyer->getAvailableSlots($selectedDate->format('Y-m-d'));
-        $slotExists = collect($availableSlots)->contains(fn($slot) => $slot['start_time'] === $startTime);
+        $slotExists = collect($availableSlots)->contains(fn ($slot) => $slot['start_time'] === $startTime);
 
-        if (!$slotExists) {
+        if (! $slotExists) {
             throw new \Exception('این ساعت در برنامه وکیل موجود نیست یا قبلاً رزرو شده است');
         }
 
         $scheduledDateTime = $selectedDate->setTimeFromTimeString($startTime);
 
-        // Check double booking with lock
+        // جلوگیری از رزرو همزمان (Double Booking)
         $exists = Consultation::where('lawyer_id', $lawyer->id)
             ->where('scheduled_at', $scheduledDateTime)
             ->whereNotIn('status', ['cancelled', 'rejected'])
@@ -241,26 +253,29 @@ class ReserveController extends Controller
             throw new \Exception('این ساعت هم‌اکنون توسط کاربر دیگری رزرو شد. لطفاً ساعت دیگری انتخاب کنید');
         }
 
-        // Create consultation
+        // دریافت قیمت مشاوره حضوری از دیتابیس به جای مدل وکیل
+        $appointmentPrice = Setting::where('key', 'pricing.appointment_price')->value('value') ?? 500000;
+
+        // ایجاد رکورد مشاوره
         $consultation = Consultation::create([
             'user_id' => $userId,
             'lawyer_id' => $lawyer->id,
             'type' => 'appointment',
-            'title' => 'مشاوره حضوری با ' . $lawyer->name,
-            'price' => $lawyer->consultation_price ?? 500000,
+            'title' => 'مشاوره حضوری با '.$lawyer->name,
+            'price' => $appointmentPrice,
             'status' => 'pending',
             'scheduled_at' => $scheduledDateTime,
         ]);
 
-        // Create payment
+        // ایجاد رکورد پرداخت
         $payment = $this->createPayment($userId, $consultation);
 
-        // Request Zarinpal
+        // ارسال درخواست به زرین‌پال
         $authority = $this->requestZarinpalPayment($payment, $lawyer);
 
         $payment->update(['authority' => $authority]);
 
-        // Clear cache
+        // پاک کردن کش زمان‌های آزاد برای اینکه نفر بعدی این ساعت را نبیند
         Cache::forget("slots_{$lawyer->id}_{$selectedDate->format('Y-m-d')}");
         Cache::forget("booked_dates_{$lawyer->id}_{$selectedDate->month}_{$selectedDate->year}");
 
@@ -273,7 +288,7 @@ class ReserveController extends Controller
             'user_id' => $userId,
             'payable_type' => Consultation::class,
             'payable_id' => $consultation->id,
-            'tracking_code' => 'LAW-' . strtoupper(uniqid()),
+            'tracking_code' => 'LAW-'.strtoupper(uniqid()),
             'amount' => $consultation->price,
             'status' => 'pending',
             'gateway' => 'zarinpal',
@@ -284,14 +299,14 @@ class ReserveController extends Controller
     {
         $merchantId = config('services.zarinpal.merchant_id');
         $isSandbox = config('services.zarinpal.sandbox', true);
-        $baseUrl = $isSandbox 
-            ? 'https://sandbox.zarinpal.com/pg/v4/payment' 
+        $baseUrl = $isSandbox
+            ? 'https://sandbox.zarinpal.com/pg/v4/payment'
             : 'https://api.zarinpal.com/pg/v4/payment';
 
         $response = Http::timeout(self::ZARINPAL_TIMEOUT)
             ->post("{$baseUrl}/request.json", [
                 'merchant_id' => $merchantId,
-                'amount' => $payment->amount * 10,
+                'amount' => $payment->amount * 10, // تبدیل تومان به ریال
                 'description' => "رزرو مشاوره با {$lawyer->name} - {$payment->tracking_code}",
                 'callback_url' => route('reserve.verify', $payment->id),
                 'mobile' => Auth::user()->phone ?? '',
@@ -304,7 +319,7 @@ class ReserveController extends Controller
 
         $result = $response->json();
 
-        if (!isset($result['data']['code']) || $result['data']['code'] != 100) {
+        if (! isset($result['data']['code']) || $result['data']['code'] != 100) {
             throw new \Exception('درگاه پرداخت پاسخ نامعتبر داد');
         }
 
@@ -314,19 +329,19 @@ class ReserveController extends Controller
     private function getZarinpalStartUrl(string $authority): string
     {
         $isSandbox = config('services.zarinpal.sandbox', true);
-        $baseUrl = $isSandbox 
-            ? 'https://sandbox.zarinpal.com/pg/StartPay/' 
+        $baseUrl = $isSandbox
+            ? 'https://sandbox.zarinpal.com/pg/StartPay/'
             : 'https://www.zarinpal.com/pg/StartPay/';
 
-        return $baseUrl . $authority;
+        return $baseUrl.$authority;
     }
 
     private function verifyWithZarinpal(Payment $payment, string $authority)
     {
         $merchantId = config('services.zarinpal.merchant_id');
         $isSandbox = config('services.zarinpal.sandbox', true);
-        $baseUrl = $isSandbox 
-            ? 'https://sandbox.zarinpal.com/pg/v4/payment' 
+        $baseUrl = $isSandbox
+            ? 'https://sandbox.zarinpal.com/pg/v4/payment'
             : 'https://api.zarinpal.com/pg/v4/payment';
 
         $response = Http::timeout(self::ZARINPAL_TIMEOUT)
@@ -342,7 +357,7 @@ class ReserveController extends Controller
 
         $result = $response->json();
 
-        if (!isset($result['data']['code']) || $result['data']['code'] != 100) {
+        if (! isset($result['data']['code']) || $result['data']['code'] != 100) {
             throw new \Exception('پرداخت تأیید نشد');
         }
 

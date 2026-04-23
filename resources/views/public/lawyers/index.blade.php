@@ -413,7 +413,7 @@
                     <span class="exp-tag">سرپرستی</span>
                 </div>
 
-                <a href="{{ route('reserve.index') }}?lawyer=zahra" class="btn-contact-lawyer">
+                <a href="{{ route('reserve.index') }}?lawyer=zahra-jooshghani" class="btn-contact-lawyer">
                     <i class="fas fa-calendar-check"></i>
                     رزرو وقت با زهرا جوشقانی
                 </a>
@@ -487,7 +487,7 @@
                     <span class="exp-tag">اجرای احکام</span>
                 </div>
 
-                <a href="{{ route('reserve.index') }}?lawyer=babak" class="btn-contact-lawyer">
+                <a href="{{ route('reserve.index') }}?lawyer=babak-abdali" class="btn-contact-lawyer">
                     <i class="fas fa-calendar-check"></i>
                     رزرو وقت با بابک ابدالی
                 </a>
