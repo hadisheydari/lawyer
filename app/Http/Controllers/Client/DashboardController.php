@@ -3,19 +3,31 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Models\LegalCase;
-use App\Models\Consultation;
-use App\Models\ChatConversation;
 use App\Models\CaseInstallment;
+use App\Models\ChatConversation;
+use App\Models\Consultation;
+use App\Models\LegalCase;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    // ─── داشبورد مشتری ساده ───────────────────────────────────────────────────
-    public function simple()
+    /**
+     * نقطه ورود یکپارچه — بر اساس user_type، به ویو مناسب هدایت می‌کند
+     */
+    public function index()
     {
         $user = Auth::user();
 
+        if ($user->isSpecial()) {
+            return $this->special($user);
+        }
+
+        return $this->simple($user);
+    }
+
+    // ─── داشبورد مشتری ساده ───────────────────────────────────────────────────
+    private function simple($user)
+    {
         $consultations = Consultation::where('user_id', $user->id)
             ->with('lawyer')
             ->latest()
@@ -45,10 +57,8 @@ class DashboardController extends Controller
     }
 
     // ─── داشبورد موکل ویژه ────────────────────────────────────────────────────
-    public function special()
+    private function special($user)
     {
-        $user = Auth::user();
-
         $cases = LegalCase::where('user_id', $user->id)
             ->with(['lawyer', 'statusLogs' => fn($q) => $q->latest()->take(1)])
             ->latest()
@@ -78,7 +88,6 @@ class DashboardController extends Controller
             ->get()
             ->sum(fn($c) => $c->getUnreadCountFor('user', $user->id));
 
-        // مجموع مالی
         $totalFee    = LegalCase::where('user_id', $user->id)->sum('total_fee');
         $totalPaid   = LegalCase::where('user_id', $user->id)->sum('paid_amount');
         $totalRemain = max(0, $totalFee - $totalPaid);
@@ -95,5 +104,12 @@ class DashboardController extends Controller
             'totalPaid',
             'totalRemain'
         ));
+    }
+
+    // ─── پروفایل ──────────────────────────────────────────────────────────────
+    public function profile()
+    {
+        $user = Auth::user();
+        return view('client.profile', compact('user'));
     }
 }

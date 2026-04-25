@@ -2,50 +2,34 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Setting extends Model
 {
-    protected $fillable = [
-        'key',
-        'value',
-        'type',
-        'label',
-        'description',
-        'group'
-    ];
+    use HasFactory;
+
+    protected $fillable = ['key', 'value', 'type', 'label', 'description', 'group'];
 
     /**
-     * دریافت مقدار یک تنظیم با cast خودکار
+     * دریافت مقدار یک تنظیم با قابلیت fallback
      */
-    public static function get($key, $default = null)
+    public static function get(string $key, mixed $default = null): mixed
     {
-        $setting = self::where('key', $key)->first();
-        
-        if (!$setting) {
-            return $default;
-        }
-
-        return match($setting->type) {
-            'number' => (float) $setting->value,
-            'boolean' => filter_var($setting->value, FILTER_VALIDATE_BOOLEAN),
-            'json' => json_decode($setting->value, true),
-            default => $setting->value,
-        };
+        $setting = static::where('key', $key)->first();
+        return $setting ? $setting->value : $default;
     }
 
     /**
-     * ذخیره یک تنظیم
+     * ذخیره یا آپدیت یک تنظیم
      */
-    public static function set($key, $value, $type = 'string')
+    public static function set(string $key, mixed $value): void
     {
-        if ($type === 'json') {
-            $value = json_encode($value);
-        }
-
-        return self::updateOrCreate(
+        static::updateOrCreate(
             ['key' => $key],
-            ['value' => $value, 'type' => $type]
+            ['value' => $value]
         );
+        Cache::forget("setting_{$key}");
     }
 }

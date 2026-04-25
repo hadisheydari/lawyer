@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Consultation extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -29,20 +30,17 @@ class Consultation extends Model
         'payment_id',
     ];
 
-    protected $casts = [
-        'scheduled_at' => 'datetime',
-        'confirmed_at' => 'datetime',
-        'started_at' => 'datetime',
-        'completed_at' => 'datetime',
-        'cancelled_at' => 'datetime',
-        'price' => 'decimal:0',
-    ];
-
-    /*
-    |--------------------------------
-    | Relationships
-    |--------------------------------
-    */
+    protected function casts(): array
+    {
+        return [
+            'scheduled_at'  => 'datetime',
+            'confirmed_at'  => 'datetime',
+            'started_at'    => 'datetime',
+            'completed_at'  => 'datetime',
+            'cancelled_at'  => 'datetime',
+            'price'         => 'decimal:0',
+        ];
+    }
 
     public function user()
     {
@@ -63,4 +61,23 @@ class Consultation extends Model
     {
         return $this->belongsTo(Payment::class);
     }
+
+    public function conversation()
+    {
+        return $this->hasOne(ChatConversation::class);
+    }
+
+    public function isPending(): bool   { return $this->status === 'pending'; }
+    public function isConfirmed(): bool { return $this->status === 'confirmed'; }
+    public function isCompleted(): bool { return $this->status === 'completed'; }
+    public function isCancelled(): bool { return $this->status === 'cancelled'; }
+
+    public function getFormattedPriceAttribute(): string
+    {
+        return number_format($this->price) . ' تومان';
+    }
+
+    public function scopePending($query)    { return $query->where('status', 'pending'); }
+    public function scopeConfirmed($query)  { return $query->where('status', 'confirmed'); }
+    public function scopeCompleted($query)  { return $query->where('status', 'completed'); }
 }
