@@ -26,11 +26,9 @@ class ReserveController extends Controller
     {
         $lawyerSlug = $request->query('lawyer');
 
-        // اگر اسلاگ فرستاده شده بود، حتماً همان را پیدا کن یا ارور ۴۰۴ بده
         if ($lawyerSlug) {
             $lawyer = Lawyer::where('slug', $lawyerSlug)->firstOrFail();
         } else {
-            // اگر کلاً پارامتری نبود، اولین وکیل را به عنوان پیش‌فرض بیاور
             $lawyer = Lawyer::first();
         }
 
@@ -38,7 +36,6 @@ class ReserveController extends Controller
             return redirect()->route('home')->with('error', 'وکیلی یافت نشد');
         }
 
-        // بقیه کدها (قیمت و تقویم) ...
         $appointmentPrice = Setting::where('key', 'pricing.appointment_price')->value('value') ?? 500000;
         $currentMonth = (int) $request->query('month', Jalalian::now()->getMonth());
         $currentYear = (int) $request->query('year', Jalalian::now()->getYear());
@@ -58,7 +55,6 @@ class ReserveController extends Controller
             $lawyer = Lawyer::findOrFail($request->lawyer_id);
             $date = Carbon::parse($request->date);
 
-            // بررسی گذشته نبودن تاریخ
             if ($date->isPast() && ! $date->isToday()) {
                 return response()->json([
                     'success' => false,
@@ -66,7 +62,6 @@ class ReserveController extends Controller
                 ], 400);
             }
 
-            // بررسی جمعه بودن (روز جمعه = 5 در Carbon)
             if ($date->dayOfWeek === Carbon::FRIDAY) {
                 return response()->json([
                     'success' => false,
@@ -164,7 +159,6 @@ class ReserveController extends Controller
         $firstDayOfMonth = new Jalalian($year, $month, 1);
         $daysInMonth = $firstDayOfMonth->getMonthDays();
 
-        // محاسبه روز شروع هفته (برای تقویم شمسی شنبه=0 و جمعه=6)
         $carbonFirstDay = $firstDayOfMonth->toCarbon();
         $startDayOfWeek = ($carbonFirstDay->dayOfWeek + 1) % 7;
 
@@ -266,7 +260,7 @@ class ReserveController extends Controller
         $payment->update(['authority' => $authority]);
 
         Cache::forget("slots_{$lawyer->id}_{$selectedDate->format('Y-m-d')}");
-        Cache::forget("booked_dates_{$lawyer->id}_{$selectedDate->month}_{$selectedDate->year}");
+        Cache::forget("booked_dates_{$lawyer->id}_{$selectedDate->format('n')}_{$selectedDate->format('Y')}");
 
         return redirect($this->getZarinpalStartUrl($authority));
     }
@@ -365,7 +359,7 @@ class ReserveController extends Controller
 
         $payment->payable->update(['status' => 'confirmed']);
 
-        return redirect()
+        return redirect()->route('dashboard', $payment->id)
             ->with('success', 'پرداخت با موفقیت انجام شد. نوبت شما ثبت گردید');
     }
 
@@ -376,6 +370,6 @@ class ReserveController extends Controller
             $payment->payable->update(['status' => 'cancelled']);
         });
 
-        return redirect()->with('error', $message);
+        return redirect()->route('reserve.index')->with('error', $message);
     }
 }

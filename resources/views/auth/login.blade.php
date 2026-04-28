@@ -153,7 +153,7 @@
             <div class="auth-divider">یا</div>
             <div class="auth-footer">
                 حساب کاربری ندارید؟
-                <a href="{{ route('register-show') }}">ثبت نام کنید</a>
+                <a href="{{ route('register') }}">ثبت نام کنید</a>
             </div>
         </div>
 
