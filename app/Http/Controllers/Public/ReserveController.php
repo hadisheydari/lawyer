@@ -359,8 +359,8 @@ class ReserveController extends Controller
 
         $payment->payable->update(['status' => 'confirmed']);
 
-        return redirect()->route('dashboard', $payment->id)
-            ->with('success', 'پرداخت با موفقیت انجام شد. نوبت شما ثبت گردید');
+        return redirect()->route('dashboard')
+            ->with('success', 'درخواست مشاوره شما با موفقیت ثبت شد.');
     }
 
     private function handleFailedPayment(Payment $payment, string $message)

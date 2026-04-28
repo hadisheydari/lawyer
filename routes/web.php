@@ -106,6 +106,7 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
         Route::get('/', [\App\Http\Controllers\Client\ChatController::class, 'index'])->name('index');
         Route::get('/{conversation}', [\App\Http\Controllers\Client\ChatController::class, 'show'])->name('show');
         Route::post('/{conversation}/send', [\App\Http\Controllers\Client\ChatController::class, 'send'])->name('send');
+        Route::post('/start', [\App\Http\Controllers\Client\ChatController::class, 'store'])->name('store');
     });
 
     // پرونده‌ها (کاربر ویژه)
