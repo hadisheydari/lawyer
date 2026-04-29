@@ -24,33 +24,27 @@ class ChatController extends Controller
         return view('client.chat.index', compact('conversations'));
     }
 
-    // متد show برای باز کردن یک چت خاص
     public function show($id)
     {
         $userId = auth()->id();
 
-        // ۱. پیدا کردن چت فعال (حتماً باید متعلق به همین کاربر باشد - امنیت)
         $activeConversation = ChatConversation::with('lawyer')
             ->where('user_id', $userId)
             ->findOrFail($id);
 
-        // ۲. سین کردن پیام‌ها (پیام‌هایی که وکیل فرستاده و تا الان خوانده نشده‌اند را تیک دوم بزن)
         $activeConversation->messages()
-            ->where('sender_type', 'lawyer') // فرض بر این است که تایپ وکیل 'lawyer' ذخیره می‌شود
+            ->where('sender_type', 'lawyer') 
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
-        // ۳. دریافت تمام پیام‌های این چت (مرتب شده از قدیمی به جدید برای نمایش درست در چت)
         $messages = $activeConversation->messages()
             ->orderBy('created_at', 'asc')
             ->get();
 
-        // ۴. لود کردن دوباره لیست سایدبار (چون در ویو به متغیر $conversations نیاز داریم)
         $conversations = ChatConversation::with(['lawyer', 'latestMessage'])
             ->where('user_id', $userId)
             ->get()
             ->sortByDesc(function ($conv) {
-                // مرتب‌سازی بر اساس تاریخ آخرین پیام
                 return $conv->latestMessage ? $conv->latestMessage->created_at : $conv->created_at;
             });
 
@@ -114,11 +108,8 @@ class ChatController extends Controller
             'is_read'     => false,        // پیام جدید هنوز توسط وکیل خوانده نشده است
         ]);
 
-        // ۵. بروزرسانی فیلد updated_at در مکالمه اصلی 
-        // این کار باعث می‌شود این چت در سایدبار بیاید بالای لیست
         $conversation->touch();
 
-        // ۶. ریدایرکت مجدد به همان صفحه با حفظ اسکرول (انجام شده توسط جاوااسکریپت)
         return back();
     }
 }
