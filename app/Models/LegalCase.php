@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Morilog\Jalali\Jalalian;
-
+use Illuminate\Database\Eloquent\Casts\Attribute;
 /**
  * مدل پرونده — نام LegalCase چون Case کلمه رزرو PHP هست
  * جدول: cases
@@ -34,13 +34,12 @@ class LegalCase extends Model
     protected function casts(): array
     {
         return [
-            'opened_at'  => 'datetime',
-            'closed_at'  => 'datetime',
-            'total_fee'  => 'decimal:0',
+            'opened_at' => 'datetime',
+            'closed_at' => 'datetime',
+            'total_fee' => 'decimal:0',
             'paid_amount' => 'decimal:0',
         ];
     }
-
 
     public function user()
     {
@@ -82,10 +81,12 @@ class LegalCase extends Model
         return $this->hasOne(ChatConversation::class, 'case_id');
     }
 
-
     public function getProgressPercentAttribute(): int
     {
-        if ($this->total_fee == 0) return 0;
+        if ($this->total_fee == 0) {
+            return 0;
+        }
+
         return (int) round(($this->paid_amount / $this->total_fee) * 100);
     }
 
@@ -108,9 +109,9 @@ class LegalCase extends Model
     {
         $jalaliYear = Jalalian::now()->getYear();
         $count = self::whereYear('created_at', now()->year)->count() + 1;
+
         return sprintf('LAW-%d-%03d', $jalaliYear, $count);
     }
-
 
     public function scopeActive($query)
     {
@@ -125,5 +126,19 @@ class LegalCase extends Model
     public function scopeForLawyer($query, int $lawyerId)
     {
         return $query->where('lawyer_id', $lawyerId);
+    }
+
+    protected function progressPercent(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->total_fee == 0 ? 0 : (int) round(($this->paid_amount / $this->total_fee) * 100),
+        );
+    }
+
+    protected function remainingFee(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => max(0, $this->total_fee - $this->paid_amount),
+        );
     }
 }

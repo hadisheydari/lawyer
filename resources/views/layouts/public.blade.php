@@ -143,7 +143,92 @@
         .flash-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
         .flash-error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
         .flash-warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+/* ─── فرم تماس مدرن (نسخه فلکس‌باکس - بدون باگ) ─── */
+        .contact-form-box {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(207, 168, 110, 0.15);
+            box-shadow: 0 10px 40px rgba(16, 42, 67, 0.06);
+        }
 
+        .form-title { font-size: 1.8rem; color: var(--text-heading); margin-bottom: 10px; font-weight: 800; }
+        .form-desc { margin-bottom: 30px; color: var(--text-body); font-size: 0.95rem; }
+
+        .form-group-c { margin-bottom: 20px; }
+
+        /* باکس اصلی دربرگیرنده آیکون و اینپوت */
+        .input-box {
+            display: flex;
+            align-items: center; /* تراز کردن عمودی آیکون و متن */
+            background-color: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0 15px; /* پدینگ فقط برای چپ و راست باکس */
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        /* وقتی کاربر داخل اینپوت کلیک می‌کند، کل باکس تغییر رنگ می‌دهد */
+        .input-box:focus-within {
+            background-color: #ffffff;
+            border-color: var(--gold-main);
+            box-shadow: 0 0 0 4px rgba(207, 168, 110, 0.12);
+        }
+
+        /* استایل آیکون */
+        .input-box i {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-left: 10px; /* فاصله آیکون از متن (چون راست‌چین است) */
+            transition: all 0.3s ease;
+        }
+
+        .input-box:focus-within i {
+            color: var(--gold-main);
+        }
+
+        /* استایل خود اینپوت */
+        .input-box input,
+        .input-box textarea {
+            flex: 1; /* پر کردن تمام فضای باقی‌مانده */
+            border: none !important;
+            background: transparent !important;
+            padding: 15px 0; /* پدینگ بالا و پایین متن */
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-heading);
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .input-box input::placeholder,
+        .input-box textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        /* تنظیمات اختصاصی برای تکست‌اریا تا آیکون بالا بماند */
+        .input-box.textarea-box {
+            align-items: flex-start; /* کشیدن آیکون به بالا */
+            padding-top: 15px; /* فاصله آیکون از سقف */
+        }
+
+        .input-box.textarea-box textarea {
+            padding: 0; /* پدینگ را صفر می‌کنیم چون باکس اصلی پدینگ دارد */
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.8;
+        }
+
+        .form-error {
+            color: #ef4444;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
         @media (max-width: 768px) {
             .nav-menu { display: none; }
             .hamburger { display: block; }

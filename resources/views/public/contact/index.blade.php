@@ -158,6 +158,139 @@
         .quick-lawyers { grid-template-columns: 1fr; }
         .contact-form-card { padding: 30px 25px; }
     }
+    /* ─── Premium Form Inputs ────────────────────────────────── */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group-p {
+        margin-bottom: 24px;
+    }
+
+    .form-label-p {
+        display: block;
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--navy);
+        margin-bottom: 10px;
+        transition: color 0.3s ease;
+    }
+
+    .form-label-p span {
+        color: #e74c3c;
+        margin-right: 4px;
+    }
+
+    /* باکس دربرگیرنده اینپوت و آیکون */
+    .input-wrapper-p {
+        position: relative;
+        display: block;
+        width: 100%;
+    }
+
+    .form-input-p {
+        width: 100%;
+        padding: 16px 50px 16px 18px; /* فضای ۵۰ پیکسلی سمت راست برای آیکون */
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        font-family: 'Vazirmatn', sans-serif;
+        font-size: 0.95rem;
+        background: #f8fafc;
+        color: var(--text-heading);
+        transition: all 0.3s ease;
+    }
+
+    .form-input-p::placeholder {
+        color: #94a3b8;
+        font-weight: 400;
+    }
+
+    /* آیکون داخل فیلد */
+    .input-icon-p {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #cbd5e1;
+        font-size: 1.15rem;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+    /* افکت خیره‌کننده هنگام کلیک (Focus) */
+    .form-input-p:focus {
+        border-color: var(--gold-main);
+        background: #ffffff;
+        outline: none;
+        box-shadow: 0 10px 25px rgba(207, 168, 110, 0.15);
+        transform: translateY(-2px); /* اینپوت کمی بالا می‌آید */
+    }
+
+    /* طلایی شدن آیکون هنگام کلیک */
+    .form-input-p:focus ~ .input-icon-p {
+        color: var(--gold-main);
+    }
+
+    /* تنظیمات لیست کشویی (Select) */
+    select.form-input-p {
+        appearance: none;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: left 18px center;
+    }
+
+    /* تنظیمات کادر پیام (Textarea) */
+    textarea.form-input-p {
+        min-height: 140px;
+        padding-top: 18px;
+        resize: vertical;
+        line-height: 1.8;
+    }
+    
+    /* قفل کردن آیکونِ Textarea در بالا */
+    .textarea-wrapper-p .input-icon-p {
+        top: 24px;
+        transform: none;
+    }
+
+    .error-msg {
+        color: #ef4444;
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 8px;
+    }
+
+    /* دکمه ارسال مدرن */
+    .btn-submit-p {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, var(--navy), #1e3a5f);
+        color: #ffffff;
+        border: none;
+        border-radius: 14px;
+        font-family: 'Vazirmatn', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        box-shadow: 0 10px 25px rgba(16, 42, 67, 0.2);
+    }
+
+    .btn-submit-p:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(16, 42, 67, 0.35);
+        background: linear-gradient(135deg, #1e3a5f, var(--navy));
+    }
 </style>
 @endpush
 
@@ -247,54 +380,78 @@
                 </div>
             @endif
 
-            <form action="{{ route('contact.send') }}" method="POST">
+<form action="{{ route('contact.send') }}" method="POST">
                 @csrf
+                
                 <div class="form-row">
                     <div class="form-group-p">
-                        <label class="form-label-p">نام و نام خانوادگی <span>*</span></label>
-                        <input type="text" name="name" class="form-input-p"
-                               placeholder="علی محمدی" required value="{{ old('name') }}">
-                        @error('name') <small style="color:#e74c3c;">{{ $message }}</small> @enderror
+                        <label for="name" class="form-label-p">نام و نام خانوادگی <span>*</span></label>
+                        <div class="input-wrapper-p">
+                            <input type="text" id="name" name="name" class="form-input-p" 
+                                   placeholder="مثال: علی محمدی" required value="{{ old('name') }}">
+                            <i class="fas fa-user input-icon-p"></i>
+                        </div>
+                        @error('name') 
+                            <div class="error-msg"><i class="fas fa-exclamation-circle"></i> {{ $message }}</div> 
+                        @enderror
                     </div>
+                    
                     <div class="form-group-p">
-                        <label class="form-label-p">شماره تماس <span>*</span></label>
-                        <input type="tel" name="phone" class="form-input-p"
-                               placeholder="۰۹۱۲۳۴۵۶۷۸۹" required style="direction:ltr;text-align:right;"
-                               value="{{ old('phone') }}">
-                        @error('phone') <small style="color:#e74c3c;">{{ $message }}</small> @enderror
+                        <label for="phone" class="form-label-p">شماره موبایل <span>*</span></label>
+                        <div class="input-wrapper-p">
+                            <input type="tel" id="phone" name="phone" class="form-input-p" 
+                                   placeholder="۰۹۱۲۳۴۵۶۷۸۹" required style="direction:ltr; text-align:right;" 
+                                   value="{{ old('phone') }}">
+                            <i class="fas fa-phone-alt input-icon-p"></i>
+                        </div>
+                        @error('phone') 
+                            <div class="error-msg"><i class="fas fa-exclamation-circle"></i> {{ $message }}</div> 
+                        @enderror
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group-p">
-                        <label class="form-label-p">حوزه درخواست</label>
-                        <select name="service" class="form-input-p">
-                            <option value="">انتخاب کنید...</option>
-                            <option value="family">حقوق خانواده</option>
-                            <option value="commercial">دعاوی تجاری</option>
-                            <option value="real-estate">دعاوی ملکی</option>
-                            <option value="criminal">دعاوی کیفری</option>
-                            <option value="inheritance">ارث و ترکه</option>
-                            <option value="other">سایر موارد</option>
-                        </select>
+                        <label for="service" class="form-label-p">حوزه درخواست حقوقی</label>
+                        <div class="input-wrapper-p">
+                            <select id="service" name="service" class="form-input-p">
+                                <option value="">لطفاً انتخاب کنید...</option>
+                                <option value="family" {{ old('service') == 'family' ? 'selected' : '' }}>حقوق خانواده</option>
+                                <option value="commercial" {{ old('service') == 'commercial' ? 'selected' : '' }}>دعاوی تجاری</option>
+                                <option value="real-estate" {{ old('service') == 'real-estate' ? 'selected' : '' }}>دعاوی ملکی</option>
+                                <option value="criminal" {{ old('service') == 'criminal' ? 'selected' : '' }}>دعاوی کیفری</option>
+                                <option value="inheritance" {{ old('service') == 'inheritance' ? 'selected' : '' }}>ارث و انحصار وراثت</option>
+                                <option value="other" {{ old('service') == 'other' ? 'selected' : '' }}>سایر موارد</option>
+                            </select>
+                            <i class="fas fa-gavel input-icon-p"></i>
+                        </div>
                     </div>
+                    
                     <div class="form-group-p">
-                        <label class="form-label-p">ایمیل (اختیاری)</label>
-                        <input type="email" name="email" class="form-input-p"
-                               placeholder="example@email.com" style="direction:ltr;text-align:right;"
-                               value="{{ old('email') }}">
+                        <label for="email" class="form-label-p">پست الکترونیک (اختیاری)</label>
+                        <div class="input-wrapper-p">
+                            <input type="email" id="email" name="email" class="form-input-p" 
+                                   placeholder="example@email.com" style="direction:ltr; text-align:right;" 
+                                   value="{{ old('email') }}">
+                            <i class="fas fa-envelope input-icon-p"></i>
+                        </div>
                     </div>
                 </div>
 
                 <div class="form-group-p">
-                    <label class="form-label-p">شرح مختصر موضوع</label>
-                    <textarea name="message" class="form-input-p"
-                              placeholder="لطفاً خلاصه‌ای از موضوع پرونده یا سوال حقوقی خود را بنویسید...">{{ old('message') }}</textarea>
+                    <label for="message" class="form-label-p">شرح مختصر موضوع <span>*</span></label>
+                    <div class="input-wrapper-p textarea-wrapper-p">
+                        <textarea id="message" name="message" class="form-input-p" required 
+                                  placeholder="لطفاً خلاصه‌ای از مشکل حقوقی یا سوال خود را به صورت واضح بیان کنید...">{{ old('message') }}</textarea>
+                        <i class="fas fa-comment-dots input-icon-p"></i>
+                    </div>
+                    @error('message') 
+                        <div class="error-msg"><i class="fas fa-exclamation-circle"></i> {{ $message }}</div> 
+                    @enderror
                 </div>
 
                 <button type="submit" class="btn-submit-p">
-                    <i class="fas fa-paper-plane"></i>
-                    ارسال درخواست مشاوره
+                    ارسال درخواست مشاوره <i class="fas fa-paper-plane" style="margin-right:8px;"></i>
                 </button>
             </form>
         </div>
