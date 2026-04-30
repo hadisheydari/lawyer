@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
+use App\Http\Controllers\Public\ArticleCommentController;
 use App\Http\Controllers\Public\ArticleController;
+use App\Http\Controllers\Public\ArticleReactionController;
 use App\Http\Controllers\Public\CalculatorController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
@@ -38,6 +40,24 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 Route::get('/about', fn () => redirect()->route('lawyers.index'))->name('about');
+
+// ═══════════════════════════════════════════════════════════════
+// ✅ FIX: Article Comments & Reactions (auth required)
+// ═══════════════════════════════════════════════════════════════
+
+Route::middleware('auth')->group(function () {
+    // کامنت‌ها
+    Route::post('/articles/comments', [ArticleCommentController::class, 'store'])
+        ->name('articles.comments.store');
+    Route::put('/articles/comments/{comment}', [ArticleCommentController::class, 'update'])
+        ->name('articles.comments.update');
+    Route::delete('/articles/comments/{comment}', [ArticleCommentController::class, 'destroy'])
+        ->name('articles.comments.destroy');
+
+    // ری‌اکشن‌ها
+    Route::post('/articles/reactions', [ArticleReactionController::class, 'store'])
+        ->name('articles.reactions.store');
+});
 
 // ═══════════════════════════════════════════════════════════════
 // RESERVE ROUTES
@@ -120,6 +140,7 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
         Route::get('/', [\App\Http\Controllers\Client\InstallmentController::class, 'index'])->name('index');
     });
 
-    // پروفایل
+    // ✅ FIX: Profile routes — added PUT for update
     Route::get('/profile', [\App\Http\Controllers\Client\ProfileController::class, 'index'])->name('profile');
+    Route::put('/profile', [\App\Http\Controllers\Client\ProfileController::class, 'update'])->name('profile.update');
 });

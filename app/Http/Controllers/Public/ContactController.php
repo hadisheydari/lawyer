@@ -18,7 +18,7 @@ class ContactController extends Controller
         $validated = $request->validate([
             'name'    => 'required|string|max:100',
             'phone'   => 'required|string|max:20',
-            'service' => 'nullable|string|max:50',
+            'service' => 'nullable|string|max:100',
             'email'   => 'nullable|email|max:100',
             'message' => 'nullable|string|max:1000',
         ], [
@@ -26,13 +26,14 @@ class ContactController extends Controller
             'phone.required' => 'شماره تماس الزامی است.',
         ]);
 
-        ContactRequest::create(array_merge($validated, [
-            'ip' => $request->ip(),
-        ]));
-
-        // TODO: ارسال نوتیفیکیشن به وکلا (Mail/SMS)
-        // Notification::route('mail', config('office.email'))
-        //     ->notify(new NewContactNotification($validated));
+        // ✅ Fix: map 'service' → 'subject' (table column), remove 'ip' (no column in migration)
+        ContactRequest::create([
+            'name'    => $validated['name'],
+            'phone'   => $validated['phone'],
+            'subject' => $validated['service'] ?? 'درخواست مشاوره عمومی',
+            'email'   => $validated['email'] ?? null,
+            'message' => $validated['message'] ?? null,
+        ]);
 
         return back()->with('success', 'درخواست شما ثبت شد. به زودی با شما تماس خواهیم گرفت.');
     }

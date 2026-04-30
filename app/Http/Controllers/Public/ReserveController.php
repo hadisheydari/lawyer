@@ -184,13 +184,13 @@ class ReserveController extends Controller
 
     private function getBookedDates(int $lawyerId, int $month, int $year): array
     {
+        // ✅ Fix: key format is {lawyerId}_{year}_{month} — Jalali year and month
         $cacheKey = "booked_dates_{$lawyerId}_{$year}_{$month}";
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($lawyerId, $month, $year) {
             $firstDayOfMonth = new Jalalian($year, $month, 1);
             $daysInMonth = $firstDayOfMonth->getMonthDays();
 
-            // تبدیل تاریخ شمسی به میلادی برای کوئری زدن درست روی دیتابیس
             $startDate = $firstDayOfMonth->toCarbon()->startOfDay();
             $endDate = (new Jalalian($year, $month, $daysInMonth))->toCarbon()->endOfDay();
 
@@ -259,8 +259,10 @@ class ReserveController extends Controller
 
         $payment->update(['authority' => $authority]);
 
+        // ✅ Fix: use Jalali year/month for cache key consistency, correct order {year}_{month}
+        $jalali = Jalalian::fromCarbon($selectedDate);
         Cache::forget("slots_{$lawyer->id}_{$selectedDate->format('Y-m-d')}");
-        Cache::forget("booked_dates_{$lawyer->id}_{$selectedDate->format('n')}_{$selectedDate->format('Y')}");
+        Cache::forget("booked_dates_{$lawyer->id}_{$jalali->getYear()}_{$jalali->getMonth()}");
 
         return redirect($this->getZarinpalStartUrl($authority));
     }
@@ -283,7 +285,6 @@ class ReserveController extends Controller
         $merchantId = config('services.zarinpal.merchant_id');
         $isSandbox = config('services.zarinpal.sandbox', true);
 
-        // آدرس صحیح نسخه 4 زرین‌پال
         $baseUrl = $isSandbox
             ? 'https://sandbox.zarinpal.com/pg/v4/payment'
             : 'https://api.zarinpal.com/pg/v4/payment';
@@ -291,7 +292,7 @@ class ReserveController extends Controller
         $response = Http::timeout(10)
             ->post("{$baseUrl}/request.json", [
                 'merchant_id' => $merchantId,
-                'amount' => (int) ($payment->amount * 10), // حتما تومان به ریال تبدیل شود
+                'amount' => (int) ($payment->amount * 10),
                 'description' => "رزرو مشاوره با {$lawyer->name}",
                 'callback_url' => route('reserve.verify', $payment->id),
                 'metadata' => [
@@ -307,7 +308,6 @@ class ReserveController extends Controller
 
         $result = $response->json();
 
-        // در نسخه 4 پاسخ در آرایه data قرار دارد
         if (! isset($result['data']['code']) || $result['data']['code'] != 100) {
             $msg = $result['errors']['message'] ?? 'خطای ناشناخته از درگاه';
             throw new \Exception('درگاه پرداخت پاسخ نامعتبر داد: '.$msg);

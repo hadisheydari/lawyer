@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\ArticleComment;
-use Exception;
 use Illuminate\Http\Request;
 
 class ArticleCommentController extends Controller
@@ -13,8 +12,8 @@ class ArticleCommentController extends Controller
     // ─── ثبت کامنت جدید ─────────────────────────────────────────
     public function store(Request $request)
     {
-        try{
-                    $request->validate([
+        // ✅ Fix: removed dd($e) debug code, proper error handling
+        $request->validate([
             'article_id' => ['required', 'integer', 'exists:articles,id'],
             'body'       => ['required', 'string', 'min:5', 'max:1000'],
             'parent_id'  => ['nullable', 'integer', 'exists:article_comments,id'],
@@ -25,14 +24,21 @@ class ArticleCommentController extends Controller
             $parent = ArticleComment::where('id', $request->parent_id)
                 ->where('article_id', $request->article_id)
                 ->where('status', 'approved')
-                ->firstOrFail();
+                ->first();
+
+            if (!$parent) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'کامنت والد معتبر نیست.',
+                ], 422);
+            }
         }
 
         $comment = ArticleComment::create([
             'article_id' => $request->article_id,
             'user_id'    => auth()->id(),
             'parent_id'  => $request->parent_id ?? null,
-            'content'       => $request->body,
+            'content'    => $request->body,
             'status'     => 'pending',
         ]);
 
@@ -46,10 +52,6 @@ class ArticleCommentController extends Controller
                 'parent_id' => $comment->parent_id,
             ],
         ], 201);
-        } catch (\Exception $e) {
-
-        dd($e);
-        }
     }
 
     // ─── ویرایش کامنت ───────────────────────────────────────────
@@ -75,7 +77,8 @@ class ArticleCommentController extends Controller
             'content' => ['required', 'string', 'min:5', 'max:1000'],
         ]);
 
-        $comment->update(['content' => $request->body]);
+        // ✅ Fix: was $request->body — should be $request->content
+        $comment->update(['content' => $request->content]);
 
         return response()->json([
             'success' => true,

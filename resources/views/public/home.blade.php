@@ -229,7 +229,7 @@
             <div class="hero-visual">
                 <div class="hero-pattern-circle"></div>
                 <div class="hero-img-frame">
-                    <img src="{{ asset('images/babak.jpg') }}"
+                    <img src="{{ asset('assets/images/babak.png') }}"
                          onerror="this.style.background='linear-gradient(135deg,#cfa86e,#a67c52)'"
                          alt="بابک ابدالی" class="hero-img">
                     <div class="img-label">
@@ -238,7 +238,7 @@
                     </div>
                 </div>
                 <div class="hero-img-frame" style="margin-top:40px;">
-                    <img src="{{ asset('images/zahra.jpg') }}"
+                    <img src="{{ asset('assets/images/zahra.png') }}"
                          onerror="this.style.background='linear-gradient(135deg,#c4a882,#967050)'"
                          alt="زهرا جوشقانی" class="hero-img">
                     <div class="img-label">
@@ -331,8 +331,9 @@
             @forelse($articles as $article)
                 <a href="{{ route('articles.show', $article->slug) }}" class="article-card">
                     <div class="article-img-box">
+                        {{-- ✅ Fix: use $article->image_url accessor (assets/images/ path) --}}
                         @if($article->featured_image)
-                            <img src="{{ asset('storage/'.$article->featured_image) }}"
+                            <img src="{{ $article->image_url }}"
                                  class="article-img" alt="{{ $article->title }}" loading="lazy">
                         @else
                             <div style="width:100%;height:100%;background:linear-gradient(135deg,#102a43,#1e3a5f);display:flex;align-items:center;justify-content:center;">

@@ -16,12 +16,12 @@ class Article extends Model
         'title',
         'slug',
         'excerpt',
-        'body',
+        'content',          // ✅ Fix: was 'body', DB column is 'content'
         'featured_image',
-        'status',           // ✅ اضافه شد
-        'published_at',     // ✅ اضافه شد
-        'view_count',       // ✅ اضافه شد
-        'reading_time',     // ✅ اضافه شد
+        'status',
+        'published_at',
+        'view_count',
+        'reading_time',
         'category',
         'tags',
         'meta_title',
@@ -33,8 +33,8 @@ class Article extends Model
         'tags'          => 'array',
         'meta_keywords' => 'array',
         'published_at'  => 'datetime',
-        'view_count'    => 'integer',   // ✅ اضافه شد
-        'reading_time'  => 'integer',   // ✅ اضافه شد
+        'view_count'    => 'integer',
+        'reading_time'  => 'integer',
     ];
 
     // ─── Relations ───────────────────────────────────────────
@@ -56,9 +56,9 @@ class Article extends Model
     public function approvedComments()
     {
         return $this->hasMany(ArticleComment::class)
-                    ->whereNull('parent_id')        // فقط کامنت‌های اصلی
+                    ->whereNull('parent_id')
                     ->where('status', 'approved')
-                    ->with('replies')               // لود کردن جواب‌ها
+                    ->with('replies')
                     ->latest();
     }
 
