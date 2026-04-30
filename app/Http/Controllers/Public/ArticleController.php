@@ -69,7 +69,7 @@ class ArticleController extends Controller
 
         // ─── ری‌اکشن‌های جمع‌بندی شده ──────────────────────
         $reactionCounts = $article->reactions()
-            ->selectRaw('type, count(*) as total')
+            ->Raw('type, count(*) as total')
             ->groupBy('type')
             ->pluck('total', 'type')
             ->toArray();
