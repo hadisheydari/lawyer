@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\AuthLawyerController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Public\ArticleCommentController;
 use App\Http\Controllers\Public\ArticleController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\LawyerController;
 use App\Http\Controllers\Public\ReserveController;
 use App\Http\Controllers\Public\ServiceController;
+use App\Http\Controllers\Lawyer\DashboardController as LawyerDashboardController;
 use Illuminate\Support\Facades\Route;
 
 // ═══════════════════════════════════════════════════════════════
@@ -99,13 +101,13 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 Route::prefix('lawyer')->name('lawyer.')->group(function () {
-    Route::get('/login', [LawyerAuthController::class, 'showLogin'])->name('login');
-    Route::post('/send-otp', [LawyerAuthController::class, 'sendOtp'])->name('send-otp');
-    Route::post('/verify-otp', [LawyerAuthController::class, 'verifyOtp'])->name('verify-otp');
+    Route::get('/login', [AuthLawyerController::class, 'showLogin'])->name('login');
+    Route::post('/send-otp', [AuthLawyerController::class, 'sendOtp'])->name('send-otp');
+    Route::post('/verify-otp', [AuthLawyerController::class, 'verifyOtp'])->name('verify-otp');
     
     Route::middleware('auth:lawyer')->group(function () {
         Route::get('/dashboard', [LawyerDashboardController::class, 'index'])->name('dashboard');
-        Route::post('/logout', [LawyerAuthController::class, 'logout'])->name('logout');
+        Route::post('/logout', [AuthLawyerController::class, 'logout'])->name('logout');
     });
 });
 

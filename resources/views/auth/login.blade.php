@@ -393,7 +393,7 @@
 
         <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; align-items: center;">
             {{-- دکمه ورود به پورتال وکلا --}}
-            <a href="{{ route('login.show.lawyer') }}"
+            <a href="{{ route('lawyer.login') }}"
                 style="color: var(--navy); font-weight: 800; text-decoration: none; font-size: 0.95rem; background: rgba(16,42,67,0.05); padding: 10px 20px; border-radius: 12px; transition: 0.3s;"
                 onmouseover="this.style.background='rgba(16,42,67,0.1)'"
                 onmouseout="this.style.background='rgba(16,42,67,0.05)'">
