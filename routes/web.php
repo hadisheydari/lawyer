@@ -87,10 +87,13 @@ Route::post('/clear-otp-session', [AuthController::class, 'clearOtpSession'])->n
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::get('/login/lawyer', [AuthController::class, 'showLoginLawyer'])->name('login.show.lawyer');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
     Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('auth.send-otp')->middleware('throttle:5,1');
     Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('auth.verify-otp');
+    Route::post('/login/lawyer', [AuthController::class, 'loginLawyer'])->name('login.lawyer');
+
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -154,54 +157,51 @@ Route::middleware(['App\Http\Middleware\EnsureLawyerAuth'])
     ->name('lawyer.')
     ->group(function () {
 
-    Route::get('/dashboard', [\App\Http\Controllers\Lawyer\DashboardController::class, 'index'])->name('dashboard');
-    Route::post('/logout', [\App\Http\Controllers\Lawyer\DashboardController::class, 'logout'])->name('logout');
+        Route::get('/dashboard', [\App\Http\Controllers\Lawyer\DashboardController::class, 'index'])->name('dashboard');
+        Route::post('/logout', [\App\Http\Controllers\Lawyer\DashboardController::class, 'logout'])->name('logout');
 
-    // پرونده‌ها
-    Route::prefix('cases')->name('cases.')->group(function () {
-        Route::get('/', fn() => abort(501))->name('index');
-        Route::get('/{id}', fn() => abort(501))->name('show');
+        // پرونده‌ها
+        Route::prefix('cases')->name('cases.')->group(function () {
+            Route::get('/', fn () => abort(501))->name('index');
+            Route::get('/{id}', fn () => abort(501))->name('show');
+        });
+
+        // موکلین
+        Route::prefix('clients')->name('clients.')->group(function () {
+            Route::get('/', fn () => abort(501))->name('index');
+        });
+
+        // مشاوره‌ها
+        Route::prefix('consultations')->name('consultations.')->group(function () {
+            Route::get('/', fn () => abort(501))->name('index');
+        });
+
+        // چت
+        Route::prefix('chat')->name('chat.')->group(function () {
+            Route::get('/', fn () => abort(501))->name('index');
+        });
+
+        // مقالات
+        Route::prefix('articles')->name('articles.')->group(function () {
+            Route::get('/', fn () => abort(501))->name('index');
+        });
+
+        // نظرات
+        Route::prefix('comments')->name('comments.')->group(function () {
+            Route::get('/', fn () => abort(501))->name('index');
+        });
+
+        // پرداخت‌ها
+        Route::prefix('payments')->name('payments.')->group(function () {
+            Route::get('/', fn () => abort(501))->name('index');
+        });
+
+        // تنظیمات
+        Route::prefix('settings')->name('settings.')->group(function () {
+            Route::get('/', fn () => abort(501))->name('index');
+        });
+
+        // تقویم و ساعات کاری
+        Route::get('/calendar', fn () => abort(501))->name('calendar');
+        Route::get('/schedule', fn () => abort(501))->name('schedule');
     });
-
-    // موکلین
-    Route::prefix('clients')->name('clients.')->group(function () {
-        Route::get('/', fn() => abort(501))->name('index');
-    });
-
-    // مشاوره‌ها
-    Route::prefix('consultations')->name('consultations.')->group(function () {
-        Route::get('/', fn() => abort(501))->name('index');
-    });
-
-    // چت
-    Route::prefix('chat')->name('chat.')->group(function () {
-        Route::get('/', fn() => abort(501))->name('index');
-    });
-
-    // مقالات
-    Route::prefix('articles')->name('articles.')->group(function () {
-        Route::get('/', fn() => abort(501))->name('index');
-    });
-
-    // نظرات
-    Route::prefix('comments')->name('comments.')->group(function () {
-        Route::get('/', fn() => abort(501))->name('index');
-    });
-
-    // پرداخت‌ها
-    Route::prefix('payments')->name('payments.')->group(function () {
-        Route::get('/', fn() => abort(501))->name('index');
-    });
-
-    // تنظیمات
-    Route::prefix('settings')->name('settings.')->group(function () {
-        Route::get('/', fn() => abort(501))->name('index');
-    });
-
-    // تقویم و ساعات کاری
-    Route::get('/calendar', fn() => abort(501))->name('calendar');
-    Route::get('/schedule', fn() => abort(501))->name('schedule');
-});
-
-// صفحه لاگین وکیل
-Route::get('/lawyer/login', fn() => abort(501))->name('lawyer.login');
