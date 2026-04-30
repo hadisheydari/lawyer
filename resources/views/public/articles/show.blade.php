@@ -5,7 +5,6 @@
 <style>
     .article-page { max-width: 1200px; margin: 0 auto; padding: 70px 20px; }
 
-    /* ─── Layout اصلی ────────────────────────────────────────────── */
     .article-layout {
         display: grid;
         grid-template-columns: 1fr 320px;
@@ -13,7 +12,6 @@
         align-items: start;
     }
 
-    /* ─── محتوای مقاله ───────────────────────────────────────────── */
     .article-main {}
 
     .article-header {
@@ -75,9 +73,7 @@
     .article-body h2 { font-size: 1.3rem; border-right: 3px solid var(--gold-main); padding-right: 15px; }
     .article-body h3 { font-size: 1.1rem; }
     .article-body p { margin-bottom: 18px; }
-    .article-body ul, .article-body ol {
-        padding-right: 25px; margin-bottom: 18px;
-    }
+    .article-body ul, .article-body ol { padding-right: 25px; margin-bottom: 18px; }
     .article-body li { margin-bottom: 8px; }
     .article-body strong { color: var(--text-heading); }
     .article-body a { color: var(--gold-main); text-decoration: underline; }
@@ -98,348 +94,245 @@
     }
 
     /* ─── ری‌اکشن‌ها ──────────────────────────────────────────────── */
-
-/* ─── ری‌اکشن‌ها (مینیمال) ──────────────────────── */
-.reactions-section {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    padding: 22px 28px;
-    margin: 30px 0;
-    background: #fafafa;
-    border: 1px solid #ede8e0;
-    border-radius: 16px;
-}
-
-.reactions-label {
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--text-body);
-    white-space: nowrap;
-}
-
-.reactions-grid {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.reaction-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 8px 16px;
-    border-radius: 30px;
-    border: 1.5px solid #e0d8ce;
-    background: #fff;
-    color: var(--text-body);
-    font-size: 0.82rem;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.reaction-btn i {
-    font-size: 0.9rem;
-    color: #bbb;
-    transition: color 0.2s;
-}
-
-.reaction-btn b {
-    font-size: 0.78rem;
-    color: #aaa;
-    font-weight: 700;
-}
-
-.reaction-btn:hover {
-    border-color: var(--gold-main);
-    color: var(--gold-dark);
-    background: rgba(207,168,110,0.06);
-}
-
-.reaction-btn:hover i { color: var(--gold-main); }
-
-.reaction-btn.active {
-    background: var(--gold-main);
-    border-color: var(--gold-main);
-    color: #fff;
-}
-
-.reaction-btn.active i,
-.reaction-btn.active b { color: #fff; }
-
-@media (max-width: 768px) {
     .reactions-section {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        padding: 22px 28px;
+        margin: 30px 0;
+        background: #fafafa;
+        border: 1px solid #ede8e0;
+        border-radius: 16px;
     }
-}
 
+    .reactions-label {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--text-body);
+        white-space: nowrap;
+    }
 
+    .reactions-grid {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .reaction-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 16px;
+        border-radius: 30px;
+        border: 1.5px solid #e0d8ce;
+        background: #fff;
+        color: var(--text-body);
+        font-size: 0.82rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .reaction-btn i { font-size: 0.9rem; color: #bbb; transition: color 0.2s; }
+    .reaction-btn b { font-size: 0.78rem; color: #aaa; font-weight: 700; }
+    .reaction-btn:hover { border-color: var(--gold-main); color: var(--gold-dark); background: rgba(207,168,110,0.06); }
+    .reaction-btn:hover i { color: var(--gold-main); }
+    .reaction-btn.active { background: var(--gold-main); border-color: var(--gold-main); color: #fff; }
+    .reaction-btn.active i, .reaction-btn.active b { color: #fff; }
+
+    @media (max-width: 768px) {
+        .reactions-section { flex-direction: column; align-items: flex-start; padding: 18px 20px; }
+    }
 
     /* ─── کامنت‌ها ─────────────────────────────────────────────────── */
-/* ─── کامنت‌ها ──────────────────────────────────── */
-.comments-section {
-    margin: 50px 0;
-    padding: 35px;
-    background: #fff;
-    border: 1px solid #ede8e0;
-    border-radius: 16px;
-}
-
-.comments-title {
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: var(--text-heading);
-    margin-bottom: 30px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.comments-title i {
-    color: var(--gold-main);
-    font-size: 1.1rem;
-}
-
-/* فرم کامنت */
-.comment-form {
-    margin-bottom: 35px;
-    padding: 25px;
-    background: #fafafa;
-    border-radius: 12px;
-    border: 1px solid #ede8e0;
-}
-
-.reply-indicator {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    background: #fff3e0;
-    border-right: 3px solid var(--gold-main);
-    border-radius: 6px;
-    font-size: 0.85rem;
-}
-
-.reply-indicator strong {
-    color: var(--gold-dark);
-}
-
-.reply-indicator button {
-    background: none;
-    border: none;
-    color: #999;
-    cursor: pointer;
-    padding: 5px;
-    transition: color 0.2s;
-}
-
-.reply-indicator button:hover {
-    color: #d32f2f;
-}
-
-.comment-form textarea {
-    width: 100%;
-    padding: 15px;
-    border: 1.5px solid #e0d8ce;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 0.9rem;
-    resize: vertical;
-    transition: border-color 0.2s;
-}
-
-.comment-form textarea:focus {
-    outline: none;
-    border-color: var(--gold-main);
-}
-
-.submit-comment-btn {
-    margin-top: 15px;
-    padding: 12px 28px;
-    background: var(--gold-main);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s;
-}
-
-.submit-comment-btn:hover {
-    background: var(--gold-dark);
-    transform: translateY(-1px);
-}
-
-.login-prompt {
-    padding: 25px;
-    text-align: center;
-    background: #f5f5f5;
-    border-radius: 12px;
-    color: var(--text-body);
-    font-size: 0.95rem;
-}
-
-.login-prompt i {
-    display: block;
-    font-size: 2rem;
-    color: #ccc;
-    margin-bottom: 12px;
-}
-
-.login-prompt a {
-    color: var(--gold-main);
-    font-weight: 700;
-    text-decoration: none;
-}
-
-.login-prompt a:hover {
-    text-decoration: underline;
-}
-
-/* لیست کامنت‌ها */
-.comments-list {
-    margin-top: 30px;
-}
-
-.comment-item {
-    margin-bottom: 20px;
-    padding: 20px;
-    background: #fafafa;
-    border: 1px solid #ede8e0;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-}
-
-.comment-item.hidden-comment {
-    display: none;
-}
-
-.comment-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-}
-
-.comment-author {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.comment-author i {
-    color: var(--gold-main);
-    font-size: 0.9rem;
-}
-
-.comment-author strong {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--text-heading);
-}
-
-.comment-date {
-    font-size: 0.75rem;
-    color: #999;
-}
-
-.comment-body {
-    font-size: 0.9rem;
-    line-height: 1.8;
-    color: var(--text-body);
-    margin-bottom: 12px;
-}
-
-.comment-actions {
-    display: flex;
-    gap: 15px;
-}
-
-.comment-reply-btn {
-    background: none;
-    border: none;
-    color: var(--gold-main);
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: color 0.2s;
-}
-
-.comment-reply-btn:hover {
-    color: var(--gold-dark);
-}
-
-/* پاسخ‌های تودرتو */
-.comment-replies {
-    margin-top: 15px;
-    margin-right: 30px;
-    padding-right: 20px;
-    border-right: 2px solid #e0d8ce;
-}
-
-.comment-replies .comment-item {
-    background: #fff;
-}
-
-/* دکمه نمایش بیشتر */
-.show-more-comments {
-    display: block;
-    width: 100%;
-    margin-top: 20px;
-    padding: 15px;
-    background: #fff;
-    border: 2px dashed #e0d8ce;
-    border-radius: 10px;
-    color: var(--gold-main);
-    font-family: inherit;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.show-more-comments:hover {
-    background: #fafafa;
-    border-color: var(--gold-main);
-}
-
-.show-more-comments i {
-    margin-left: 8px;
-    transition: transform 0.2s;
-}
-
-.show-more-comments:hover i {
-    transform: translateY(3px);
-}
-
-@media (max-width: 768px) {
     .comments-section {
-        padding: 20px;
+        margin: 50px 0;
+        padding: 35px;
+        background: #fff;
+        border: 1px solid #ede8e0;
+        border-radius: 16px;
     }
+
+    .comments-title {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--text-heading);
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .comments-title i { color: var(--gold-main); font-size: 1.1rem; }
 
     .comment-form {
-        padding: 18px;
+        margin-bottom: 35px;
+        padding: 25px;
+        background: #fafafa;
+        border-radius: 12px;
+        border: 1px solid #ede8e0;
     }
 
-    .comment-replies {
-        margin-right: 15px;
-        padding-right: 15px;
+    .reply-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        background: #fff3e0;
+        border-right: 3px solid var(--gold-main);
+        border-radius: 6px;
+        font-size: 0.85rem;
     }
-}
+
+    .reply-indicator strong { color: var(--gold-dark); }
+
+    .reply-indicator button {
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        padding: 5px;
+        transition: color 0.2s;
+    }
+
+    .reply-indicator button:hover { color: #d32f2f; }
+
+    .comment-form textarea {
+        width: 100%;
+        padding: 15px;
+        border: 1.5px solid #e0d8ce;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        resize: vertical;
+        transition: border-color 0.2s;
+    }
+
+    .comment-form textarea:focus { outline: none; border-color: var(--gold-main); }
+
+    .submit-comment-btn {
+        margin-top: 15px;
+        padding: 12px 28px;
+        background: var(--gold-main);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .submit-comment-btn:hover { background: var(--gold-dark); transform: translateY(-1px); }
+
+    .login-prompt {
+        padding: 25px;
+        text-align: center;
+        background: #f5f5f5;
+        border-radius: 12px;
+        color: var(--text-body);
+        font-size: 0.95rem;
+    }
+
+    .login-prompt i { display: block; font-size: 2rem; color: #ccc; margin-bottom: 12px; }
+    .login-prompt a { color: var(--gold-main); font-weight: 700; text-decoration: none; }
+    .login-prompt a:hover { text-decoration: underline; }
+
+    .comments-list { margin-top: 30px; }
+
+    .comment-item {
+        margin-bottom: 20px;
+        padding: 20px;
+        background: #fafafa;
+        border: 1px solid #ede8e0;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .comment-item.hidden-comment { display: none; }
+
+    .comment-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .comment-author {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .comment-author i { color: var(--gold-main); font-size: 0.9rem; }
+    .comment-author strong { font-size: 0.9rem; font-weight: 700; color: var(--text-heading); }
+    .comment-date { font-size: 0.75rem; color: #999; }
+
+    .comment-body {
+        font-size: 0.9rem;
+        line-height: 1.8;
+        color: var(--text-body);
+        margin-bottom: 12px;
+    }
+
+    .comment-actions { display: flex; gap: 15px; }
+
+    .comment-reply-btn {
+        background: none;
+        border: none;
+        color: var(--gold-main);
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: color 0.2s;
+    }
+
+    .comment-reply-btn:hover { color: var(--gold-dark); }
+
+    .comment-replies {
+        margin-top: 15px;
+        margin-right: 30px;
+        padding-right: 20px;
+        border-right: 2px solid #e0d8ce;
+    }
+
+    .comment-replies .comment-item { background: #fff; }
+
+    .show-more-comments {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        padding: 15px;
+        background: #fff;
+        border: 2px dashed #e0d8ce;
+        border-radius: 10px;
+        color: var(--gold-main);
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .show-more-comments:hover { background: #fafafa; border-color: var(--gold-main); }
+    .show-more-comments i { margin-left: 8px; transition: transform 0.2s; }
+    .show-more-comments:hover i { transform: translateY(3px); }
+
+    @media (max-width: 768px) {
+        .comments-section { padding: 20px; }
+        .comment-form { padding: 18px; }
+        .comment-replies { margin-right: 15px; padding-right: 15px; }
+    }
 
     /* ─── Sidebar ─────────────────────────────────────────────────── */
     .article-sidebar { display: flex; flex-direction: column; gap: 25px; position: sticky; top: 90px; }
@@ -495,7 +388,6 @@
     .related-img {
         width: 65px; height: 65px; border-radius: 10px;
         object-fit: cover; flex-shrink: 0;
-        background: linear-gradient(135deg, #0a1c2e, #1e3a5f);
     }
     .related-img-placeholder {
         width: 65px; height: 65px; border-radius: 10px;
@@ -528,12 +420,6 @@
         .article-layout { grid-template-columns: 1fr; }
         .article-sidebar { position: static; }
         .article-header { padding: 30px 25px; }
-        .reactions-grid { grid-template-columns: repeat(2, 1fr); }
-        .comment-item.reply { margin-right: 20px; padding-right: 15px; }
-    }
-
-    @media (max-width: 600px) {
-        .reactions-grid { grid-template-columns: 1fr; }
     }
 </style>
 @endpush
@@ -630,7 +516,7 @@
 
             </div>
 
-{{-- بخش ری‌اکشن‌ها --}}
+            {{-- ری‌اکشن‌ها --}}
             <div class="reactions-section">
                 <span class="reactions-label">این مقاله را چطور ارزیابی می‌کنید؟</span>
                 <div class="reactions-grid">
@@ -651,66 +537,64 @@
                 </div>
             </div>
 
-
             {{-- کامنت‌ها --}}
-        <div class="comments-section">
-            <h3 class="comments-title">
-                <i class="fas fa-comments"></i>
-                نظرات ({{ $comments->count() }})
-            </h3>
+            <div class="comments-section">
+                <h3 class="comments-title">
+                    <i class="fas fa-comments"></i>
+                    نظرات ({{ $comments->count() }})
+                </h3>
 
-            @auth
-                <form class="comment-form" id="comment-form" onsubmit="submitComment(event)">
-                    @csrf
-                    <input type="hidden" name="parent_id" id="parent_id">
-                    
-                    <div class="reply-indicator" id="reply-indicator" style="display: none;">
-                        <span>در حال پاسخ به <strong id="reply-to-name"></strong></span>
-                        <button type="button" onclick="cancelReply()">
-                            <i class="fas fa-times"></i>
+                @auth
+                    <form class="comment-form" id="comment-form" onsubmit="submitComment(event)">
+                        @csrf
+                        <input type="hidden" name="parent_id" id="parent_id" value="">
+
+                        {{-- ✅ FIX: ID‌ها دقیقاً همان‌هایی هستند که JS استفاده می‌کند --}}
+                        <div class="reply-indicator" id="reply-indicator" style="display: none;">
+                            <span>در حال پاسخ به <strong id="reply-to-name"></strong></span>
+                            <button type="button" onclick="cancelReply()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <textarea name="body"
+                                id="comment-body"
+                                placeholder="نظر خود را بنویسید..."
+                                rows="4"
+                                required></textarea>
+
+                        <button type="submit" class="submit-comment-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            ارسال نظر
                         </button>
+                    </form>
+                @else
+                    <div class="login-prompt">
+                        <i class="fas fa-lock"></i>
+                        برای ثبت نظر لطفاً <a href="{{ route('login') }}">وارد شوید</a>
                     </div>
+                @endauth
 
-                    <textarea name="body" 
-                            id="comment-body"
-                            placeholder="نظر خود را بنویسید..."
-                            rows="4"
-                            required></textarea>
-                    
-                    <button type="submit" class="submit-comment-btn">
-                        <i class="fas fa-paper-plane"></i>
-                        ارسال نظر
-                    </button>
-                </form>
-            @else
-                <div class="login-prompt">
-                    <i class="fas fa-lock"></i>
-                    برای ثبت نظر لطفاً <a href="{{ route('login') }}">وارد شوید</a>
+                <div class="comments-list" id="comments-list">
+                    @php
+                        $visibleCount = 3;
+                        $totalComments = $comments->count();
+                    @endphp
+
+                    @foreach($comments as $index => $comment)
+                        <div class="{{ $index >= $visibleCount ? 'hidden-comment' : '' }}">
+                            @include('public.articles._comment', ['comment' => $comment, 'depth' => 0])
+                        </div>
+                    @endforeach
+
+                    @if($totalComments > $visibleCount)
+                        <button class="show-more-comments" id="show-more-btn" onclick="showAllComments()">
+                            <i class="fas fa-chevron-down"></i>
+                            نمایش {{ $totalComments - $visibleCount }} نظر دیگر
+                        </button>
+                    @endif
                 </div>
-            @endauth
-
-            <div class="comments-list" id="comments-list">
-                @php
-                    $visibleCount = 2; // تعداد کامنت‌های قابل نمایش اولیه
-                    $totalComments = $comments->count();
-                @endphp
-
-                @foreach($comments as $index => $comment)
-                    <div class="comment-item {{ $index >= $visibleCount ? 'hidden-comment' : '' }}" 
-                        data-comment-id="{{ $comment->id }}">
-                        @include('public.articles._comment', ['comment' => $comment])
-                    </div>
-                @endforeach
-
-                @if($totalComments > $visibleCount)
-                    <button class="show-more-comments" id="show-more-btn" onclick="showAllComments()">
-                        <i class="fas fa-chevron-down"></i>
-                        نمایش {{ $totalComments - $visibleCount }} نظر دیگر
-                    </button>
-                @endif
             </div>
-        </div>
-
 
         </main>
 
@@ -721,7 +605,7 @@
                     <div class="lawyer-card-s-header">
                         <div class="lawyer-avatar-s">
                             @if($article->lawyer->image)
-                                <img src="{{ asset('assets/images/' . $article->lawyer->image) }}"
+                                <img src="{{ $article->lawyer->image_url }}"
                                      alt="{{ $article->lawyer->name }}">
                             @else
                                 {{ mb_substr($article->lawyer->name, 0, 1) }}
@@ -821,13 +705,11 @@ function submitReaction(type) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-                       // آپدیت شمارش‌ها
             Object.entries(data.counts).forEach(([t, count]) => {
                 const el = document.getElementById('count-' + t);
                 if (el) el.textContent = count;
             });
 
-            // آپدیت استایل دکمه‌ها
             document.querySelectorAll('.reaction-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (data.action !== 'removed' && btn.dataset.type === type) {
@@ -839,13 +721,12 @@ function submitReaction(type) {
     .catch(err => console.error('خطا در ثبت ری‌اکشن:', err));
 }
 
-// ─── کامنت ──────────────────────────────────────────────────
 // ─── Reply ──────────────────────────────────────────────────
 function replyTo(commentId, authorName) {
-    document.getElementById('parent_id').value = commentId; // ✅ parent_id نه parentId
-    document.getElementById('reply-to-name').textContent = authorName; // ✅ reply-to-name
-    document.getElementById('reply-indicator').style.display = 'flex'; // ✅ reply-indicator
-    document.getElementById('comment-body').focus(); // ✅ comment-body
+    document.getElementById('parent_id').value = commentId;
+    document.getElementById('reply-to-name').textContent = authorName;
+    document.getElementById('reply-indicator').style.display = 'flex';
+    document.getElementById('comment-body').focus();
 
     document.getElementById('comment-form').scrollIntoView({
         behavior: 'smooth',
@@ -859,14 +740,13 @@ function cancelReply() {
     document.getElementById('reply-to-name').textContent = '';
 }
 
-// ─── کامنت ──────────────────────────────────────────────────
+// ─── Submit Comment ──────────────────────────────────────────
 function submitComment(e) {
     e.preventDefault();
 
-    const form = document.getElementById('comment-form'); // ✅ comment-form
-    const body = document.getElementById('comment-body').value.trim(); // ✅ comment-body
-    const parentId = document.getElementById('parent_id').value; // ✅ parent_id
-    const btn = form.querySelector('.submit-comment-btn');
+    const body = document.getElementById('comment-body').value.trim();
+    const parentId = document.getElementById('parent_id').value;
+    const btn = document.querySelector('.submit-comment-btn');
 
     if (!body) return;
 
@@ -892,7 +772,8 @@ function submitComment(e) {
             cancelReply();
             showAlert('دیدگاه شما پس از تأیید نمایش داده می‌شود 🙂', 'success');
         } else {
-            showAlert(data ?? 'خطایی رخ داد', 'error');
+            const msg = data.message || 'خطایی رخ داد';
+            showAlert(msg, 'error');
         }
     })
     .catch(() => showAlert('خطا در ارسال دیدگاه', 'error'))
@@ -902,14 +783,43 @@ function submitComment(e) {
     });
 }
 
+// ─── ✅ FIX: Delete Comment ──────────────────────────────────
+function deleteComment(commentId) {
+    if (!confirm('آیا از حذف این دیدگاه مطمئن هستید؟')) return;
 
-// function cancelReply() {
-//     document.getElementById('parentId').value = '';
-//     document.getElementById('replyingTo').style.display = 'none';
-//     document.getElementById('replyingToName').textContent = '';
-// }
+    fetch(`/articles/comments/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const el = document.querySelector(`[data-comment-id="${commentId}"]`);
+            if (el) {
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 300);
+            }
+            showAlert('دیدگاه حذف شد.', 'success');
+        } else {
+            showAlert(data.message || 'خطا در حذف دیدگاه', 'error');
+        }
+    })
+    .catch(() => showAlert('خطا در ارتباط با سرور', 'error'));
+}
 
-// ─── اشتراک‌گذاری ────────────────────────────────────────────
+// ─── Show All Comments ───────────────────────────────────────
+function showAllComments() {
+    document.querySelectorAll('.hidden-comment').forEach(el => {
+        el.classList.remove('hidden-comment');
+    });
+    const btn = document.getElementById('show-more-btn');
+    if (btn) btn.style.display = 'none';
+}
+
+// ─── Share ───────────────────────────────────────────────────
 function shareArticle(platform) {
     const url  = encodeURIComponent(window.location.href);
     const text = encodeURIComponent(@json($article->title));
@@ -926,19 +836,6 @@ function copyLink() {
         setTimeout(() => { btn.className = 'fas fa-link'; }, 2000);
     });
 }
-function showAllComments() {
-    const hiddenComments = document.querySelectorAll('.hidden-comment');
-    const showMoreBtn = document.getElementById('show-more-btn');
-    
-    hiddenComments.forEach(comment => {
-        comment.classList.remove('hidden-comment');
-    });
-    
-    if (showMoreBtn) {
-        showMoreBtn.style.display = 'none';
-    }
-}
-
 
 // ─── Alert ──────────────────────────────────────────────────
 function showAlert(message, type) {
@@ -964,7 +861,6 @@ function showAlert(message, type) {
     `;
     alert.textContent = message;
     document.body.appendChild(alert);
-
     setTimeout(() => alert.remove(), 3500);
 }
 </script>

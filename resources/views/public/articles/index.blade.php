@@ -37,9 +37,14 @@
     }
     .article-featured:hover { transform: translateY(-5px); border-color: var(--gold-main); }
 
-    .af-img { position: relative; overflow: hidden; min-height: 340px; }
+    .af-img { position: relative; overflow: hidden; min-height: 340px; background: linear-gradient(135deg, #0a1c2e, #1e3a5f); }
     .af-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
     .article-featured:hover .af-img img { transform: scale(1.05); }
+    .af-img-placeholder {
+        width: 100%; height: 100%; min-height: 340px;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .af-img-placeholder i { font-size: 5rem; color: rgba(207,168,110,0.3); }
     .af-badge {
         position: absolute; top: 20px; right: 20px;
         background: var(--gold-main); color: #fff;
@@ -79,7 +84,6 @@
         font-size: 0.72rem; font-weight: 700; padding: 4px 12px; border-radius: 20px;
         backdrop-filter: blur(5px);
     }
-    /* placeholder وقتی عکس نداره */
     .ac-img-placeholder {
         height: 200px; background: linear-gradient(135deg, #0a1c2e, #1e3a5f);
         display: flex; align-items: center; justify-content: center; position: relative;
@@ -153,13 +157,11 @@
     <div class="filter-bar">
         <span>دسته‌بندی:</span>
 
-        {{-- دکمه «همه» --}}
         <a href="{{ route('articles.index') }}"
            class="filter-btn {{ is_null($category) ? 'active' : '' }}">
             همه مقالات
         </a>
 
-        {{-- دسته‌بندی‌های واقعی از دیتابیس --}}
         @foreach($categories as $cat)
             <a href="{{ route('articles.index', ['cat' => $cat]) }}"
                class="filter-btn {{ $category === $cat ? 'active' : '' }}">
@@ -170,7 +172,6 @@
 
     @if($articles->isEmpty())
 
-        {{-- ─── Empty State ───────────────────────────────────── --}}
         <div class="articles-layout">
             <div class="empty-state">
                 <i class="fas fa-newspaper"></i>
@@ -190,16 +191,16 @@
 
         <div class="articles-layout">
 
-            {{-- ─── Featured Article — اولین مقاله به عنوان ویژه ─── --}}
+            {{-- ─── Featured Article ─── --}}
             @php $featured = $articles->first(); @endphp
             <a href="{{ route('articles.show', $featured->slug) }}" class="article-featured">
                 <div class="af-img">
-                    @if(true)
-                        <img src="{{ asset('assets/images/' . $featured['featured_image']) }}"
+                    @if($featured->featured_image)
+                        <img src="{{ asset('assets/images/' . $featured->featured_image) }}"
                              alt="{{ $featured->title }}" loading="lazy">
                     @else
-                        <div style="width:100%;height:100%;background:linear-gradient(135deg,#0a1c2e,#1e3a5f);display:flex;align-items:center;justify-content:center;">
-                            <i class="fas fa-newspaper" style="font-size:5rem;color:rgba(207,168,110,0.3);"></i>
+                        <div class="af-img-placeholder">
+                            <i class="fas fa-newspaper"></i>
                         </div>
                     @endif
                     <span class="af-badge">مقاله ویژه</span>
@@ -280,11 +281,10 @@
 
         </div>
 
-        {{-- ─── Pagination — از Laravel Paginator ─────────────── --}}
+        {{-- ─── Pagination ─────────────────────────────── --}}
         @if($articles->hasPages())
             <div class="pagination-wrap">
 
-                {{-- دکمه قبلی --}}
                 @if($articles->onFirstPage())
                     <span class="page-link disabled"><i class="fas fa-chevron-left"></i></span>
                 @else
@@ -293,7 +293,6 @@
                     </a>
                 @endif
 
-                {{-- شماره صفحات --}}
                 @foreach($articles->getUrlRange(1, $articles->lastPage()) as $page => $url)
                     @if($page == $articles->currentPage())
                         <span class="page-link active">{{ $page }}</span>
@@ -302,7 +301,6 @@
                     @endif
                 @endforeach
 
-                {{-- دکمه بعدی --}}
                 @if($articles->hasMorePages())
                     <a href="{{ $articles->nextPageUrl() }}" class="page-link">
                         <i class="fas fa-chevron-right"></i>

@@ -185,6 +185,7 @@
                 ارسال مجدد تا <span id="timerCount">۱۲۰</span> ثانیه دیگر
             </div>
 
+            {{-- فرم ارسال مجدد --}}
             <form method="POST" action="{{ route('auth.send-otp') }}" id="resendForm" style="display:none;">
                 @csrf
                 <input type="hidden" name="phone" value="{{ session('otp_phone') }}">
@@ -193,12 +194,12 @@
                 </button>
             </form>
 
-            <button onclick="clearOtpSession()" class="btn-outline" style="margin-top:8px;">
-                <i class="fas fa-arrow-right"></i> تغییر شماره
-            </button>
-
-            <form id="clearForm" method="POST" action="#" style="display:none;">
+            {{-- ✅ FIX: فرم تغییر شماره با action درست --}}
+            <form method="POST" action="{{ route('auth.clear-session') }}" id="clearForm" style="margin-top:8px;">
                 @csrf
+                <button type="submit" class="btn-outline">
+                    <i class="fas fa-arrow-right"></i> تغییر شماره
+                </button>
             </form>
         </div>
     </div>
@@ -235,10 +236,6 @@
         otpInput.addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '');
         });
-    }
-
-    function clearOtpSession() {
-        document.getElementById('clearForm').submit();
     }
 </script>
 </body>

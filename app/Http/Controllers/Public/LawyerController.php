@@ -9,6 +9,7 @@ class LawyerController extends Controller
 {
     public function index()
     {
+        // ✅ FIX: pass $lawyers collection to view so the blade can iterate real data
         $lawyers = Lawyer::active()->get();
 
         return view('public.lawyers.index', compact('lawyers'));

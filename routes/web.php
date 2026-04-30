@@ -39,14 +39,13 @@ Route::get('/calculators', [CalculatorController::class, 'index'])->name('calcul
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
-Route::get('/about', fn () => redirect()->route('lawyers.index'))->name('about');
+Route::get('/about', [LawyerController::class, 'index'])->name('about');
 
 // ═══════════════════════════════════════════════════════════════
-// ✅ FIX: Article Comments & Reactions (auth required)
+// Article Comments & Reactions (auth required)
 // ═══════════════════════════════════════════════════════════════
 
 Route::middleware('auth')->group(function () {
-    // کامنت‌ها
     Route::post('/articles/comments', [ArticleCommentController::class, 'store'])
         ->name('articles.comments.store');
     Route::put('/articles/comments/{comment}', [ArticleCommentController::class, 'update'])
@@ -54,7 +53,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/articles/comments/{comment}', [ArticleCommentController::class, 'destroy'])
         ->name('articles.comments.destroy');
 
-    // ری‌اکشن‌ها
     Route::post('/articles/reactions', [ArticleReactionController::class, 'store'])
         ->name('articles.reactions.store');
 });
@@ -84,13 +82,15 @@ Route::prefix('api/calculators')->name('api.calc.')->group(function () {
 // AUTH ROUTES
 // ═══════════════════════════════════════════════════════════════
 
+// ✅ clear-otp-session باید خارج از guest middleware باشد تا در هر حالتی کار کند
+Route::post('/clear-otp-session', [AuthController::class, 'clearOtpSession'])->name('auth.clear-session');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
     Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('auth.send-otp')->middleware('throttle:5,1');
     Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('auth.verify-otp');
-    Route::post('/clear-otp-session', [AuthController::class, 'clearOtpSession'])->name('auth.clear-session');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -124,8 +124,8 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
     // چت
     Route::prefix('chat')->name('chat.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Client\ChatController::class, 'index'])->name('index');
-        Route::get('/{conversation}', [\App\Http\Controllers\Client\ChatController::class, 'show'])->name('show');
-        Route::post('/{conversation}/send', [\App\Http\Controllers\Client\ChatController::class, 'send'])->name('send');
+        Route::get('/{id}', [\App\Http\Controllers\Client\ChatController::class, 'show'])->name('show');
+        Route::post('/{id}/send', [\App\Http\Controllers\Client\ChatController::class, 'send'])->name('send');
         Route::post('/start', [\App\Http\Controllers\Client\ChatController::class, 'store'])->name('store');
     });
 
@@ -140,7 +140,68 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
         Route::get('/', [\App\Http\Controllers\Client\InstallmentController::class, 'index'])->name('index');
     });
 
-    // ✅ FIX: Profile routes — added PUT for update
+    // Profile
     Route::get('/profile', [\App\Http\Controllers\Client\ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [\App\Http\Controllers\Client\ProfileController::class, 'update'])->name('profile.update');
 });
+
+// ═══════════════════════════════════════════════════════════════
+// LAWYER PANEL ROUTES
+// ═══════════════════════════════════════════════════════════════
+
+Route::middleware(['App\Http\Middleware\EnsureLawyerAuth'])
+    ->prefix('lawyer')
+    ->name('lawyer.')
+    ->group(function () {
+
+    Route::get('/dashboard', [\App\Http\Controllers\Lawyer\DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/logout', [\App\Http\Controllers\Lawyer\DashboardController::class, 'logout'])->name('logout');
+
+    // پرونده‌ها
+    Route::prefix('cases')->name('cases.')->group(function () {
+        Route::get('/', fn() => abort(501))->name('index');
+        Route::get('/{id}', fn() => abort(501))->name('show');
+    });
+
+    // موکلین
+    Route::prefix('clients')->name('clients.')->group(function () {
+        Route::get('/', fn() => abort(501))->name('index');
+    });
+
+    // مشاوره‌ها
+    Route::prefix('consultations')->name('consultations.')->group(function () {
+        Route::get('/', fn() => abort(501))->name('index');
+    });
+
+    // چت
+    Route::prefix('chat')->name('chat.')->group(function () {
+        Route::get('/', fn() => abort(501))->name('index');
+    });
+
+    // مقالات
+    Route::prefix('articles')->name('articles.')->group(function () {
+        Route::get('/', fn() => abort(501))->name('index');
+    });
+
+    // نظرات
+    Route::prefix('comments')->name('comments.')->group(function () {
+        Route::get('/', fn() => abort(501))->name('index');
+    });
+
+    // پرداخت‌ها
+    Route::prefix('payments')->name('payments.')->group(function () {
+        Route::get('/', fn() => abort(501))->name('index');
+    });
+
+    // تنظیمات
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', fn() => abort(501))->name('index');
+    });
+
+    // تقویم و ساعات کاری
+    Route::get('/calendar', fn() => abort(501))->name('calendar');
+    Route::get('/schedule', fn() => abort(501))->name('schedule');
+});
+
+// صفحه لاگین وکیل
+Route::get('/lawyer/login', fn() => abort(501))->name('lawyer.login');

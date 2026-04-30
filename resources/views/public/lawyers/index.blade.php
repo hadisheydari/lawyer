@@ -60,6 +60,17 @@
             transform: scale(1.03);
         }
 
+        .lawyer-img-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(197, 160, 89, 0.5);
+        }
+
         .lawyer-badge {
             position: absolute;
             bottom: 25px;
@@ -188,6 +199,9 @@
             font-size: 0.92rem;
             box-shadow: 0 8px 20px rgba(16, 42, 67, 0.2);
             transition: 0.3s;
+            text-decoration: none;
+            margin-left: 10px;
+            margin-bottom: 10px;
         }
 
         .btn-contact-lawyer:hover {
@@ -317,8 +331,18 @@
             color: #fff;
         }
 
-        @media (max-width: 900px) {
+        /* empty state */
+        .no-lawyers {
+            text-align: center;
+            padding: 80px 20px;
+            background: #fff;
+            border-radius: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        }
+        .no-lawyers i { font-size: 4rem; color: rgba(197,160,89,0.3); margin-bottom: 20px; }
+        .no-lawyers p { color: var(--text-body); }
 
+        @media (max-width: 900px) {
             .lawyer-card,
             .lawyer-card.reverse {
                 grid-template-columns: 1fr;
@@ -367,143 +391,88 @@
     </div>
 
     <div class="lawyers-intro">
-        {{-- ═══ وکیل دوم: زهرا جوشقانی ══════════════════════════════ --}}
-        <div class="lawyer-card reverse">
-            <div class="lawyer-bio">
-                <span class="lawyer-tag">متخصص حقوق خانواده</span>
-                <h2>زهرا جوشقانی</h2>
-                <div class="title-line">
-                    <i class="fas fa-gavel"></i>
-                    وکیل پایه یک دادگستری — کانون وکلای اصفهان
-                </div>
 
-                <div class="lawyer-stats">
-                    <div class="ls-item">
-                        <span class="ls-num">۲۰+</span>
-                        <span class="ls-label">سال سابقه</span>
-                    </div>
-                    <div class="ls-item">
-                        <span class="ls-num">+۸۰۰</span>
-                        <span class="ls-label">پرونده موفق</span>
-                    </div>
-                    <div class="ls-item">
-                        <span class="ls-num">۹۹٪</span>
-                        <span class="ls-label">رضایت موکلین</span>
+        @forelse($lawyers as $index => $lawyer)
+
+            <div class="lawyer-card {{ $index % 2 !== 0 ? 'reverse' : '' }}">
+
+                {{-- عکس --}}
+                <div class="lawyer-img-wrap">
+                    @if($lawyer->image)
+                        <img src="{{ $lawyer->image_url }}" alt="{{ $lawyer->name }}">
+                    @else
+                        <div class="lawyer-img-placeholder">
+                            {{ mb_substr($lawyer->name, 0, 1) }}
+                        </div>
+                    @endif
+                    <div class="lawyer-badge">
+                        <i class="fas fa-certificate"></i>
+                        وکیل پایه {{ $lawyer->license_grade }} دادگستری
                     </div>
                 </div>
 
-                <p>
-                    زهرا جوشقانی، وکیل پایه یک دادگستری با بیست سال سابقه تخصصی در حوزه حقوق خانواده،
-                    ارث و احوال شخصیه. ایشان دارای مدرک کارشناسی ارشد حقوق خصوصی از دانشگاه شهید
-                    بهشتی بوده و به عنوان مشاور حقوقی تعدادی از سازمان‌های دولتی اصفهان نیز فعالیت
-                    کرده‌اند.
-                </p>
-                <p>
-                    جوشقانی با رویکردی انسانی و مشاوره‌محور، در کنار دانش عمیق حقوقی، توانسته موفقیت
-                    چشمگیری در پرونده‌های حساس خانوادگی کسب کند. پرونده‌های مهریه، طلاق توافقی،
-                    حضانت فرزند و انحصار وراثت از حوزه‌های اصلی تخصص ایشان هستند.
-                </p>
+                {{-- بیو --}}
+                <div class="lawyer-bio {{ $index % 2 !== 0 ? 'order-1' : '' }}">
+                    <span class="lawyer-tag">وکیل پایه یک دادگستری</span>
+                    <h2>{{ $lawyer->name }}</h2>
+                    <div class="title-line">
+                        <i class="fas fa-gavel"></i>
+                        وکیل پایه {{ $lawyer->license_grade }} دادگستری — کانون وکلای اصفهان
+                    </div>
 
-                <div class="expertise-tags">
-                    <span class="exp-tag">طلاق و مهریه</span>
-                    <span class="exp-tag">حضانت فرزند</span>
-                    <span class="exp-tag">نفقه</span>
-                    <span class="exp-tag">انحصار وراثت</span>
-                    <span class="exp-tag">تقسیم ترکه</span>
-                    <span class="exp-tag">سرپرستی</span>
+                    <div class="lawyer-stats">
+                        <div class="ls-item">
+                            <span class="ls-num">{{ $lawyer->experience_years }}+</span>
+                            <span class="ls-label">سال سابقه</span>
+                        </div>
+                        <div class="ls-item">
+                            <span class="ls-num">پایه {{ $lawyer->license_grade }}</span>
+                            <span class="ls-label">دادگستری</span>
+                        </div>
+                        <div class="ls-item">
+                            <span class="ls-num">۹۸٪</span>
+                            <span class="ls-label">رضایت موکلین</span>
+                        </div>
+                    </div>
+
+                    @if($lawyer->bio)
+                        <p>{{ Str::limit($lawyer->bio, 350) }}</p>
+                    @endif
+
+                    @if($lawyer->specializations && count($lawyer->specializations) > 0)
+                        <div class="expertise-tags">
+                            @foreach($lawyer->specializations as $spec)
+                                <span class="exp-tag">{{ $spec }}</span>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <div style="display:flex;flex-wrap:wrap;gap:0;">
+                        <a href="{{ route('reserve.index', ['lawyer' => $lawyer->slug]) }}" class="btn-contact-lawyer">
+                            <i class="fas fa-calendar-check"></i>
+                            رزرو وقت مشاوره
+                        </a>
+                        <a href="{{ route('lawyers.show', $lawyer->slug) }}" class="btn-contact-lawyer" style="background:linear-gradient(135deg,var(--gold-main),var(--gold-dark));">
+                            <i class="fas fa-eye"></i>
+                            مشاهده پروفایل
+                        </a>
+                    </div>
                 </div>
 
-                <a href="{{ route('reserve.index') }}?lawyer=zahra-jooshghani" class="btn-contact-lawyer">
-                    <i class="fas fa-calendar-check"></i>
-                    رزرو وقت با زهرا جوشقانی
-                </a>
-                <a href="{{ route('lawyers.show', 'zahra-jooshghani') }}" class="btn-contact-lawyer">
-                    <i class="fas fa-eye"></i>
-                   زهرا جوشقانی
-                </a>
             </div>
 
-            <div class="lawyer-img-wrap">
-                <img src="{{ asset('assets/images/zahra.png') }}"
-                    onerror="this.parentElement.style.background='linear-gradient(160deg,#2c1810,#4a2c1a)'"
-                    alt="زهرا جوشقانی">
-                <div class="lawyer-badge">
-                    <i class="fas fa-certificate"></i> وکیل پایه یک دادگستری
-                </div>
+        @empty
+            <div class="no-lawyers">
+                <i class="fas fa-user-slash"></i>
+                <h3 style="color:var(--text-heading);margin-bottom:10px;font-size:1.3rem;">وکیلی ثبت نشده است</h3>
+                <p>در حال حاضر اطلاعات وکلا در سیستم وارد نشده است.</p>
             </div>
-        </div>
-        {{-- ═══ وکیل اول: بابک ابدالی ═══════════════════════════════ --}}
-        <div class="lawyer-card">
-            <div class="lawyer-img-wrap">
-                <img src="{{ asset('assets/images/babak.png') }}"
-                    onerror="this.parentElement.style.background='linear-gradient(160deg,#102a43,#1e3a5f)'"
-                    alt="بابک ابدالی">
-                <div class="lawyer-badge">
-                    <i class="fas fa-certificate"></i> وکیل پایه یک دادگستری
-                </div>
-            </div>
-
-            <div class="lawyer-bio">
-                <span class="lawyer-tag">وکیل ارشد دفتر</span>
-                <h2>بابک ابدالی</h2>
-                <div class="title-line">
-                    <i class="fas fa-gavel"></i>
-                    وکیل پایه یک دادگستری — کانون وکلای مرکز
-                </div>
-
-                <div class="lawyer-stats">
-                    <div class="ls-item">
-                        <span class="ls-num">۲۸+</span>
-                        <span class="ls-label">سال سابقه</span>
-                    </div>
-                    <div class="ls-item">
-                        <span class="ls-num">+۱۲۰۰</span>
-                        <span class="ls-label">پرونده موفق</span>
-                    </div>
-                    <div class="ls-item">
-                        <span class="ls-num">۹۷٪</span>
-                        <span class="ls-label">رضایت موکلین</span>
-                    </div>
-                </div>
-
-                <p>
-                    بابک ابدالی با بیش از دو دهه و نیم تجربه در دادگاه‌های حقوقی و کیفری ایران، یکی از
-                    شناخته‌شده‌ترین وکلای اصفهان در حوزه دعاوی تجاری و ملکی است. ایشان پس از فارغ‌التحصیلی
-                    از دانشکده حقوق دانشگاه اصفهان، تحصیلات تکمیلی خود را در مقطع کارشناسی ارشد حقوق
-                    خصوصی گذرانده و از آن پس به طور تخصصی در دفاع از حقوق موکلین در برابر نهادهای دولتی
-                    و خصوصی فعالیت می‌کند.
-                </p>
-                <p>
-                    تسلط عمیق بر قوانین تجاری، مهارت مذاکره خارج از دادگاه، و سابقه موفق در پرونده‌های
-                    پیچیده چند‌مرحله‌ای، ابدالی را به انتخاب اول شرکت‌ها و کسب‌وکارها در اصفهان تبدیل کرده است.
-                </p>
-
-                <div class="expertise-tags">
-                    <span class="exp-tag">دعاوی تجاری</span>
-                    <span class="exp-tag">قراردادها</span>
-                    <span class="exp-tag">ورشکستگی</span>
-                    <span class="exp-tag">چک و برات</span>
-                    <span class="exp-tag">دعاوی ملکی</span>
-                    <span class="exp-tag">اجرای احکام</span>
-                </div>
-
-                <a href="{{ route('reserve.index') }}?lawyer=babak-abdali" class="btn-contact-lawyer">
-                    <i class="fas fa-calendar-check"></i>
-                    رزرو وقت با بابک ابدالی
-                </a>
-
-                <a href="{{ route('lawyers.show', 'babak-abdali') }}" class="btn-contact-lawyer">
-                    <i class="fas fa-eye"></i>
-                    بابک ابدالی
-                </a>
-            </div>
-        </div>
-
-
+        @endforelse
 
     </div>
 
     {{-- ─── Credentials Bar ─────────────────────────────────────── --}}
+    @if($lawyers->isNotEmpty())
     <div class="credentials-bar">
         <h3><i class="fas fa-award" style="margin-left:8px;"></i> مدارک و افتخارات مشترک</h3>
         <div class="cred-grid">
@@ -519,7 +488,7 @@
             </div>
             <div class="cred-item">
                 <i class="fas fa-trophy"></i>
-                <h4>+۴۸ سال تجربه مشترک</h4>
+                <h4>+{{ $lawyers->sum('experience_years') }} سال تجربه مشترک</h4>
                 <p>در مراجع قضایی سراسر کشور</p>
             </div>
             <div class="cred-item">
@@ -543,5 +512,6 @@
             </a>
         </div>
     </div>
+    @endif
 
 @endsection
