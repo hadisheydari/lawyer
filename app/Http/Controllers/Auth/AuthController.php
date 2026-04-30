@@ -196,13 +196,44 @@ class AuthController extends Controller
         }
 
         try {
-            Http::timeout(10)->get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
-                'receptor' => $phone,
-                'token'    => $code,
-                'template' => 'verify',
-            ]);
+            // Http::timeout(10)->get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
+            //     'receptor' => $phone,
+            //     'token'    => $code,
+            //     'template' => 'verify',
+            // ]);
         } catch (\Exception $e) {
             Log::error("SMS send failed for {$phone}: " . $e->getMessage());
         }
+    }
+    // ─── ورود وکیل ────────────────────────────────────────────────────────────
+
+    public function login(Request $request)
+    {
+        // ۱. اعتبار سنجی ورودی‌ها
+        $credentials = $request->validate([
+            'phone'    => 'required|regex:/^09[0-9]{9}$/',
+            'password' => 'required|string|min:6',
+        ], [
+            'phone.required'    => 'وارد کردن شماره موبایل الزامی است.',
+            'phone.regex'       => 'فرمت شماره موبایل معتبر نیست.',
+            'password.required' => 'وارد کردن رمز عبور الزامی است.',
+            'password.min'      => 'رمز عبور نباید کمتر از ۶ کاراکتر باشد.',
+        ]);
+
+        // ۲. تلاش برای احراز هویت با گارد lawyer
+        $remember = $request->has('remember');
+        
+        if (Auth::guard('lawyer')->attempt($credentials, $remember)) {
+            // ایجاد نشست جدید (Regenerate Session) برای امنیت
+            $request->session()->regenerate();
+
+            return redirect()->intended(route('lawyer.dashboard'))
+                ->with('success', 'خوش آمدید! ورود با موفقیت انجام شد.');
+        }
+
+        // ۳. در صورت شکست در ورود
+        return back()->withErrors([
+            'phone' => 'شماره موبایل یا رمز عبور اشتباه است.',
+        ])->onlyInput('phone');
     }
 }

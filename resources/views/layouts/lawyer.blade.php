@@ -3,458 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'پنل وکیل') | ابدالی و جوشقانی</title>
+    <title>پنل وکیل | @yield('title', 'داشبورد')</title>
 
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         :root {
-            --bg-body: #f3f4f6;
-            --bg-white: #ffffff;
-            --gold-main: #c5a059;
-            --gold-light: #e6cfa3;
-            --gold-dark: #9e7f41;
-            --navy: #102a43;
-            --navy-dark: #0a1c2e;
-            --text-heading: #1f2937;
-            --text-body: #4b5563;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --shadow-soft: 0 4px 6px -1px rgba(0,0,0,0.05);
-            --shadow-card: 0 10px 15px -3px rgba(0,0,0,0.05);
-            --radius: 12px;
-            --transition: all 0.3s ease;
+            --gold-main: #d4af37;
+            --gold-dark: #aa8222;
+            --gold-light: #f9f1d8;
+            --navy: #0f172a;
+            --navy-light: #1e293b;
+            --navy-dark: #020617;
+            --bg-body: #f8fafc;
             --sidebar-width: 280px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Vazirmatn', sans-serif;
             background-color: var(--bg-body);
-            color: var(--text-body);
+            color: #334155;
+            margin: 0;
             display: flex;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
         }
 
-        a { text-decoration: none; color: inherit; transition: var(--transition); }
-
-        /* ─── Sidebar ────────────────────────────────────────────────────── */
+        /* ─── Sidebar ─── */
         .sidebar {
             width: var(--sidebar-width);
-            background-color: var(--navy);
+            background: var(--navy-dark);
             color: #fff;
+            position: fixed;
+            top: 0; bottom: 0; right: 0;
+            z-index: 1001;
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
-            border-left: 1px solid rgba(255,255,255,0.05);
-            transition: var(--transition);
-            z-index: 100;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.2);
         }
 
-        .sidebar-brand {
-            height: 70px;
+        .sidebar-header {
+            padding: 30px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-weight: 800;
-            font-size: 1rem;
-            color: var(--gold-main);
-            gap: 10px;
-            padding: 0 20px;
+            gap: 12px;
         }
-        .sidebar-brand i { font-size: 1.4rem; }
+        .sidebar-header i { font-size: 2rem; color: var(--gold-main); }
+        .sidebar-header h1 { font-size: 1.1rem; font-weight: 900; margin: 0; color: #fff; }
 
         .sidebar-menu {
             flex: 1;
-            padding: 20px 12px;
+            padding: 20px 15px;
             overflow-y: auto;
+            list-style: none;
+            margin: 0;
         }
 
         .menu-label {
-            font-size: 0.7rem;
-            color: #6b7280;
-            margin: 18px 10px 8px;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            color: #64748b;
+            padding: 15px 15px 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .menu-item { margin-bottom: 5px; }
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 12px;
             font-weight: 600;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 11px 14px;
-            margin-bottom: 3px;
-            border-radius: 8px;
-            color: #d1d5db;
-            font-weight: 500;
-            font-size: 0.9rem;
-            gap: 12px;
             transition: var(--transition);
-            cursor: pointer;
         }
-
-        .menu-item i { width: 18px; text-align: center; font-size: 0.95rem; }
-
-        .menu-item:hover {
-            background-color: rgba(255,255,255,0.08);
-            color: var(--gold-light);
-        }
-
-        .menu-item.active {
-            background-color: rgba(197, 160, 89, 0.15);
-            color: var(--gold-main);
-            border-right: 3px solid var(--gold-main);
-        }
-
-        .menu-badge {
-            margin-right: auto;
-            background: var(--danger);
+        .menu-link i { font-size: 1.1rem; width: 20px; text-align: center; }
+        .menu-link:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .menu-link.active {
+            background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
             color: #fff;
-            font-size: 0.65rem;
-            padding: 2px 7px;
+            box-shadow: 0 8px 15px rgba(212, 175, 55, 0.2);
+        }
+        .menu-link.active i { color: #fff; }
+
+        .unread-badge {
+            margin-right: auto;
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 2px 8px;
             border-radius: 10px;
-            font-weight: 700;
         }
 
-        .sidebar-profile {
-            padding: 15px 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .lawyer-avatar {
-            width: 42px; height: 42px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--gold-main);
-            background: var(--navy-dark);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--gold-main); font-weight: bold; font-size: 1rem;
-            flex-shrink: 0;
-        }
-
-        .lawyer-info h4 { margin: 0; font-size: 0.88rem; color: #fff; font-weight: 700; }
-        .lawyer-info span { font-size: 0.72rem; color: #9ca3af; }
-
-        /* ─── Main Content ───────────────────────────────────────────────── */
+        /* ─── Main Content ─── */
         .main-content {
             flex: 1;
+            margin-right: var(--sidebar-width);
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
-        /* Topbar */
-        .topbar {
-            height: 70px;
-            background-color: var(--bg-white);
+        /* ─── Header ─── */
+        .top-header {
+            height: 75px;
+            background: #fff;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 30px;
-            box-shadow: var(--shadow-soft);
-            z-index: 10;
-            flex-shrink: 0;
+            padding: 0 35px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
         }
 
-        .topbar-right { display: flex; align-items: center; gap: 15px; }
-        .topbar-left { display: flex; align-items: center; gap: 20px; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .header-right { display: flex; align-items: center; gap: 25px; }
 
-        .toggle-menu {
-            display: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: var(--text-body);
-        }
-
-        .page-breadcrumb { font-size: 0.85rem; color: #9ca3af; }
-        .page-breadcrumb span { color: var(--navy); font-weight: 600; }
-
-        .search-wrapper {
+        .notif-btn {
             position: relative;
-            width: 280px;
-        }
-        .search-wrapper input {
-            width: 100%;
-            padding: 9px 40px 9px 15px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            background: #f9fafb;
-            font-family: inherit;
-            font-size: 0.88rem;
-            transition: 0.3s;
-        }
-        .search-wrapper input:focus {
-            outline: none;
-            border-color: var(--gold-main);
-            background: #fff;
-        }
-        .search-wrapper i { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
-
-        .topbar-icon-btn {
-            position: relative;
-            font-size: 1.15rem;
-            color: #6b7280;
+            font-size: 1.3rem;
+            color: #64748b;
             cursor: pointer;
             transition: 0.2s;
         }
-        .topbar-icon-btn:hover { color: var(--navy); }
-
-        .topbar-badge {
-            position: absolute; top: -5px; right: -5px;
-            background: var(--danger); color: #fff;
-            font-size: 0.6rem; width: 16px; height: 16px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+        .notif-btn:hover { color: var(--navy); }
+        .notif-dot {
+            position: absolute; top: 2px; left: 0;
+            width: 10px; height: 10px; background: #ef4444;
+            border: 2px solid #fff; border-radius: 50%;
         }
 
-        /* ─── Content Scroll Area ────────────────────────────────────────── */
-        .content-scroll {
-            flex: 1;
-            overflow-y: auto;
-            padding: 30px;
-        }
-
-        /* ─── Page Header ────────────────────────────────────────────────── */
-        .page-header {
+        .user-profile-dropdown {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            gap: 12px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50px;
+            transition: 0.2s;
+        }
+        .user-profile-dropdown:hover { background: #f1f5f9; }
+        .user-info { text-align: left; } /* در RTL برعکس می‌شود */
+        .user-info .name { display: block; font-weight: 800; font-size: 0.9rem; color: var(--navy); }
+        .user-info .role { display: block; font-size: 0.75rem; color: #94a3b8; }
+        .user-avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: var(--navy); color: var(--gold-main);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; border: 2px solid var(--gold-light);
         }
 
-        .page-title h2 { margin: 0; font-size: 1.5rem; color: var(--navy); font-weight: 800; }
-        .page-title p { margin: 5px 0 0; color: #6b7280; font-size: 0.88rem; }
+        .content-body { padding: 35px; flex: 1; }
 
-        /* ─── Flash Messages ─────────────────────────────────────────────── */
-        .flash { padding: 14px 18px; border-radius: var(--radius); font-size: 0.88rem; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .flash-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
-        .flash-error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
-        .flash-warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
-
-        /* ─── Cards ──────────────────────────────────────────────────────── */
-        .card {
-            background: var(--bg-white);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-card);
-            padding: 25px;
+        /* ─── Flash Messages ─── */
+        .flash-wrapper { position: fixed; top: 90px; left: 35px; z-index: 1050; width: 350px; }
+        .alert {
+            padding: 16px 20px; border-radius: 12px; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 12px; font-weight: 600;
+            box-shadow: var(--shadow-md); animation: slideIn 0.4s ease;
         }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        .alert-success { background: #ecfdf5; color: #065f46; border-right: 5px solid #10b981; }
+        .alert-error { background: #fef2f2; color: #991b1b; border-right: 5px solid #ef4444; }
 
-        .card-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px;
-        }
-        .card-title { font-size: 1.05rem; font-weight: 700; color: var(--navy); }
-        .card-action { color: var(--gold-dark); font-size: 0.85rem; }
-        .card-action:hover { color: var(--gold-main); }
-
-        /* ─── Responsive ─────────────────────────────────────────────────── */
         @media (max-width: 1024px) {
-            .search-wrapper { width: 200px; }
+            .sidebar { transform: translateX(100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-right: 0; }
         }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                right: calc(-1 * var(--sidebar-width));
-                height: 100%;
-                top: 0;
-            }
-            .sidebar.open { right: 0; box-shadow: 5px 0 20px rgba(0,0,0,0.3); }
-            .toggle-menu { display: block; }
-            .search-wrapper { display: none; }
-            .content-scroll { padding: 20px 15px; }
-        }
-
-        /* overlay برای موبایل */
-        .sidebar-overlay {
-            display: none;
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 99;
-        }
-        .sidebar-overlay.show { display: block; }
     </style>
-
     @stack('styles')
 </head>
 <body>
 
-{{-- Sidebar Overlay (mobile) --}}
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
-{{-- Sidebar --}}
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-        <i class="fas fa-balance-scale"></i>
-        <span>پنل وکالت</span>
-    </div>
-
-    <nav class="sidebar-menu">
-        <span class="menu-label">اصلی</span>
-
-        <a href="{{ route('lawyer.dashboard') }}"
-           class="menu-item {{ request()->routeIs('lawyer.dashboard') ? 'active' : '' }}">
-            <i class="fas fa-th-large"></i> داشبورد
-        </a>
-
-        <a href="{{ route('lawyer.cases.index') }}"
-           class="menu-item {{ request()->routeIs('lawyer.cases*') ? 'active' : '' }}">
-            <i class="fas fa-folder-open"></i> پرونده‌ها
-            @php $openCases = 0; @endphp
-            {{-- @if($openCases) <span class="menu-badge">{{ $openCases }}</span> @endif --}}
-        </a>
-
-        <a href="{{ route('lawyer.clients.index') }}"
-           class="menu-item {{ request()->routeIs('lawyer.clients*') ? 'active' : '' }}">
-            <i class="fas fa-users"></i> موکلین
-        </a>
-
-        <a href="{{ route('lawyer.consultations.index') }}"
-           class="menu-item {{ request()->routeIs('lawyer.consultations*') ? 'active' : '' }}">
-            <i class="fas fa-comments"></i> مشاوره‌ها
-        </a>
-
-        <a href="{{ route('lawyer.calendar') }}"
-           class="menu-item {{ request()->routeIs('lawyer.calendar') ? 'active' : '' }}">
-            <i class="far fa-calendar-alt"></i> تقویم
-        </a>
-
-        <a href="{{ route('lawyer.chat.index') }}"
-           class="menu-item {{ request()->routeIs('lawyer.chat*') ? 'active' : '' }}">
-            <i class="far fa-comment-dots"></i> پیام‌ها
-            <span class="menu-badge">۳</span>
-        </a>
-
-        <span class="menu-label">محتوا</span>
-
-        <a href="{{ route('lawyer.articles.index') }}"
-           class="menu-item {{ request()->routeIs('lawyer.articles*') ? 'active' : '' }}">
-            <i class="fas fa-newspaper"></i> مقالات
-        </a>
-
-        <a href="{{ route('lawyer.comments.index') }}"
-           class="menu-item {{ request()->routeIs('lawyer.comments*') ? 'active' : '' }}">
-            <i class="far fa-comments"></i> نظرات
-        </a>
-
-        <span class="menu-label">مالی</span>
-
-        <a href="{{ route('lawyer.payments.index') }}"
-           class="menu-item {{ request()->routeIs('lawyer.payments*') ? 'active' : '' }}">
-            <i class="fas fa-wallet"></i> پرداخت‌ها
-        </a>
-
-        <span class="menu-label">تنظیمات</span>
-
-        <a href="{{ route('lawyer.settings.index') }}"
-           class="menu-item {{ request()->routeIs('lawyer.settings*') ? 'active' : '' }}">
-            <i class="fas fa-cog"></i> تنظیمات
-        </a>
-
-        <a href="{{ route('lawyer.schedule') }}"
-           class="menu-item {{ request()->routeIs('lawyer.schedule') ? 'active' : '' }}">
-            <i class="far fa-clock"></i> ساعات کاری
-        </a>
-    </nav>
-
-    {{-- Lawyer Profile --}}
-    <div class="sidebar-profile">
-        <div class="lawyer-avatar">
-            @if(auth()->guard('lawyer')->user()->image)
-                <img src="{{ asset('storage/' . auth()->guard('lawyer')->user()->image) }}" alt="">
-            @else
-                {{ mb_substr(auth()->guard('lawyer')->user()->name, 0, 1) }}
-            @endif
-        </div>
-        <div class="lawyer-info">
-            <h4>{{ auth()->guard('lawyer')->user()->name }}</h4>
-            <span>وکیل پایه {{ auth()->guard('lawyer')->user()->license_grade }}</span>
-        </div>
-    </div>
-</aside>
-
-{{-- Main Content --}}
-<div class="main-content">
-
-    {{-- Topbar --}}
-    <div class="topbar">
-        <div class="topbar-right">
-            <span class="toggle-menu" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </span>
-
-            <div class="page-breadcrumb">
-                پنل وکیل / <span>@yield('title', 'داشبورد')</span>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-scale-balanced"></i>
+            <div>
+                <h1>ابدالی و جوشقانی</h1>
+                <small style="color: var(--gold-main); font-size: 0.7rem;">پنل مدیریت وکیل</small>
             </div>
         </div>
 
-        <div class="topbar-left">
-            <div class="search-wrapper">
-                <input type="text" placeholder="جستجو...">
-                <i class="fas fa-search"></i>
-            </div>
+        <ul class="sidebar-menu">
+            <li class="menu-label">اصلی</li>
+            <li class="menu-item">
+                <a href="{{ route('lawyer.dashboard') }}" class="menu-link {{ request()->routeIs('lawyer.dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-th-large"></i> داشبورد
+                </a>
+            </li>
 
-            <a href="{{ route('lawyer.chat.index') }}" class="topbar-icon-btn">
-                <i class="far fa-comment-dots"></i>
-                <span class="topbar-badge">۳</span>
-            </a>
+            <li class="menu-label">مدیریت مراجعین</li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-headset"></i> نوبت‌های مشاوره
+                    <span class="unread-badge">۳ جدید</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-briefcase"></i> پرونده‌های حقوقی
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-comments"></i> مرکز گفتگو
+                </a>
+            </li>
 
-            <span class="topbar-icon-btn">
-                <i class="far fa-bell"></i>
-                <span class="topbar-badge">۵</span>
-            </span>
+            <li class="menu-label">ابزارها و محتوا</li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-calendar-alt"></i> برنامه‌ریزی زمانی
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-newspaper"></i> مقالات من
+                </a>
+            </li>
 
-            <a href="{{ route('home') }}" class="topbar-icon-btn" title="مشاهده سایت">
-                <i class="fas fa-external-link-alt"></i>
-            </a>
+            <li class="menu-label">تنظیمات</li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-user-circle"></i> ویرایش پروفایل
+                </a>
+            </li>
+        </ul>
 
-            <form method="POST" action="{{ route('lawyer.logout') }}" style="display: inline;">
+        <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="topbar-icon-btn" style="border: none; background: none; cursor: pointer; color: #ef4444;" title="خروج">
-                    <i class="fas fa-sign-out-alt"></i>
+                <button type="submit" style="width:100%; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; padding: 12px; border-radius: 12px; font-family: inherit; font-weight: 700; cursor: pointer; transition: 0.3s;">
+                    <i class="fas fa-sign-out-alt"></i> خروج از حساب
                 </button>
             </form>
         </div>
-    </div>
+    </aside>
 
-    {{-- Scrollable Content --}}
-    <div class="content-scroll">
-        @if(session()->hasAny(['success', 'error', 'warning']))
-            @if(session('success'))
-                <div class="flash flash-success"><i class="fas fa-check-circle"></i> {{ session('success') }}</div>
-            @endif
-            @if(session('error'))
-                <div class="flash flash-error"><i class="fas fa-exclamation-circle"></i> {{ session('error') }}</div>
-            @endif
-            @if(session('warning'))
-                <div class="flash flash-warning"><i class="fas fa-exclamation-triangle"></i> {{ session('warning') }}</div>
-            @endif
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <div style="font-weight: 800; color: var(--navy); font-size: 1.1rem;">
+                    @yield('title')
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="notif-btn">
+                    <i class="far fa-bell"></i>
+                    <span class="notif-dot"></span>
+                </div>
+
+                <div class="user-profile-dropdown">
+                    <div class="user-avatar">
+                        {{ mb_substr(auth('lawyer')->user()->name, 0, 1) }}
+                    </div>
+                    <div class="user-info">
+                        <span class="name">{{ auth('lawyer')->user()->name }}</span>
+                        <span class="role">وکیل پایه یک</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-body">
+            @yield('content')
+        </div>
+    </main>
+
+    <div class="flash-wrapper">
+        @if(session('success'))
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i> {{ session('success') }}
+            </div>
         @endif
-
-        @yield('content')
+        @if(session('error'))
+            <div class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+            </div>
+        @endif
     </div>
-</div>
 
-<script>
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('open');
-        document.getElementById('sidebarOverlay').classList.toggle('show');
-    }
-    function closeSidebar() {
-        document.getElementById('sidebar').classList.remove('open');
-        document.getElementById('sidebarOverlay').classList.remove('show');
-    }
-</script>
-
-@stack('scripts')
+    @stack('scripts')
 </body>
 </html>
