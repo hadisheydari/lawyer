@@ -87,16 +87,27 @@ Route::post('/clear-otp-session', [AuthController::class, 'clearOtpSession'])->n
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::get('/login/lawyer', [AuthController::class, 'showLoginLawyer'])->name('login.show.lawyer');
+    // Route::get('/login/lawyer', [AuthController::class, 'showLoginLawyer'])->name('login.show.lawyer');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
     Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('auth.send-otp')->middleware('throttle:5,1');
     Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('auth.verify-otp');
-    Route::post('/login/lawyer', [AuthController::class, 'loginLawyer'])->name('login.lawyer');
+    // Route::post('/login/lawyer', [AuthController::class, 'loginLawyer'])->name('login.lawyer');
 
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+Route::prefix('lawyer')->name('lawyer.')->group(function () {
+    Route::get('/login', [LawyerAuthController::class, 'showLogin'])->name('login');
+    Route::post('/send-otp', [LawyerAuthController::class, 'sendOtp'])->name('send-otp');
+    Route::post('/verify-otp', [LawyerAuthController::class, 'verifyOtp'])->name('verify-otp');
+    
+    Route::middleware('auth:lawyer')->group(function () {
+        Route::get('/dashboard', [LawyerDashboardController::class, 'index'])->name('dashboard');
+        Route::post('/logout', [LawyerAuthController::class, 'logout'])->name('logout');
+    });
+});
 
 // ═══════════════════════════════════════════════════════════════
 // CLIENT DASHBOARD (Auth Required)
