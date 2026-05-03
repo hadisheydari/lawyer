@@ -112,7 +112,7 @@ class AuthController extends Controller
             ])->with('info', 'وارد شدید. لطفاً نوبت خود را تکمیل کنید.');
         }
 
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard.index');
     }
 
     // ─── نمایش صفحه ثبت نام ───────────────────────────────────────────────────

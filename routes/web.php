@@ -116,7 +116,7 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
         Route::post('/logout', [AuthLawyerController::class, 'logout'])->name('logout');
 
         // داشبورد
-        Route::get('/dashboard', [LawyerDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [LawyerDashboardController::class, 'index'])->name('dashboard.index');
 
         // پرونده‌ها
         Route::prefix('cases')->name('cases.')->group(function () {
@@ -204,9 +204,9 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
 // CLIENT DASHBOARD
 // ═══════════════════════════════════════════════════════════════
 
-Route::get('/dashboard', [ClientDashboardController::class, 'index'])->middleware('auth')->name('dashboard');
+Route::get('/dashboard', [ClientDashboardController::class, 'index'])->middleware('auth')->name('dashboard.index');
 
-Route::middleware(['auth'])->prefix('dashboard')->name('dashboard.')->group(function () {
+Route::middleware(['auth'])->prefix('dashboard.index')->name('dashboard.')->group(function () {
     Route::get('/', [ClientDashboardController::class, 'index'])->name('index');
     Route::get('/profile', [ClientDashboardController::class, 'profile'])->name('profile');
 });

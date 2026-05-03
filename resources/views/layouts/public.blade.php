@@ -554,7 +554,7 @@
                     @if (auth('lawyer')->check())
                         <a href="{{ route('lawyer.dashboard') }}" class="btn">پنل وکیل</a>
                     @elseif(auth()->check())
-                        <a href="{{ route('dashboard') }}" class="btn">داشبورد کاربری</a>
+                        <a href="{{ route('dashboard.index') }}" class="btn">داشبورد کاربری</a>
                     @endif
                     {{-- ✅ logout با POST form --}}
                     <form method="POST" action="{{ route('logout') }}" style="display:inline;">

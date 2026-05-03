@@ -359,7 +359,7 @@ class ReserveController extends Controller
 
         $payment->payable->update(['status' => 'confirmed']);
 
-        return redirect()->route('dashboard')
+        return redirect()->route('dashboard.index')
             ->with('success', 'درخواست مشاوره شما با موفقیت ثبت شد.');
     }
 
