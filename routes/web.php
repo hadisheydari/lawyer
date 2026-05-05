@@ -110,13 +110,12 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
     Route::post('/send-otp', [AuthLawyerController::class, 'sendOtp'])->name('send-otp');
     Route::post('/verify-otp', [AuthLawyerController::class, 'verifyOtp'])->name('verify-otp');
 
-    // پنل (محافظت‌شده)
-    Route::middleware('auth:lawyer')->group(function () {
+    Route::middleware('auth.lawyer')->group(function () {
 
         Route::post('/logout', [AuthLawyerController::class, 'logout'])->name('logout');
 
         // داشبورد
-        Route::get('/dashboard', [LawyerDashboardController::class, 'index'])->name('dashboard.index');
+        Route::get('/dashboard', [LawyerDashboardController::class, 'index'])->name('dashboard');
 
         // پرونده‌ها
         Route::prefix('cases')->name('cases.')->group(function () {
