@@ -20,16 +20,15 @@
     .card-title { font-size:1rem; font-weight:800; color:var(--navy); margin-bottom:22px; padding-bottom:12px; border-bottom:2px solid #f5f0ea; display:flex; align-items:center; gap:8px; }
     .card-title i { color:var(--gold-main); }
 
-    /* پروفایل */
     .profile-top { display:flex; align-items:center; gap:20px; margin-bottom:24px; }
     .profile-avatar {
         width:80px; height:80px; border-radius:50%;
-        background:linear-gradient(135deg, var(--navy), #1e3a5f);
+        background:linear-gradient(135deg,var(--navy),#1e3a5f);
         color:var(--gold-main); display:flex; align-items:center; justify-content:center;
         font-size:2rem; font-weight:900; flex-shrink:0;
-        border:3px solid rgba(212,175,55,0.3);
+        border:3px solid rgba(212,175,55,0.3); overflow:hidden;
     }
-    .profile-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .profile-avatar img { width:100%; height:100%; object-fit:cover; }
     .profile-info h3 { font-size:1.1rem; font-weight:800; color:var(--navy); margin:0 0 4px; }
     .profile-info p { font-size:0.82rem; color:#888; margin:0; }
 
@@ -43,12 +42,13 @@
     .btn-submit { padding:12px 28px; background:linear-gradient(135deg,var(--navy),#1e3a5f); color:#fff; border:none; border-radius:10px; font-family:'Vazirmatn',sans-serif; font-weight:800; font-size:0.92rem; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:0.3s; }
     .btn-submit:hover { transform:translateY(-2px); }
 
-    /* toggle switch */
-    .toggle-group { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #f5f5f5; }
+    /* toggle */
+    .toggle-group { display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid #f5f5f5; }
     .toggle-group:last-child { border-bottom:none; }
-    .toggle-label { font-size:0.9rem; font-weight:600; color:var(--navy); display:flex; align-items:center; gap:8px; }
-    .toggle-label small { font-size:0.75rem; color:#888; font-weight:400; display:block; margin-top:2px; }
-    .toggle-switch { position:relative; width:50px; height:26px; }
+    .toggle-label-wrap { flex:1; }
+    .toggle-label-wrap strong { font-size:0.9rem; font-weight:700; color:var(--navy); display:flex; align-items:center; gap:8px; }
+    .toggle-label-wrap small { font-size:0.78rem; color:#888; display:block; margin-top:3px; margin-right:24px; }
+    .toggle-switch { position:relative; width:50px; height:26px; flex-shrink:0; }
     .toggle-switch input { opacity:0; width:0; height:0; }
     .toggle-slider { position:absolute; inset:0; background:#e0e0e0; border-radius:26px; cursor:pointer; transition:0.3s; }
     .toggle-slider::before { content:''; position:absolute; width:20px; height:20px; border-radius:50%; background:#fff; bottom:3px; right:3px; transition:0.3s; box-shadow:0 2px 4px rgba(0,0,0,0.2); }
@@ -56,54 +56,56 @@
     .toggle-switch input:checked + .toggle-slider::before { transform:translateX(-24px); }
 
     /* ساعات کاری */
-    .schedule-grid { display:grid; gap:12px; }
-    .schedule-row { display:grid; grid-template-columns:120px 1fr; gap:16px; align-items:center; padding:14px; background:#f8fafc; border-radius:10px; }
-    .day-label { font-weight:700; color:var(--navy); font-size:0.88rem; }
+    .schedule-grid { display:flex; flex-direction:column; gap:10px; }
+    .schedule-row { display:grid; grid-template-columns:130px 1fr; gap:16px; align-items:center; padding:14px 16px; background:#f8fafc; border-radius:10px; border:1px solid #f0f0f0; }
+    .day-check-wrap { display:flex; align-items:center; gap:8px; cursor:pointer; }
+    .day-check-wrap input[type="checkbox"] { width:16px; height:16px; accent-color:var(--gold-main); cursor:pointer; }
+    .day-label { font-weight:700; color:var(--navy); font-size:0.9rem; }
     .time-inputs { display:flex; gap:10px; align-items:center; }
-    .time-inputs input { padding:8px 12px; border:1.5px solid #e0e0e0; border-radius:8px; font-family:'Vazirmatn',sans-serif; font-size:0.85rem; outline:none; width:110px; }
-    .time-inputs input:focus { border-color:var(--gold-main); }
-    .time-sep { color:#888; font-size:0.85rem; }
-    .avail-checkbox { display:flex; align-items:center; gap:8px; font-size:0.85rem; color:#666; cursor:pointer; }
-    .avail-checkbox input { width:16px; height:16px; accent-color:var(--gold-main); }
+    .time-inputs input[type="time"] { padding:8px 12px; border:1.5px solid #e0e0e0; border-radius:8px; font-family:'Vazirmatn',sans-serif; font-size:0.85rem; outline:none; width:120px; transition:0.2s; }
+    .time-inputs input[type="time"]:focus { border-color:var(--gold-main); }
+    .time-sep { color:#888; font-size:0.85rem; font-weight:600; }
 
-    /* روزهای استثنا */
-    .exception-list { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+    /* استثناها */
+    .exception-list { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
     .exception-item { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#f8fafc; border-radius:10px; border:1px solid #e0e0e0; }
-    .exception-info { font-size:0.88rem; }
-    .exception-info strong { color:var(--navy); }
-    .exception-info span { color:#888; font-size:0.8rem; display:block; margin-top:2px; }
-    .btn-del { padding:6px 12px; background:#fee2e2; color:#b91c1c; border:none; border-radius:7px; font-family:'Vazirmatn',sans-serif; font-size:0.78rem; font-weight:700; cursor:pointer; transition:0.2s; }
-    .btn-del:hover { background:#b91c1c; color:#fff; }
-
+    .exception-info strong { font-size:0.9rem; color:var(--navy); display:block; margin-bottom:3px; }
+    .exception-info span { font-size:0.78rem; color:#888; display:flex; align-items:center; gap:6px; }
     .exc-badge-avail   { background:#d1fae5; color:#065f46; padding:2px 8px; border-radius:10px; font-size:0.72rem; font-weight:700; }
     .exc-badge-unavail { background:#fee2e2; color:#b91c1c; padding:2px 8px; border-radius:10px; font-size:0.72rem; font-weight:700; }
+    .btn-del { padding:6px 12px; background:#fee2e2; color:#b91c1c; border:none; border-radius:7px; font-family:'Vazirmatn',sans-serif; font-size:0.78rem; font-weight:700; cursor:pointer; transition:0.2s; display:inline-flex; align-items:center; gap:4px; }
+    .btn-del:hover { background:#b91c1c; color:#fff; }
 
-    .form-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+    .add-exc-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px; }
 
-    .spec-tags { display:flex; flex-wrap:wrap; gap:6px; padding:10px; border:1.5px solid #e0e0e0; border-radius:10px; min-height:48px; cursor:text; }
-    .spec-tag { background:rgba(212,175,55,0.1); border:1px solid rgba(212,175,55,0.3); color:var(--gold-dark); padding:4px 10px; border-radius:20px; font-size:0.78rem; font-weight:700; display:flex; align-items:center; gap:5px; }
-    .spec-tag button { background:none; border:none; cursor:pointer; color:inherit; font-size:0.7rem; padding:0; }
-    .spec-tags-input { border:none; outline:none; font-family:'Vazirmatn',sans-serif; font-size:0.88rem; flex:1; min-width:120px; background:transparent; }
-
-    @media(max-width:600px) { .form-grid { grid-template-columns:1fr; } .form-grid-3 { grid-template-columns:1fr 1fr; } .schedule-row { grid-template-columns:1fr; } }
+    @media(max-width:768px) {
+        .form-grid { grid-template-columns:1fr; }
+        .add-exc-grid { grid-template-columns:1fr; }
+        .schedule-row { grid-template-columns:1fr; }
+        .time-inputs { flex-wrap:wrap; }
+    }
 </style>
 @endpush
 
 @section('content')
 
-@php $lawyer = Auth::guard('lawyer')->user(); @endphp
+@if(session('success'))
+    <div style="background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:14px 18px;border-radius:10px;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-weight:600;">
+        <i class="fas fa-check-circle"></i> {{ session('success') }}
+    </div>
+@endif
 
 <div class="settings-tabs">
-    <a href="#profile" class="s-tab active" onclick="switchTab('profile',this)" id="tab-profile">
+    <a href="#" class="s-tab active" onclick="switchTab('profile',this)">
         <i class="fas fa-user-edit"></i> پروفایل
     </a>
-    <a href="#availability" class="s-tab" onclick="switchTab('availability',this)" id="tab-availability">
+    <a href="#" class="s-tab" onclick="switchTab('availability',this)">
         <i class="fas fa-toggle-on"></i> دسترسی‌پذیری
     </a>
-    <a href="#schedule" class="s-tab" onclick="switchTab('schedule',this)" id="tab-schedule">
+    <a href="#" class="s-tab" id="tab-schedule" onclick="switchTab('schedule',this)">
         <i class="fas fa-calendar-alt"></i> ساعات کاری
     </a>
-    <a href="#exceptions" class="s-tab" onclick="switchTab('exceptions',this)" id="tab-exceptions">
+    <a href="#" class="s-tab" id="tab-exceptions" onclick="switchTab('exceptions',this)">
         <i class="fas fa-calendar-times"></i> روزهای استثنا
     </a>
 </div>
@@ -129,7 +131,6 @@
 
         <form method="POST" action="{{ route('lawyer.settings.profile') }}" enctype="multipart/form-data">
             @csrf
-            @method('PUT')
 
             <div class="form-grid">
                 <div class="form-group">
@@ -158,8 +159,8 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">تخصص‌ها (با کاما جدا کنید)</label>
-                <input type="text" name="specializations" id="specInput" class="form-input"
+                <label class="form-label">تخصص‌ها (با ویرگول جدا کنید)</label>
+                <input type="text" name="specializations" class="form-input"
                        value="{{ old('specializations', is_array($lawyer->specializations) ? implode(', ', $lawyer->specializations) : '') }}"
                        placeholder="مثال: حقوق خانواده, حقوق تجاری, حقوق کیفری">
             </div>
@@ -178,7 +179,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">تصویر پروفایل (JPG/PNG — حداکثر ۲MB)</label>
+                <label class="form-label">تصویر پروفایل <span style="color:#aaa;font-weight:400;">(JPG/PNG — حداکثر ۲MB)</span></label>
                 <input type="file" name="image" class="form-input" accept="image/jpeg,image/png" style="padding:8px;">
             </div>
 
@@ -197,50 +198,47 @@
 
         <form method="POST" action="{{ route('lawyer.settings.profile') }}" enctype="multipart/form-data">
             @csrf
-            @method('PUT')
-            <input type="hidden" name="name" value="{{ $lawyer->name }}">
+            {{-- فیلدهای مخفی ضروری برای اعتبارسنجی --}}
+            <input type="hidden" name="name"  value="{{ $lawyer->name }}">
             <input type="hidden" name="phone" value="{{ $lawyer->phone }}">
 
             <div class="toggle-group">
-                <label class="toggle-label" for="chat_toggle">
-                    <i class="fas fa-comment-dots" style="color:var(--gold-main);"></i>
-                    دسترسی از طریق چت آنلاین
+                <div class="toggle-label-wrap">
+                    <strong><i class="fas fa-comment-dots" style="color:var(--gold-main);"></i> گفتگوی آنلاین (چت)</strong>
                     <small>موکلین می‌توانند پیام متنی ارسال کنند</small>
-                </label>
+                </div>
                 <label class="toggle-switch">
-                    <input type="checkbox" id="chat_toggle" name="available_for_chat" value="1"
+                    <input type="checkbox" name="available_for_chat" value="1"
                            {{ $lawyer->available_for_chat ? 'checked' : '' }}>
                     <span class="toggle-slider"></span>
                 </label>
             </div>
 
             <div class="toggle-group">
-                <label class="toggle-label" for="call_toggle">
-                    <i class="fas fa-phone-alt" style="color:var(--gold-main);"></i>
-                    دسترسی از طریق تماس تلفنی
-                    <small>موکلین می‌توانند تماس تلفنی درخواست دهند</small>
-                </label>
+                <div class="toggle-label-wrap">
+                    <strong><i class="fas fa-phone-alt" style="color:var(--gold-main);"></i> تماس تلفنی</strong>
+                    <small>موکلین می‌توانند درخواست تماس تلفنی بدهند</small>
+                </div>
                 <label class="toggle-switch">
-                    <input type="checkbox" id="call_toggle" name="available_for_call" value="1"
+                    <input type="checkbox" name="available_for_call" value="1"
                            {{ $lawyer->available_for_call ? 'checked' : '' }}>
                     <span class="toggle-slider"></span>
                 </label>
             </div>
 
             <div class="toggle-group">
-                <label class="toggle-label" for="appt_toggle">
-                    <i class="fas fa-calendar-check" style="color:var(--gold-main);"></i>
-                    دسترسی از طریق نوبت حضوری
+                <div class="toggle-label-wrap">
+                    <strong><i class="fas fa-calendar-check" style="color:var(--gold-main);"></i> نوبت حضوری</strong>
                     <small>موکلین می‌توانند وقت ملاقات حضوری رزرو کنند</small>
-                </label>
+                </div>
                 <label class="toggle-switch">
-                    <input type="checkbox" id="appt_toggle" name="available_for_appointment" value="1"
+                    <input type="checkbox" name="available_for_appointment" value="1"
                            {{ $lawyer->available_for_appointment ? 'checked' : '' }}>
                     <span class="toggle-slider"></span>
                 </label>
             </div>
 
-            <div style="margin-top:20px;">
+            <div style="margin-top:22px;">
                 <button type="submit" class="btn-submit">
                     <i class="fas fa-save"></i> ذخیره تنظیمات
                 </button>
@@ -252,7 +250,8 @@
 {{-- ─── ساعات کاری ─── --}}
 <div class="settings-section" id="sec-schedule">
     <div class="card">
-        <div class="card-title"><i class="fas fa-business-time"></i> تنظیم ساعات کاری هفتگی</div>
+        <div class="card-title"><i class="fas fa-business-time"></i> ساعات کاری هفتگی</div>
+        <p style="font-size:0.85rem;color:#888;margin-bottom:20px;">روزها و ساعت‌های کاری خود را مشخص کنید. اسلات‌های ۳۰ دقیقه‌ای بین ساعت شروع و پایان در دسترس موکلین قرار می‌گیرد.</p>
 
         <form method="POST" action="{{ route('lawyer.settings.schedule') }}">
             @csrf
@@ -261,17 +260,18 @@
                 @foreach($days as $dayNum => $dayName)
                     @php $schedule = $schedules[$dayNum] ?? null; @endphp
                     <div class="schedule-row">
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <label class="avail-checkbox">
-                                <input type="checkbox" name="schedules[{{ $dayNum }}][is_available]" value="1"
-                                       id="avail_{{ $dayNum }}"
-                                       {{ $schedule && $schedule->is_available ? 'checked' : '' }}
-                                       onchange="toggleDay({{ $dayNum }}, this.checked)">
-                                <strong class="day-label">{{ $dayName }}</strong>
-                            </label>
-                        </div>
+                        <label class="day-check-wrap">
+                            <input type="checkbox"
+                                   name="schedules[{{ $dayNum }}][is_available]" value="1"
+                                   id="avail_{{ $dayNum }}"
+                                   {{ ($schedule && $schedule->is_available) ? 'checked' : '' }}
+                                   onchange="toggleDay({{ $dayNum }}, this.checked)">
+                            <span class="day-label">{{ $dayName }}</span>
+                        </label>
                         <input type="hidden" name="schedules[{{ $dayNum }}][day_of_week]" value="{{ $dayNum }}">
-                        <div class="time-inputs" id="times_{{ $dayNum }}" style="{{ !($schedule && $schedule->is_available) ? 'opacity:0.4;pointer-events:none;' : '' }}">
+                        <div class="time-inputs"
+                             id="times_{{ $dayNum }}"
+                             style="{{ (!$schedule || !$schedule->is_available) ? 'opacity:0.35;pointer-events:none;' : '' }}">
                             <input type="time" name="schedules[{{ $dayNum }}][start_time]"
                                    value="{{ $schedule ? substr($schedule->start_time, 0, 5) : '09:00' }}">
                             <span class="time-sep">تا</span>
@@ -282,7 +282,7 @@
                 @endforeach
             </div>
 
-            <div style="margin-top:20px;">
+            <div style="margin-top:22px;">
                 <button type="submit" class="btn-submit">
                     <i class="fas fa-save"></i> ذخیره ساعات کاری
                 </button>
@@ -294,24 +294,26 @@
 {{-- ─── روزهای استثنا ─── --}}
 <div class="settings-section" id="sec-exceptions">
     <div class="card" id="calendar">
-        <div class="card-title"><i class="fas fa-calendar-times"></i> روزهای استثنا (تعطیل یا اضافه)</div>
+        <div class="card-title"><i class="fas fa-calendar-times"></i> روزهای استثنا</div>
+        <p style="font-size:0.85rem;color:#888;margin-bottom:18px;">روزهای تعطیل اضافه یا روزهای کاری خارج از برنامه هفتگی را اینجا ثبت کنید.</p>
 
         @if($exceptions->isNotEmpty())
             <div class="exception-list">
                 @foreach($exceptions as $exc)
                     <div class="exception-item">
                         <div class="exception-info">
-                            <strong>{{ \Morilog\Jalali\Jalalian::fromDateTime($exc->exception_date)->format('Y/m/d') }}</strong>
+                            <strong>{{ \Morilog\Jalali\Jalalian::fromDateTime($exc->exception_date)->format('l، d F Y') }}</strong>
                             <span>
                                 <span class="{{ $exc->is_available ? 'exc-badge-avail' : 'exc-badge-unavail' }}">
                                     {{ $exc->is_available ? 'روز کاری اضافه' : 'روز تعطیل' }}
                                 </span>
-                                @if($exc->reason) &nbsp; {{ $exc->reason }} @endif
+                                @if($exc->reason) — {{ $exc->reason }} @endif
                             </span>
                         </div>
-                        <form method="POST" action="{{ route('lawyer.settings.exception.delete', $exc) }}">
+                        {{-- {{ route('lawyer.settings.exception.delete', $exc) }} --}}
+                        <form method="POST" action="#">
                             @csrf @method('DELETE')
-                            <button type="submit" class="btn-del" onclick="return confirm('حذف شود؟')">
+                            <button type="submit" class="btn-del" onclick="return confirm('این روز استثنا حذف شود؟')">
                                 <i class="fas fa-trash-alt"></i> حذف
                             </button>
                         </form>
@@ -319,35 +321,40 @@
                 @endforeach
             </div>
         @else
-            <p style="color:#aaa;font-size:0.85rem;margin-bottom:16px;">هیچ روز استثنایی ثبت نشده است.</p>
+            <div style="text-align:center;padding:20px;color:#aaa;background:#f8fafc;border-radius:10px;margin-bottom:18px;">
+                <i class="fas fa-calendar-check" style="font-size:1.5rem;display:block;margin-bottom:8px;opacity:0.4;"></i>
+                <p style="font-size:0.85rem;">هیچ روز استثنایی ثبت نشده است.</p>
+            </div>
         @endif
 
-        <div style="border-top:2px solid #f5f0ea;padding-top:20px;margin-top:16px;">
+        <div style="border-top:2px solid #f5f0ea;padding-top:20px;margin-top:8px;">
             <div style="font-size:0.92rem;font-weight:800;color:var(--navy);margin-bottom:16px;">
                 <i class="fas fa-plus-circle" style="color:var(--gold-main);margin-left:6px;"></i>افزودن روز استثنا
             </div>
-            <form method="POST" action="{{ route('lawyer.settings.exception') }}">
+            {{-- {{ route('lawyer.settings.exception') }} --}}
+            <form method="POST" action="#">
                 @csrf
-                <div class="form-grid-3" style="margin-bottom:14px;">
+                <div class="add-exc-grid">
                     <div class="form-group" style="margin-bottom:0;">
                         <label class="form-label">تاریخ</label>
-                        <input type="date" name="exception_date" class="form-input" required min="{{ date('Y-m-d') }}">
+                        <input type="date" name="exception_date" class="form-input"
+                               required min="{{ date('Y-m-d') }}">
+                        @error('exception_date')<span class="error-msg">{{ $message }}</span>@enderror
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">نوع روز</label>
+                        <label class="form-label">نوع</label>
                         <select name="is_available" class="form-input" required>
                             <option value="0">روز تعطیل (غیر کاری)</option>
                             <option value="1">روز کاری اضافه</option>
                         </select>
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">توضیح (اختیاری)</label>
+                        <label class="form-label">توضیح <span style="color:#aaa;font-weight:400;">(اختیاری)</span></label>
                         <input type="text" name="reason" class="form-input" placeholder="مثال: تعطیل رسمی">
                     </div>
                 </div>
-                @error('exception_date')<span class="error-msg">{{ $message }}</span>@enderror
-                <button type="submit" class="btn-submit" style="padding:10px 22px;font-size:0.88rem;">
-                    <i class="fas fa-plus"></i> ثبت روز استثنا
+                <button type="submit" class="btn-submit" style="margin-top:14px;padding:10px 22px;font-size:0.88rem;">
+                    <i class="fas fa-plus"></i> ثبت
                 </button>
             </form>
         </div>
@@ -365,15 +372,20 @@ function switchTab(tab, el) {
 }
 
 function toggleDay(dayNum, isChecked) {
-    const times = document.getElementById('times_' + dayNum);
-    times.style.opacity = isChecked ? '1' : '0.4';
-    times.style.pointerEvents = isChecked ? 'auto' : 'none';
+    const wrap = document.getElementById('times_' + dayNum);
+    wrap.style.opacity       = isChecked ? '1'    : '0.35';
+    wrap.style.pointerEvents = isChecked ? 'auto' : 'none';
 }
 
-// Hash routing for calendar anchor
-if (window.location.hash === '#calendar') {
-    switchTab('exceptions', document.getElementById('tab-exceptions'));
-}
+// باز کردن تب مربوطه بر اساس hash
+window.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash;
+    if (hash === '#calendar' || hash === '#exceptions') {
+        switchTab('exceptions', document.getElementById('tab-exceptions'));
+    } else if (hash === '#schedule') {
+        switchTab('schedule', document.getElementById('tab-schedule'));
+    }
+});
 </script>
 @endpush
 

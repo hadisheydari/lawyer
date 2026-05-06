@@ -217,8 +217,8 @@
 
         <li class="menu-label">ابزارها و محتوا</li>
         <li class="menu-item">
-            <a href="{{ route('lawyer.settings.index') }}#calendar"
-               class="menu-link {{ request()->routeIs('lawyer.calendar') ? 'active' : '' }}">
+            <a href="{{ route('lawyer.settings.calendar') }}"
+               class="menu-link {{ request()->routeIs('lawyer.settings.calendar') ? 'active' : '' }}">
                 <i class="fas fa-calendar-alt"></i> تقویم و برنامه کاری
             </a>
         </li>

@@ -3,6 +3,15 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\AuthLawyerController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
+use App\Http\Controllers\Lawyer\ArticleController as LawyerArticleController;
+use App\Http\Controllers\Lawyer\CaseController as LawyerCaseController;
+use App\Http\Controllers\Lawyer\ChatController as LawyerChatController;
+use App\Http\Controllers\Lawyer\ClientController as LawyerClientController;
+use App\Http\Controllers\Lawyer\CommentController as LawyerCommentController;
+use App\Http\Controllers\Lawyer\ConsultationController as LawyerConsultationController;
+use App\Http\Controllers\Lawyer\DashboardController as LawyerDashboardController;
+use App\Http\Controllers\Lawyer\PaymentController as LawyerPaymentController;
+use App\Http\Controllers\Lawyer\SettingController as LawyerSettingController;
 use App\Http\Controllers\Public\ArticleCommentController;
 use App\Http\Controllers\Public\ArticleController;
 use App\Http\Controllers\Public\ArticleReactionController;
@@ -12,15 +21,6 @@ use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\LawyerController;
 use App\Http\Controllers\Public\ReserveController;
 use App\Http\Controllers\Public\ServiceController;
-use App\Http\Controllers\Lawyer\DashboardController as LawyerDashboardController;
-use App\Http\Controllers\Lawyer\CaseController as LawyerCaseController;
-use App\Http\Controllers\Lawyer\ClientController as LawyerClientController;
-use App\Http\Controllers\Lawyer\ConsultationController as LawyerConsultationController;
-use App\Http\Controllers\Lawyer\ChatController as LawyerChatController;
-use App\Http\Controllers\Lawyer\ArticleController as LawyerArticleController;
-use App\Http\Controllers\Lawyer\CommentController as LawyerCommentController;
-use App\Http\Controllers\Lawyer\PaymentController as LawyerPaymentController;
-use App\Http\Controllers\Lawyer\SettingController as LawyerSettingController;
 use Illuminate\Support\Facades\Route;
 
 // ═══════════════════════════════════════════════════════════════
@@ -187,6 +187,7 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
         // تنظیمات
         Route::prefix('settings')->name('settings.')->group(function () {
             Route::get('/', [LawyerSettingController::class, 'index'])->name('index');
+            Route::get('/calendar', [LawyerSettingController::class, 'index'])->name('calendar');
             Route::post('/profile', [LawyerSettingController::class, 'updateProfile'])->name('profile');
             Route::post('/schedule', [LawyerSettingController::class, 'updateSchedule'])->name('schedule');
             Route::post('/exception', [LawyerSettingController::class, 'addException'])->name('exception.add');
@@ -194,8 +195,8 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
         });
 
         // alias تقویم و ساعات کاری → تنظیمات
-        Route::get('/calendar', fn() => redirect()->route('lawyer.settings.index'))->name('calendar');
-        Route::get('/schedule', fn() => redirect()->route('lawyer.settings.index'))->name('schedule');
+        Route::get('/calendar', fn () => redirect()->route('lawyer.settings.index'))->name('calendar');
+        Route::get('/schedule', fn () => redirect()->route('lawyer.settings.index'))->name('schedule');
     });
 });
 

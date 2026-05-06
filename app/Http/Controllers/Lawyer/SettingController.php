@@ -17,7 +17,7 @@ class SettingController extends Controller
     }
 
     // ─── نمایش تنظیمات ───────────────────────────────────────────────────────
-    public function index()
+    public function index(Request $request)
     {
         $lawyer    = $this->lawyer();
         $schedules = LawyerSchedule::where('lawyer_id', $lawyer->id)
@@ -40,6 +40,30 @@ class SettingController extends Controller
         ];
 
         return view('lawyer.settings.index', compact('lawyer', 'schedules', 'exceptions', 'days'));
+    }
+        public function calendar(Request $request)
+    {
+        $lawyer    = $this->lawyer();
+        $schedules = LawyerSchedule::where('lawyer_id', $lawyer->id)
+            ->orderBy('day_of_week')
+            ->get()
+            ->keyBy('day_of_week');
+
+        $exceptions = LawyerScheduleException::where('lawyer_id', $lawyer->id)
+            ->where('exception_date', '>=', now()->toDateString())
+            ->orderBy('exception_date')
+            ->get();
+
+        $days = [
+            0 => 'شنبه',
+            1 => 'یکشنبه',
+            2 => 'دوشنبه',
+            3 => 'سه‌شنبه',
+            4 => 'چهارشنبه',
+            5 => 'پنج‌شنبه',
+        ];
+
+        return view('lawyer.settings.calendar', compact('lawyer', 'schedules', 'exceptions', 'days'));
     }
 
     // ─── به‌روزرسانی پروفایل ─────────────────────────────────────────────────
