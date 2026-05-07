@@ -5,34 +5,52 @@
 <style>
     .back-link { display:inline-flex; align-items:center; gap:8px; color:var(--gold-dark); font-weight:600; font-size:0.9rem; text-decoration:none; margin-bottom:20px; }
     .back-link:hover { color:var(--gold-main); }
-    .article-layout { display:grid; grid-template-columns:1fr 320px; gap:25px; align-items:start; }
-    .card { background:#fff; border-radius:14px; padding:28px; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:20px; }
+
+    .article-layout { display:grid; grid-template-columns:1fr 310px; gap:25px; align-items:start; }
+
+    .card { background:#fff; border-radius:14px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:20px; }
     .card-title { font-size:1rem; font-weight:800; color:var(--navy); margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #f5f0ea; display:flex; align-items:center; gap:8px; }
     .card-title i { color:var(--gold-main); }
+
     .form-group { margin-bottom:18px; }
     .form-label { display:block; margin-bottom:8px; font-size:0.88rem; color:var(--navy); font-weight:600; }
     .form-input { width:100%; padding:11px 14px; border:1.5px solid #e0e0e0; border-radius:10px; font-family:'Vazirmatn',sans-serif; font-size:0.92rem; outline:none; transition:0.2s; color:var(--navy); }
     .form-input:focus { border-color:var(--gold-main); box-shadow:0 0 0 3px rgba(197,160,89,0.1); }
+    .form-input.is-error { border-color:#ef4444; }
     .error-msg { color:#ef4444; font-size:0.78rem; margin-top:4px; display:block; }
-    .editor-wrapper { border:1.5px solid #e0e0e0; border-radius:10px; overflow:hidden; }
-    .editor-wrapper:focus-within { border-color:var(--gold-main); }
+
+    .editor-wrapper { border:1.5px solid #e0e0e0; border-radius:10px; overflow:hidden; transition:0.2s; }
+    .editor-wrapper:focus-within { border-color:var(--gold-main); box-shadow:0 0 0 3px rgba(197,160,89,0.1); }
     .editor-toolbar { display:flex; gap:4px; padding:10px 12px; background:#f8fafc; border-bottom:1px solid #e0e0e0; flex-wrap:wrap; }
-    .tb-btn { padding:5px 10px; border:none; background:#fff; border-radius:6px; font-size:0.8rem; cursor:pointer; color:#64748b; transition:0.2s; }
-    .tb-btn:hover { background:var(--navy); color:#fff; }
+    .tb-btn { padding:5px 10px; border:1px solid #e2e8f0; background:#fff; border-radius:6px; font-size:0.8rem; cursor:pointer; color:#64748b; transition:0.2s; font-family:'Vazirmatn',sans-serif; }
+    .tb-btn:hover { background:var(--navy); color:#fff; border-color:var(--navy); }
     textarea.editor { width:100%; min-height:350px; border:none; padding:16px; font-family:'Vazirmatn',sans-serif; font-size:0.92rem; line-height:1.8; resize:vertical; outline:none; color:var(--navy); }
-    .status-switch { display:flex; gap:10px; }
-    .status-opt { flex:1; }
+    .word-count { font-size:0.75rem; color:#94a3b8; text-align:left; margin-top:6px; }
+
+    .status-switch { display:flex; gap:10px; flex-wrap:wrap; }
+    .status-opt { flex:1; min-width:80px; }
     .status-opt input { display:none; }
-    .status-opt label { display:flex; align-items:center; justify-content:center; gap:8px; padding:11px; border-radius:9px; border:1.5px solid #e0e0e0; cursor:pointer; font-size:0.85rem; font-weight:700; color:#888; transition:0.2s; }
+    .status-opt label { display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 8px; border-radius:9px; border:1.5px solid #e0e0e0; cursor:pointer; font-size:0.82rem; font-weight:700; color:#888; transition:0.2s; text-align:center; }
     .status-opt input:checked + label.draft-lbl { border-color:#f59e0b; background:#fef3c7; color:#b45309; }
     .status-opt input:checked + label.pub-lbl { border-color:#10b981; background:#d1fae5; color:#065f46; }
     .status-opt input:checked + label.arch-lbl { border-color:#64748b; background:#f1f5f9; color:#475569; }
+
     .current-image { border-radius:8px; width:100%; margin-bottom:12px; max-height:160px; object-fit:cover; }
+
     .btn-row { display:flex; gap:10px; }
     .btn-submit { flex:1; padding:13px; background:linear-gradient(135deg,var(--navy),#1e3a5f); color:#fff; border:none; border-radius:10px; font-family:'Vazirmatn',sans-serif; font-weight:800; font-size:0.92rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:9px; transition:0.3s; }
     .btn-submit:hover { transform:translateY(-2px); }
-    .btn-cancel { padding:13px 20px; background:#f1f5f9; color:var(--navy); border:none; border-radius:10px; font-family:'Vazirmatn',sans-serif; font-weight:700; font-size:0.92rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:7px; }
+    .btn-cancel { padding:13px 20px; background:#f1f5f9; color:var(--navy); border:none; border-radius:10px; font-family:'Vazirmatn',sans-serif; font-weight:700; font-size:0.92rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:7px; transition:0.2s; }
+    .btn-cancel:hover { background:#e2e8f0; }
+
     @media(max-width:960px) { .article-layout { grid-template-columns:1fr; } }
+    @media(max-width:480px) {
+        .card { padding:16px; }
+        .tb-btn { padding:4px 7px; font-size:0.75rem; }
+        textarea.editor { min-height:220px; }
+        .btn-row { flex-direction:column; }
+        .btn-cancel { justify-content:center; }
+    }
 </style>
 @endpush
 
@@ -47,6 +65,8 @@
     @method('PUT')
 
     <div class="article-layout">
+
+        {{-- ─── ستون اصلی ─── --}}
         <div>
             <div class="card">
                 <div class="card-title"><i class="fas fa-pen-nib"></i> ویرایش محتوا</div>
@@ -67,14 +87,17 @@
                     <label class="form-label">متن کامل مقاله *</label>
                     <div class="editor-wrapper">
                         <div class="editor-toolbar">
-                            <button type="button" class="tb-btn" onclick="wrapText('**','**')"><b>B</b></button>
-                            <button type="button" class="tb-btn" onclick="wrapText('*','*')"><i>I</i></button>
-                            <button type="button" class="tb-btn" onclick="insertLine('## ')">H2</button>
-                            <button type="button" class="tb-btn" onclick="insertLine('### ')">H3</button>
-                            <button type="button" class="tb-btn" onclick="insertLine('- ')">لیست</button>
+                            <button type="button" class="tb-btn" data-action="bold"><b>B</b></button>
+                            <button type="button" class="tb-btn" data-action="italic"><i>I</i></button>
+                            <button type="button" class="tb-btn" data-action="h2">H2</button>
+                            <button type="button" class="tb-btn" data-action="h3">H3</button>
+                            <button type="button" class="tb-btn" data-action="list">لیست</button>
+                            <button type="button" class="tb-btn" data-action="quote">نقل‌قول</button>
                         </div>
-                        <textarea name="content" id="editor" class="editor @error('content') is-error @enderror">{{ old('content', $article->content) }}</textarea>
+                        <textarea name="content" id="editor"
+                                  class="editor @error('content') is-error @enderror">{{ old('content', $article->content) }}</textarea>
                     </div>
+                    <div class="word-count" id="wordCount">۰ کلمه</div>
                     @error('content')<span class="error-msg">{{ $message }}</span>@enderror
                 </div>
             </div>
@@ -94,6 +117,7 @@
             </div>
         </div>
 
+        {{-- ─── سایدبار ─── --}}
         <div>
             <div class="card">
                 <div class="card-title"><i class="fas fa-cog"></i> تنظیمات</div>
@@ -138,7 +162,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">تگ‌ها (با ویرگول جدا کنید)</label>
+                    <label class="form-label">تگ‌ها <span style="color:#aaa;font-weight:400;">(با ویرگول)</span></label>
                     <input type="text" name="tags" class="form-input"
                            value="{{ old('tags', $article->tags ? implode(', ', $article->tags) : '') }}">
                 </div>
@@ -154,8 +178,8 @@
                 <div class="card-title"><i class="fas fa-image"></i> تصویر شاخص</div>
                 @if($article->featured_image)
                     <img src="{{ asset('assets/images/'.$article->featured_image) }}"
-                         alt="" class="current-image">
-                    <p style="font-size:0.75rem;color:#888;margin-bottom:10px;">برای تغییر، عکس جدید انتخاب کنید</p>
+                         alt="{{ $article->title }}" class="current-image">
+                    <p style="font-size:0.75rem;color:#888;margin-bottom:10px;">برای تغییر، تصویر جدید انتخاب کنید</p>
                 @endif
                 <input type="file" name="featured_image" class="form-input"
                        accept="image/jpeg,image/png,image/webp" style="padding:8px;">
@@ -175,19 +199,55 @@
 
 @push('scripts')
 <script>
-const editor = document.getElementById('editor');
-function wrapText(b, a) {
-    const s = editor.selectionStart, e = editor.selectionEnd;
-    const sel = editor.value.substring(s, e);
-    editor.value = editor.value.substring(0,s) + b + sel + a + editor.value.substring(e);
-    editor.focus();
-}
-function insertLine(prefix) {
-    const s = editor.selectionStart;
-    const ls = editor.value.lastIndexOf('\n', s-1)+1;
-    editor.value = editor.value.substring(0,ls) + prefix + editor.value.substring(ls);
-    editor.focus();
-}
+document.addEventListener('DOMContentLoaded', function() {
+    var editor = document.getElementById('editor');
+    if (!editor) return;
+
+    var wordCountEl = document.getElementById('wordCount');
+
+    var actions = {
+        bold:  { wrap: ['**', '**'] },
+        italic:{ wrap: ['*', '*'] },
+        h2:    { line: '## ' },
+        h3:    { line: '### ' },
+        list:  { line: '- ' },
+        quote: { line: '> ' },
+    };
+
+    document.querySelectorAll('.tb-btn[data-action]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var action = this.getAttribute('data-action');
+            var def = actions[action];
+            if (!def) return;
+
+            var start = editor.selectionStart;
+            var end   = editor.selectionEnd;
+            var val   = editor.value;
+            var sel   = val.substring(start, end);
+
+            if (def.wrap) {
+                var before = def.wrap[0], after = def.wrap[1];
+                editor.value = val.substring(0, start) + before + sel + after + val.substring(end);
+                editor.setSelectionRange(start + before.length, end + before.length);
+            } else if (def.line) {
+                var lineStart = val.lastIndexOf('\n', start - 1) + 1;
+                editor.value = val.substring(0, lineStart) + def.line + val.substring(lineStart);
+            }
+
+            editor.focus();
+            updateWordCount();
+        });
+    });
+
+    function updateWordCount() {
+        var text = editor.value.replace(/[#*`>~_\[\]()!\-]/g, '').trim();
+        var words = text ? text.split(/\s+/).length : 0;
+        if (wordCountEl) wordCountEl.textContent = words.toLocaleString('fa-IR') + ' کلمه';
+    }
+
+    editor.addEventListener('input', updateWordCount);
+    updateWordCount();
+});
 </script>
 @endpush
 
