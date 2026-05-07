@@ -1,430 +1,196 @@
 @extends('layouts.lawyer')
-@section('title', 'موکلین')
+@section('title', 'نوبت‌های مشاوره')
 
 @push('styles')
-    <style>
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
+<style>
+    /* --- Styles from plan-for-lawyers --- */
+    .filter-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
 
-        .page-header h2 {
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: var(--navy);
-            margin: 0;
-        }
+    .status-tabs {
+        display: flex;
+        background: #fff;
+        padding: 5px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
+    .tab-link {
+        padding: 10px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #64748b;
+        font-weight: 700;
+        font-size: 0.85rem;
+        transition: 0.3s;
+    }
 
-        .stat-card {
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-            text-align: center;
-        }
+    .tab-link.active {
+        background: var(--navy);
+        color: #fff;
+    }
 
-        .stat-n {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--navy);
-            display: block;
-        }
+    /* --- Table Card --- */
+    .table-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
 
-        .stat-l {
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 4px;
-            display: block;
-        }
+    .custom-table { width: 100%; border-collapse: collapse; }
+    .custom-table th {
+        text-align: right; padding: 18px 20px;
+        background: #f8fafc; color: #475569;
+        font-size: 0.85rem; font-weight: 800;
+        border-bottom: 1px solid #edf2f7;
+    }
+    .custom-table td {
+        padding: 18px 20px; border-bottom: 1px solid #f1f5f9;
+        color: var(--navy); font-size: 0.9rem; vertical-align: middle;
+    }
+    .custom-table tr:hover { background: #fdfbf7; }
 
-        .filter-bar {
-            background: #fff;
-            padding: 18px 22px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-            margin-bottom: 20px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
+    /* --- Status Badges --- */
+    .badge {
+        padding: 6px 12px; border-radius: 20px;
+        font-size: 0.75rem; font-weight: 800;
+    }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    .badge-confirmed { background: #d1fae5; color: #065f46; }
+    .badge-completed { background: #e0e7ff; color: #3730a3; }
+    .badge-cancelled { background: #fee2e2; color: #991b1b; }
 
-        .filter-bar input,
-        .filter-bar select {
-            padding: 9px 14px;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 8px;
-            font-family: 'Vazirmatn', sans-serif;
-            font-size: 0.88rem;
-            outline: none;
-            transition: 0.2s;
-        }
+    .client-cell { display: flex; align-items: center; gap: 12px; }
+    .client-avatar {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: var(--navy-light); color: var(--gold-main);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 900; font-size: 0.8rem;
+    }
 
-        .filter-bar input {
-            flex: 1;
-            min-width: 180px;
-        }
+    .action-btn {
+        width: 35px; height: 35px; border-radius: 8px;
+        display: inline-flex; align-items: center; justify-content: center;
+        text-decoration: none; transition: 0.3s; background: #f1f5f9; color: #64748b;
+    }
+    .action-btn:hover { background: var(--gold-main); color: #fff; }
 
-        .filter-bar input:focus,
-        .filter-bar select:focus {
-            border-color: var(--gold-main);
+    /* --- Mobile Responsive (The transformation) --- */
+    @media (max-width: 768px) {
+        .custom-table thead { display: none; }
+        .custom-table tr {
+            display: block; margin-bottom: 15px;
+            border: 1px solid #edf2f7; border-radius: 12px;
+            padding: 10px; position: relative;
         }
-
-        .btn-filter {
-            background: var(--navy);
-            color: #fff;
-            padding: 9px 18px;
-            border: none;
-            border-radius: 8px;
-            font-family: 'Vazirmatn', sans-serif;
-            font-weight: 700;
-            font-size: 0.88rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .custom-table td {
+            display: flex; justify-content: space-between; align-items: center;
+            border: none; padding: 8px 10px; text-align: left;
         }
-
-        .tab-btns {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
+        .custom-table td::before {
+            content: attr(data-label); font-weight: 800; color: #94a3b8; font-size: 0.8rem;
         }
-
-        .tab-btn {
-            padding: 8px 20px;
-            border-radius: 8px;
-            border: 1.5px solid #e0e0e0;
-            background: #fff;
-            font-family: 'Vazirmatn', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #888;
-            cursor: pointer;
-            text-decoration: none;
-            transition: 0.2s;
-        }
-
-        .tab-btn.active,
-        .tab-btn:hover {
-            background: var(--navy);
-            border-color: var(--navy);
-            color: #fff;
-        }
-
-        .clients-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 18px;
-        }
-
-        .client-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 22px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid #f0f0f0;
-            transition: 0.3s;
-        }
-
-        .client-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--gold-main);
-        }
-
-        .cc-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 16px;
-        }
-
-        .cc-avatar {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--navy), #1e3a5f);
-            color: var(--gold-main);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            font-weight: 900;
-            flex-shrink: 0;
-        }
-
-        .cc-info h4 {
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: var(--navy);
-            margin: 0 0 4px;
-        }
-
-        .cc-info p {
-            font-size: 0.78rem;
-            color: #888;
-            margin: 0;
-        }
-
-        .badge {
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.72rem;
-            font-weight: 700;
-        }
-
-        .badge-special {
-            background: rgba(212, 175, 55, 0.15);
-            color: var(--gold-dark);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-        }
-
-        .badge-simple {
-            background: #f1f5f9;
-            color: #64748b;
-            border: 1px solid #e2e8f0;
-        }
-
-        .cc-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-
-        .cc-stat {
-            background: #f8fafc;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .cc-stat .n {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: var(--navy);
-            display: block;
-        }
-
-        .cc-stat .l {
-            font-size: 0.7rem;
-            color: #888;
-        }
-
-        .cc-footer {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-sm {
-            padding: 7px 14px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: 0.2s;
-            flex: 1;
-            justify-content: center;
-        }
-
-        .btn-view {
-            background: var(--navy);
-            color: #fff;
-        }
-
-        .btn-view:hover {
-            background: var(--gold-main);
-            color: var(--navy);
-        }
-
-        .btn-upgrade {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1.5px solid var(--gold-main);
-            color: var(--gold-dark);
-            font-family: 'Vazirmatn', sans-serif;
-            cursor: pointer;
-        }
-
-        .btn-upgrade:hover {
-            background: var(--gold-main);
-            color: #fff;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 70px 20px;
-            color: #aaa;
-            background: #fff;
-            border-radius: 14px;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            display: block;
-            margin-bottom: 15px;
-            opacity: 0.4;
-        }
-
-        .pagination-wrap {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .page-btn {
-            padding: 7px 13px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            color: var(--navy);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .page-btn:hover,
-        .page-btn.active {
-            background: var(--navy);
-            color: #fff;
-            border-color: var(--navy);
-        }
-
-        .page-btn.disabled {
-            color: #ccc;
-            pointer-events: none;
-        }
-    </style>
+        .client-cell { flex-direction: row-reverse; }
+        .action-btn { width: 100%; margin-top: 10px; justify-content: center; gap: 8px; }
+        .action-btn::after { content: 'مشاهده جزئیات'; font-size: 0.85rem; font-weight: bold; }
+    }
+</style>
 @endpush
 
 @section('content')
-
-    <div class="page-header">
-        <h2><i class="fas fa-users" style="color:var(--gold-main);margin-left:10px;"></i>موکلین</h2>
+<div class="filter-section">
+    <div class="status-tabs">
+        <a href="{{ route('lawyer.consultations.index') }}" class="tab-link {{ !request('status') ? 'active' : '' }}">همه</a>
+        <a href="{{ route('lawyer.consultations.index', ['status' => 'pending']) }}" class="tab-link {{ request('status') == 'pending' ? 'active' : '' }}">در انتظار</a>
+        <a href="{{ route('lawyer.consultations.index', ['status' => 'confirmed']) }}" class="tab-link {{ request('status') == 'confirmed' ? 'active' : '' }}">تایید شده</a>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card" style="border-bottom:3px solid var(--gold-main);">
-            <span class="stat-n">{{ $stats['special_count'] }}</span>
-            <span class="stat-l">موکل ویژه</span>
+    <form action="{{ route('lawyer.consultations.index') }}" method="GET" style="flex: 1; max-width: 300px;">
+        <div style="position: relative;">
+            <input type="text" name="search" value="{{ request('search') }}" 
+                   placeholder="جستجوی نام موکل..." 
+                   style="width:100%; padding: 10px 15px; border-radius: 10px; border: 1px solid #e2e8f0; font-family: inherit;">
         </div>
-        <div class="stat-card" style="border-bottom:3px solid #64748b;">
-            <span class="stat-n">{{ $stats['simple_count'] }}</span>
-            <span class="stat-l">موکل ساده</span>
-        </div>
-    </div>
-
-    <form method="GET" class="filter-bar">
-        <input type="hidden" name="type" value="{{ request('type', 'all') }}">
-        <input type="text" name="search" placeholder="جستجو بر اساس نام یا شماره..." value="{{ request('search') }}">
-        <button type="submit" class="btn-filter"><i class="fas fa-search"></i> جستجو</button>
     </form>
+</div>
 
-    <div class="tab-btns">
-        <a href="{{ request()->fullUrlWithQuery(['type' => 'all']) }}"
-            class="tab-btn {{ $type === 'all' ? 'active' : '' }}">همه</a>
-        <a href="{{ request()->fullUrlWithQuery(['type' => 'special']) }}"
-            class="tab-btn {{ $type === 'special' ? 'active' : '' }}">
-            <i class="fas fa-crown" style="font-size:0.75rem;color:var(--gold-main);"></i> موکلین ویژه
-        </a>
-        <a href="{{ request()->fullUrlWithQuery(['type' => 'simple']) }}"
-            class="tab-btn {{ $type === 'simple' ? 'active' : '' }}">موکلین ساده</a>
-    </div>
-
-    @if ($clients->isNotEmpty())
-        <div class="clients-grid">
-            @foreach ($clients as $client)
-                <div class="client-card">
-                    <div class="cc-header">
-                        <div class="cc-avatar">{{ mb_substr($client->name, 0, 1) }}</div>
-                        <div class="cc-info">
-                            <h4>{{ $client->name }}</h4>
-                            <p>{{ $client->phone }}</p>
-                        </div>
-                        <span class="badge {{ $client->isSpecial() ? 'badge-special' : 'badge-simple' }}">
-                            {{ $client->isSpecial() ? 'ویژه' : 'ساده' }}
-                        </span>
-                    </div>
-
-                    <div class="cc-stats">
-                        <div class="cc-stat">
-                            <span
-                                class="n">{{ $client->cases()->where('lawyer_id', auth('lawyer')->id())->count() }}</span>
-                            <span class="l">پرونده</span>
-                        </div>
-                        <div class="cc-stat">
-                            <span
-                                class="n">{{ $client->consultations()->where('lawyer_id', auth('lawyer')->id())->count() }}</span>
-                            <span class="l">مشاوره</span>
-                        </div>
-                    </div>
-
-                    <div style="font-size:0.75rem;color:#888;margin-bottom:14px;display:flex;align-items:center;gap:6px;">
-                        <i class="fas fa-clock" style="color:var(--gold-main);"></i>
-                        @if ($client->created_at->year > 1900)
-                            {{ \Morilog\Jalali\Jalalian::fromCarbon($client->created_at)->format('Y/m/d') }}
-                        @else
-                            {{ $client->created_at->format('Y/m/d') }} (نیاز به اصلاح)
-                        @endif ساعت {{ $client->created_at->format('H:i') }}
-
-                    </div>
-
-                    <div class="cc-footer">
-                        <a href="{{ route('lawyer.clients.show', $client) }}" class="btn-sm btn-view">
-                            <i class="fas fa-eye"></i> مشاهده
-                        </a>
-                        @if ($client->isSimple())
-                            <form method="POST" action="{{ route('lawyer.clients.upgrade', $client) }}" style="flex:1;">
-                                @csrf
-                                <button type="submit" class="btn-sm btn-upgrade" style="width:100%;">
-                                    <i class="fas fa-crown" style="font-size:0.75rem;"></i> ارتقا به ویژه
-                                </button>
-                            </form>
-                        @endif
-                    </div>
-                </div>
-            @endforeach
+<div class="table-card">
+    @if($consultations->isEmpty())
+        <div style="padding: 50px; text-align: center; color: #94a3b8;">
+            <i class="fas fa-calendar-times" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
+            <p>هیچ نوبت مشاوره‌ای در این بخش یافت نشد.</p>
         </div>
     @else
-        <div class="empty-state">
-            <i class="fas fa-users"></i>
-            <p>هیچ موکلی یافت نشد.</p>
-        </div>
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>موکل</th>
+                    <th>نوع مشاوره</th>
+                    <th>تاریخ و ساعت</th>
+                    <th>وضعیت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($consultations as $item)
+                <tr>
+                    <td data-label="موکل">
+                        <div class="client-cell">
+                            <div class="client-avatar">
+                                {{ mb_substr($item->user->name ?? 'م', 0, 1) }}
+                            </div>
+                            <div>
+                                <div style="font-weight: 800;">{{ $item->user->name ?? 'نامشخص' }}</div>
+                                <div style="font-size: 0.75rem; color: #94a3b8;">{{ $item->user->phone ?? '' }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td data-label="نوع">
+                        @if($item->type == 'appointment')
+                            <i class="fas fa-users" style="color: var(--gold-main);"></i> حضوری
+                        @elseif($item->type == 'call')
+                            <i class="fas fa-phone" style="color: #10b981;"></i> تلفنی
+                        @else
+                            <i class="fas fa-comments" style="color: #3b82f6;"></i> چت آنلاین
+                        @endif
+                    </td>
+                    <td data-label="زمان">
+                        <div style="font-weight: 700;">
+                            {{ $item->scheduled_at ? \Morilog\Jalali\Jalalian::fromCarbon($item->scheduled_at)->format('Y/m/d') : '---' }}
+                        </div>
+                        <div style="font-size: 0.8rem; color: #64748b;">
+                            ساعت {{ $item->scheduled_at ? $item->scheduled_at->format('H:i') : '---' }}
+                        </div>
+                    </td>
+                    <td data-label="وضعیت">
+                        <span class="badge badge-{{ $item->status }}">
+                            @if($item->status == 'pending') در انتظار تایید
+                            @elseif($item->status == 'confirmed') تایید شده
+                            @elseif($item->status == 'completed') تکمیل شده
+                            @elseif($item->status == 'cancelled') لغو شده
+                            @else {{ $item->status }} @endif
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ route('lawyer.consultations.show', $item->id) }}" class="action-btn">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     @endif
+</div>
 
-    @if ($clients->hasPages())
-        <div class="pagination-wrap">
-            @if ($clients->onFirstPage())
-                <span class="page-btn disabled">قبلی</span>
-            @else
-                <a href="{{ $clients->previousPageUrl() }}" class="page-btn">قبلی</a>
-            @endif
-            @foreach ($clients->getUrlRange(1, $clients->lastPage()) as $page => $url)
-                @if ($page == $clients->currentPage())
-                    <span class="page-btn active">{{ $page }}</span>
-                @else
-                    <a href="{{ $url }}" class="page-btn">{{ $page }}</a>
-                @endif
-            @endforeach
-            @if ($clients->hasMorePages())
-                <a href="{{ $clients->nextPageUrl() }}" class="page-btn">بعدی</a>
-            @else
-                <span class="page-btn disabled">بعدی</span>
-            @endif
-        </div>
-    @endif
-
+<div style="margin-top: 20px;">
+    {{ $consultations->links() }}
+</div>
 @endsection

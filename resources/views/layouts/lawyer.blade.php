@@ -43,6 +43,8 @@
             flex-direction: column;
             box-shadow: -5px 0 30px rgba(0,0,0,0.25);
             overflow: hidden;
+            /* تغییر ۱: افزودن ترانزیشن به خود سایدبار برای انیمیشن نرم در موبایل */
+            transition: transform 0.3s ease; 
         }
 
         .sidebar-header {
@@ -96,6 +98,8 @@
         .main-content {
             flex: 1; margin-right: var(--sidebar-width);
             display: flex; flex-direction: column; min-height: 100vh;
+            /* اطمینان از اینکه محتوا در موبایل درست نمایش داده می‌شود */
+            transition: margin 0.3s ease;
         }
 
         /* ─── Top Header ─── */
@@ -147,17 +151,34 @@
         .flash-success { background:#ecfdf5; color:#065f46; border-right:4px solid #10b981; }
         .flash-error   { background:#fef2f2; color:#991b1b; border-right:4px solid #ef4444; }
 
+        /* تغییر ۲: اضافه کردن دکمه موبایل و لایه تاریک (بدون خراب کردن استایل‌های اصلی شما) */
+        .mobile-toggle-btn {
+            display: none; background: none; border: none; 
+            font-size: 1.4rem; color: var(--navy); cursor: pointer;
+            margin-left: 15px; padding: 5px;
+        }
+        .sidebar-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); z-index: 1000; opacity: 0; transition: opacity 0.3s;
+        }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+
         @media(max-width:1024px) {
             .sidebar { transform:translateX(100%); }
             .sidebar.open { transform:translateX(0); }
-            .main-content { margin-right:0; }
+            .main-content { margin-right:0; width: 100%; }
+            .mobile-toggle-btn { display: inline-block; } /* دکمه در موبایل نمایش داده شود */
+            .top-header { padding: 0 15px; }
+            .content-body { padding: 20px 15px; }
         }
     </style>
     @stack('styles')
 </head>
 <body>
 
-<aside class="sidebar">
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="lawyerSidebar">
     <div class="sidebar-header">
         <i class="fas fa-scale-balanced"></i>
         <div>
@@ -172,12 +193,6 @@
             <a href="{{ route('lawyer.dashboard') }}"
                class="menu-link {{ request()->routeIs('lawyer.dashboard') ? 'active' : '' }}">
                 <i class="fas fa-th-large"></i> داشبورد
-            </a>
-        </li>
-        <li class="menu-item">
-            <a href="{{ route('lawyer.settings.index') }}"
-               class="menu-link {{ request()->routeIs('lawyer.settings*') && request()->routeIs('*calendar') ? 'active' : '' }}"
-               style="display:none" id="calLink">
             </a>
         </li>
 
@@ -248,7 +263,7 @@
         <li class="menu-label">تنظیمات</li>
         <li class="menu-item">
             <a href="{{ route('lawyer.settings.index') }}"
-               class="menu-link {{ request()->routeIs('lawyer.settings*') ? 'active' : '' }}">
+               class="menu-link {{ request()->routeIs('lawyer.settings.index') ? 'active' : '' }}">
                 <i class="fas fa-cog"></i> تنظیمات و پروفایل
             </a>
         </li>
@@ -269,9 +284,13 @@
 
 <main class="main-content">
     <header class="top-header">
-        <div>
+        <div style="display: flex; align-items: center;">
+            <button class="mobile-toggle-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="header-title">@yield('title', 'داشبورد')</div>
         </div>
+        
         <div class="header-right">
             <div class="notif-btn">
                 <i class="far fa-bell"></i>
@@ -309,6 +328,21 @@
 
 @stack('scripts')
 <script>
+    // اسکریپت باز و بسته کردن منو در موبایل
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('lawyerSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
+
+    if (mobileBtn && sidebar && overlay) {
+        mobileBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar); // با کلیک روی تاریکی بسته می‌شود
+    }
+
     // Auto-dismiss flash messages
     setTimeout(() => {
         document.querySelectorAll('.flash-alert').forEach(el => {

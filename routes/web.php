@@ -187,7 +187,7 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
         // تنظیمات
         Route::prefix('settings')->name('settings.')->group(function () {
             Route::get('/', [LawyerSettingController::class, 'index'])->name('index');
-            Route::get('/calendar', [LawyerSettingController::class, 'index'])->name('calendar');
+            Route::get('/calendar', [LawyerSettingController::class, 'calendar'])->name('calendar');
             Route::post('/profile', [LawyerSettingController::class, 'updateProfile'])->name('profile');
             Route::post('/schedule', [LawyerSettingController::class, 'updateSchedule'])->name('schedule');
             Route::post('/exception', [LawyerSettingController::class, 'addException'])->name('exception.add');
@@ -195,8 +195,8 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
         });
 
         // alias تقویم و ساعات کاری → تنظیمات
-        Route::get('/calendar', fn () => redirect()->route('lawyer.settings.index'))->name('calendar');
-        Route::get('/schedule', fn () => redirect()->route('lawyer.settings.index'))->name('schedule');
+        // Route::get('/calendar', fn () => redirect()->route('lawyer.settings.index'))->name('calendar');
+        // Route::get('/schedule', fn () => redirect()->route('lawyer.settings.index'))->name('schedule');
     });
 });
 
