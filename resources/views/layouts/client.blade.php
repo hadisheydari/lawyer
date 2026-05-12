@@ -15,15 +15,8 @@
             --bg-white: #ffffff;
             --gold-main: #c5a059;
             --gold-dark: #9e7f41;
-            --gold-light: #e6cfa3;
             --navy: #102a43;
-            --navy-dark: #0a1c2e;
-            --text-heading: #2c241b;
             --text-body: #595048;
-            --success: #27ae60;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.06);
             --radius-md: 15px;
             --radius-sm: 8px;
             --transition: all 0.3s ease;
@@ -81,6 +74,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
 
         .brand {
@@ -134,6 +128,12 @@
             height: 3px;
             background: var(--gold-main);
             border-radius: 5px 5px 0 0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .user-menu {
@@ -204,7 +204,7 @@
             border: 1px solid #eee;
             border-radius: var(--radius-sm);
             min-width: 180px;
-            box-shadow: var(--shadow-card);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
             z-index: 200;
             overflow: hidden;
         }
@@ -219,32 +219,12 @@
             gap: 10px;
             padding: 12px 16px;
             font-size: 0.9rem;
-            color: var(--text-body);
             transition: 0.2s;
         }
 
         .dropdown-item:hover {
             background: #fdfbf7;
             color: var(--gold-dark);
-        }
-
-        .dropdown-item.danger {
-            color: #e74c3c;
-        }
-
-        .dropdown-item.danger:hover {
-            background: #fef2f2;
-        }
-
-        .dropdown-divider {
-            border: none;
-            border-top: 1px solid #f0f0f0;
-            margin: 5px 0;
-        }
-
-        /* فرم logout درون dropdown */
-        .logout-form {
-            width: 100%;
         }
 
         .logout-btn {
@@ -258,7 +238,7 @@
             background: none;
             cursor: pointer;
             text-align: right;
-            font-family: 'Vazirmatn', sans-serif;
+            font-family: inherit;
             color: #e74c3c;
             transition: 0.2s;
         }
@@ -267,14 +247,20 @@
             background: #fef2f2;
         }
 
-        /* ─── Main Container ─────────────────────────────────── */
+        .hamburger-client {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--navy);
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
         .page-wrapper {
             max-width: 1300px;
             margin: 30px auto;
             padding: 0 20px;
         }
 
-        /* ─── Flash Messages ─────────────────────────────────── */
         .flash-container {
             margin-bottom: 20px;
         }
@@ -302,19 +288,56 @@
             border: 1px solid #fecaca;
         }
 
-        .flash-warning {
-            background: #fffbeb;
-            color: #92400e;
-            border: 1px solid #fde68a;
-        }
+        /* 🔴 موبایل: نمایش منوی همبرگری و باز شدن زیر هدر 🔴 */
+        @media (max-width: 992px) {
+            .hamburger-client {
+                display: block;
+            }
 
-        @media (max-width: 768px) {
             .nav-menu {
                 display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: #fff;
+                padding: 10px 20px 20px;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+                border-top: 1px solid #f1f5f9;
+                gap: 0;
             }
+
+            .nav-menu.open {
+                display: flex;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 12px 0;
+                border-bottom: 1px solid #f8fafc;
+            }
+
+            .nav-link.active::after {
+                display: none;
+            }
+
+            .nav-link.active {
+                color: var(--gold-main);
+                font-weight: 800;
+            }
+
+            .brand-text h1 {
+                font-size: 1rem;
+            }
+
+            .vip-badge span {
+                display: none;
+            }
+
+            /* مخفی کردن متن "موکل ویژه" در موبایل برای جلوگیری از شلوغی */
         }
     </style>
-
     @stack('styles')
 </head>
 
@@ -330,83 +353,67 @@
                 </div>
             </a>
 
-            <ul class="nav-menu">
+            <ul class="nav-menu" id="clientNavMenu">
                 <li>
-                    <a href="{{ route('dashboard.index') }}"
-                        class="nav-link {{ request()->routeIs('dashboard*') ? 'active' : '' }}">
-                        داشبورد
+                    <a href="{{ route('home') }}" class="nav-link" style="color: var(--gold-main);">
+                        <i class="fas fa-home"></i> سایت اصلی
                     </a>
                 </li>
+                <li><a href="{{ route('dashboard.index') }}"
+                        class="nav-link {{ request()->routeIs('dashboard*') ? 'active' : '' }}">داشبورد</a></li>
                 @if (auth()->user()->isSpecial())
-                    <li>
-                        <a href="{{ route('client.cases.index') }}"
-                            class="nav-link {{ request()->routeIs('client.cases*') ? 'active' : '' }}">
-                            پرونده‌ام
-                        </a>
+                    <li><a href="{{ route('client.cases.index') }}"
+                            class="nav-link {{ request()->routeIs('client.cases*') ? 'active' : '' }}">پرونده‌ام</a>
                     </li>
-                    <li>
-                        <a href="{{ route('client.installments.index') }}"
-                            class="nav-link {{ request()->routeIs('client.installments*') ? 'active' : '' }}">
-                            اقساط
-                        </a>
+                    <li><a href="{{ route('client.installments.index') }}"
+                            class="nav-link {{ request()->routeIs('client.installments*') ? 'active' : '' }}">اقساط</a>
                     </li>
                 @else
-                    <li>
-                        <a href="{{ route('client.consultations.index') }}"
-                            class="nav-link {{ request()->routeIs('client.consultations*') ? 'active' : '' }}">
-                            مشاوره‌ها
-                        </a>
+                    <li><a href="{{ route('client.consultations.index') }}"
+                            class="nav-link {{ request()->routeIs('client.consultations*') ? 'active' : '' }}">مشاوره‌ها</a>
                     </li>
                 @endif
-                <li>
-                    <a href="{{ route('client.chat.index') }}"
-                        class="nav-link {{ request()->routeIs('client.chat*') ? 'active' : '' }}">
-                        پیام‌ها
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('reserve.index') }}"
-                        class="nav-link {{ request()->routeIs('reserve*') ? 'active' : '' }}">
-                        رزرو نوبت
-                    </a>
-                </li>
+                <li><a href="{{ route('client.chat.index') }}"
+                        class="nav-link {{ request()->routeIs('client.chat*') ? 'active' : '' }}">پیام‌ها</a></li>
+                <li><a href="{{ route('reserve.index') }}"
+                        class="nav-link {{ request()->routeIs('reserve*') ? 'active' : '' }}">رزرو نوبت</a></li>
             </ul>
 
-            <div class="user-menu">
-                @if (auth()->user()->isSpecial())
-                    <span class="vip-badge">
-                        <i class="fas fa-crown"></i> موکل ویژه
+            <div class="header-right">
+                <div class="user-menu">
+                    @if (auth()->user()->isSpecial())
+                        <span class="vip-badge"><i class="fas fa-crown"></i> <span>موکل ویژه</span></span>
+                    @endif
+
+                    <span class="notif-btn">
+                        <i class="far fa-bell"></i>
+                        <span class="notif-badge">۲</span>
                     </span>
-                @endif
 
-                <span class="notif-btn">
-                    <i class="far fa-bell"></i>
-                    <span class="notif-badge">۲</span>
-                </span>
-
-                <div class="dropdown-wrapper">
-                    <div class="profile-btn">
-                        {{ mb_substr(auth()->user()->name, 0, 1) }}
-                    </div>
-                    <div class="dropdown-menu">
-                        <div style="padding:12px 16px;border-bottom:1px solid #eee;">
-                            <div style="font-weight:700;color:var(--navy);font-size:0.9rem;">{{ auth()->user()->name }}
-                            </div>
-                            <div style="font-size:0.78rem;color:#999;">{{ auth()->user()->phone }}</div>
+                    <div class="dropdown-wrapper">
+                        <div class="profile-btn">
+                            {{ mb_substr(auth()->user()->name, 0, 1) }}
                         </div>
-                        <a href="{{ route('client.profile') }}" class="dropdown-item">
-                            <i class="far fa-user"></i> پروفایل
-                        </a>
-                        <hr class="dropdown-divider">
-                        {{-- ✅ logout با POST form --}}
-                        <form method="POST" action="{{ route('logout') }}" class="logout-form">
-                            @csrf
-                            <button type="submit" class="logout-btn">
-                                <i class="fas fa-sign-out-alt"></i> خروج
-                            </button>
-                        </form>
+                        <div class="dropdown-menu">
+                            <div style="padding:12px 16px;border-bottom:1px solid #eee;">
+                                <div style="font-weight:700;color:var(--navy);font-size:0.9rem;">
+                                    {{ auth()->user()->name }}</div>
+                                <div style="font-size:0.78rem;color:#999;">{{ auth()->user()->phone }}</div>
+                            </div>
+                            <a href="{{ route('client.profile') }}" class="dropdown-item"><i class="far fa-user"></i>
+                                پروفایل</a>
+                            <form method="POST" action="{{ route('logout') }}" style="width: 100%;">
+                                @csrf
+                                <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i>
+                                    خروج</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
+
+                <span class="hamburger-client" onclick="toggleClientMenu()">
+                    <i class="fas fa-bars"></i>
+                </span>
             </div>
         </div>
     </header>
@@ -415,18 +422,10 @@
         @if (session()->hasAny(['success', 'error', 'warning']))
             <div class="flash-container">
                 @if (session('success'))
-                    <div class="flash flash-success">
-                        <i class="fas fa-check-circle"></i> {{ session('success') }}
-                    </div>
+                    <div class="flash flash-success"><i class="fas fa-check-circle"></i> {{ session('success') }}</div>
                 @endif
                 @if (session('error'))
-                    <div class="flash flash-error">
-                        <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
-                    </div>
-                @endif
-                @if (session('warning'))
-                    <div class="flash flash-warning">
-                        <i class="fas fa-exclamation-triangle"></i> {{ session('warning') }}
+                    <div class="flash flash-error"><i class="fas fa-exclamation-circle"></i> {{ session('error') }}
                     </div>
                 @endif
             </div>
@@ -435,6 +434,11 @@
         @yield('content')
     </div>
 
+    <script>
+        function toggleClientMenu() {
+            document.getElementById('clientNavMenu').classList.toggle('open');
+        }
+    </script>
     @stack('scripts')
 </body>
 

@@ -189,6 +189,11 @@
 
     <ul class="sidebar-menu">
         <li class="menu-label">اصلی</li>
+        <li class="menu-item" style="margin-bottom: 15px;">
+            <a href="{{ route('home') }}" class="menu-link" style="background: rgba(212,175,55,0.1); color: var(--gold-main); border: 1px dashed var(--gold-main);">
+                <i class="fas fa-external-link-alt"></i> مشاهده سایت اصلی
+            </a>
+        </li>
         <li class="menu-item">
             <a href="{{ route('lawyer.dashboard') }}"
                class="menu-link {{ request()->routeIs('lawyer.dashboard') ? 'active' : '' }}">
