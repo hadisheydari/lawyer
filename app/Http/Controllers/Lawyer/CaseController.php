@@ -87,8 +87,10 @@ class CaseController extends Controller
     }
 
     // ─── ذخیره پرونده جدید ───────────────────────────────────────────────────
+// ─── ذخیره پرونده جدید ───────────────────────────────────────────────────
     public function store(Request $request)
     {
+        // 1. اضافه کردن اعتبارسنجی برای فایل‌ها
         $request->validate([
             'user_id'        => 'required|exists:users,id',
             'title'          => 'required|string|max:255',
@@ -96,39 +98,78 @@ class CaseController extends Controller
             'service_id'     => 'nullable|exists:services,id',
             'total_fee'      => 'required|numeric|min:0',
             'opened_at'      => 'nullable|date',
+            'documents.*'    => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240', // حداکثر 10 مگابایت
         ], [
             'user_id.required'    => 'انتخاب موکل الزامی است.',
             'title.required'      => 'عنوان پرونده الزامی است.',
             'total_fee.required'  => 'حق‌الوکاله الزامی است.',
+            'documents.*.mimes'   => 'فرمت فایل‌های ارسالی معتبر نیست.',
+            'documents.*.max'     => 'حجم هر فایل نباید بیشتر از 10 مگابایت باشد.',
         ]);
 
         $lawyer = $this->lawyer();
+        $case = null;
 
-        $case = LegalCase::create([
-            'case_number'    => LegalCase::generateCaseNumber(),
-            'user_id'        => $request->user_id,
-            'lawyer_id'      => $lawyer->id,
-            'service_id'     => $request->service_id,
-            'title'          => $request->title,
-            'description'    => $request->description,
-            'current_status' => 'active',
-            'total_fee'      => $request->total_fee,
-            'paid_amount'    => 0,
-            'opened_at'      => $request->opened_at ?? now(),
-        ]);
-
-        // ارتقا موکل به special اگر هنوز simple است
-        $user = User::find($request->user_id);
-        if ($user && $user->isSimple()) {
-            $user->update([
-                'user_type'    => 'special',
-                'upgraded_by'  => $lawyer->id,
-                'upgraded_at'  => now(),
+        // استفاده از Transaction برای جلوگیری از ثبت ناقص اطلاعات در صورت بروز خطا
+        DB::transaction(function () use ($request, $lawyer, &$case) {
+            
+            // 2. ساخت پرونده اصلی
+            $case = LegalCase::create([
+                'case_number'    => LegalCase::generateCaseNumber(),
+                'user_id'        => $request->user_id,
+                'lawyer_id'      => $lawyer->id,
+                'service_id'     => $request->service_id,
+                'title'          => $request->title,
+                'description'    => $request->description,
+                'current_status' => 'active',
+                'total_fee'      => $request->total_fee,
+                'paid_amount'    => 0,
+                'opened_at'      => $request->opened_at ?? now(),
             ]);
-        }
+
+            // ارتقا موکل به special اگر هنوز simple است
+            $user = User::find($request->user_id);
+            if ($user && $user->isSimple()) {
+                $user->update([
+                    'user_type'    => 'special',
+                    'upgraded_by'  => $lawyer->id,
+                    'upgraded_at'  => now(),
+                ]);
+            }
+
+            // 3. پردازش و ذخیره اسناد ضمیمه شده
+            if ($request->hasFile('documents')) {
+                
+                // ایجاد یک لاگ وضعیت اولیه برای اتصال مدارک به آن
+                $log = CaseStatusLog::create([
+                    'case_id'       => $case->id,
+                    'lawyer_id'     => $lawyer->id,
+                    'status_title'  => 'تشکیل پرونده و ثبت اسناد اولیه',
+                    'description'   => 'پرونده ایجاد شد و مدارک اولیه توسط وکیل ضمیمه گردید.',
+                    'status_date'   => $request->opened_at ?? now(),
+                ]);
+
+                // ذخیره تک تک فایل‌ها
+                foreach ($request->file('documents') as $file) {
+                    $path = $file->store('case_documents/' . $case->id, 'public');
+                    
+                    CaseDocument::create([
+                        'case_id'               => $case->id,
+                        'status_log_id'         => $log->id,
+                        'title'                 => $file->getClientOriginalName(),
+                        'file_path'             => $path,
+                        'file_type'             => $file->getClientOriginalExtension(),
+                        'file_size'             => $file->getSize(),
+                        'uploader_type'         => 'lawyer',
+                        'uploader_id'           => $lawyer->id,
+                        'is_visible_to_client'  => true,
+                    ]);
+                }
+            }
+        });
 
         return redirect()->route('lawyer.cases.show', $case)
-            ->with('success', 'پرونده با شماره ' . $case->case_number . ' ایجاد شد.');
+            ->with('success', 'پرونده با شماره ' . $case->case_number . ' ایجاد شد و مدارک ضمیمه گردید.');
     }
 
     // ─── فرم ویرایش پرونده ───────────────────────────────────────────────────

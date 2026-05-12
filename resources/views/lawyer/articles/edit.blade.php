@@ -1,254 +1,247 @@
 @extends('layouts.lawyer')
-@section('title', 'ویرایش مقاله')
+@section('title', 'ویرایش مقاله: ' . $article->title)
 
 @push('styles')
 <style>
-    .back-link { display:inline-flex; align-items:center; gap:8px; color:var(--gold-dark); font-weight:600; font-size:0.9rem; text-decoration:none; margin-bottom:20px; }
-    .back-link:hover { color:var(--gold-main); }
+    /* ۱. شکستن محدودیت‌های لایوت اصلی برای تمام‌عرض شدن واقعی */
+    .content-body { 
+        padding: 0 !important; 
+        background: #f8fafc !important;
+        margin: 0 !important;
+    }
 
-    .article-layout { display:grid; grid-template-columns:1fr 310px; gap:25px; align-items:start; }
+    .form-wrapper {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 30px 40px !important; /* ایجاد فاصله یکنواخت از لبه‌های مانیتور */
+    }
 
-    .card { background:#fff; border-radius:14px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:20px; }
-    .card-title { font-size:1rem; font-weight:800; color:var(--navy); margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #f5f0ea; display:flex; align-items:center; gap:8px; }
-    .card-title i { color:var(--gold-main); }
+    /* ۲. گرید عریض دسکتاپ (محتوا ۷۵٪ | سایدبار ۲۵٪) */
+    .article-grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 30px;
+        align-items: start;
+    }
 
-    .form-group { margin-bottom:18px; }
-    .form-label { display:block; margin-bottom:8px; font-size:0.88rem; color:var(--navy); font-weight:600; }
-    .form-input { width:100%; padding:11px 14px; border:1.5px solid #e0e0e0; border-radius:10px; font-family:'Vazirmatn',sans-serif; font-size:0.92rem; outline:none; transition:0.2s; color:var(--navy); }
-    .form-input:focus { border-color:var(--gold-main); box-shadow:0 0 0 3px rgba(197,160,89,0.1); }
-    .form-input.is-error { border-color:#ef4444; }
-    .error-msg { color:#ef4444; font-size:0.78rem; margin-top:4px; display:block; }
+    .card {
+        background: #fff !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 25px rgba(0,0,0,0.05) !important;
+        border: 1px solid #eef2f6 !important;
+        margin-bottom: 25px;
+        overflow: hidden;
+    }
 
-    .editor-wrapper { border:1.5px solid #e0e0e0; border-radius:10px; overflow:hidden; transition:0.2s; }
-    .editor-wrapper:focus-within { border-color:var(--gold-main); box-shadow:0 0 0 3px rgba(197,160,89,0.1); }
-    .editor-toolbar { display:flex; gap:4px; padding:10px 12px; background:#f8fafc; border-bottom:1px solid #e0e0e0; flex-wrap:wrap; }
-    .tb-btn { padding:5px 10px; border:1px solid #e2e8f0; background:#fff; border-radius:6px; font-size:0.8rem; cursor:pointer; color:#64748b; transition:0.2s; font-family:'Vazirmatn',sans-serif; }
-    .tb-btn:hover { background:var(--navy); color:#fff; border-color:var(--navy); }
-    textarea.editor { width:100%; min-height:350px; border:none; padding:16px; font-family:'Vazirmatn',sans-serif; font-size:0.92rem; line-height:1.8; resize:vertical; outline:none; color:var(--navy); }
-    .word-count { font-size:0.75rem; color:#94a3b8; text-align:left; margin-top:6px; }
+    .card-title {
+        padding: 22px 30px;
+        background: #fdfbf7;
+        border-bottom: 2px solid #f9f1d8;
+        color: var(--navy);
+        font-size: 1.15rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center; gap: 12px;
+    }
 
-    .status-switch { display:flex; gap:10px; flex-wrap:wrap; }
-    .status-opt { flex:1; min-width:80px; }
-    .status-opt input { display:none; }
-    .status-opt label { display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 8px; border-radius:9px; border:1.5px solid #e0e0e0; cursor:pointer; font-size:0.82rem; font-weight:700; color:#888; transition:0.2s; text-align:center; }
-    .status-opt input:checked + label.draft-lbl { border-color:#f59e0b; background:#fef3c7; color:#b45309; }
-    .status-opt input:checked + label.pub-lbl { border-color:#10b981; background:#d1fae5; color:#065f46; }
-    .status-opt input:checked + label.arch-lbl { border-color:#64748b; background:#f1f5f9; color:#475569; }
+    .card-body { padding: 35px; }
 
-    .current-image { border-radius:8px; width:100%; margin-bottom:12px; max-height:160px; object-fit:cover; }
+    /* ۳. استایل لوکس اینپوت‌ها با لبه‌های دقیق و مشخص */
+    .lux-input {
+        width: 100% !important;
+        padding: 16px 20px !important;
+        border: 2px solid #e2e8f0 !important; /* بردر ضخیم‌تر برای دیده شدن در دسکتاپ */
+        border-radius: 12px !important;
+        background-color: #fff !important;
+        color: var(--navy-dark) !important;
+        font-family: 'Vazirmatn', sans-serif !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        outline: none !important;
+        transition: all 0.3s ease !important;
+        box-shadow: none !important;
+    }
 
-    .btn-row { display:flex; gap:10px; }
-    .btn-submit { flex:1; padding:13px; background:linear-gradient(135deg,var(--navy),#1e3a5f); color:#fff; border:none; border-radius:10px; font-family:'Vazirmatn',sans-serif; font-weight:800; font-size:0.92rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:9px; transition:0.3s; }
-    .btn-submit:hover { transform:translateY(-2px); }
-    .btn-cancel { padding:13px 20px; background:#f1f5f9; color:var(--navy); border:none; border-radius:10px; font-family:'Vazirmatn',sans-serif; font-weight:700; font-size:0.92rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:7px; transition:0.2s; }
-    .btn-cancel:hover { background:#e2e8f0; }
+    .lux-input:focus {
+        border-color: var(--gold-main) !important;
+        box-shadow: 0 0 0 5px rgba(212, 175, 55, 0.1) !important;
+        background-color: #fff !important;
+    }
 
-    @media(max-width:960px) { .article-layout { grid-template-columns:1fr; } }
-    @media(max-width:480px) {
-        .card { padding:16px; }
-        .tb-btn { padding:4px 7px; font-size:0.75rem; }
-        textarea.editor { min-height:220px; }
-        .btn-row { flex-direction:column; }
-        .btn-cancel { justify-content:center; }
+    .content-area {
+        min-height: 700px !important;
+        line-height: 2.2 !important;
+        resize: vertical;
+        font-size: 1.15rem !important;
+    }
+
+    .input-label {
+        display: block; font-size: 0.95rem; font-weight: 800; color: #334155; margin-bottom: 12px;
+    }
+
+    .btn-update {
+        width: 100%; background: var(--navy); color: #fff; padding: 20px; border: none;
+        border-radius: 14px; font-weight: 900; font-size: 1.1rem; cursor: pointer;
+        transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 12px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+    }
+
+    .btn-update:hover {
+        background: var(--gold-main); transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(212, 175, 55, 0.3);
+    }
+
+    .current-thumb-box {
+        position: relative; border-radius: 12px; overflow: hidden; border: 2px solid #e2e8f0; margin-bottom: 15px;
+    }
+    .current-thumb-box img { width: 100%; display: block; height: 200px; object-fit: cover; }
+    
+    .change-img-btn {
+        margin-top: 10px; display: inline-block; color: var(--gold-dark); font-weight: 800; font-size: 0.85rem; cursor: pointer;
+    }
+
+    @media (max-width: 1100px) { 
+        .article-grid { grid-template-columns: 1fr; } 
+        .form-wrapper { padding: 20px !important; }
     }
 </style>
 @endpush
 
 @section('content')
-
-<a href="{{ route('lawyer.articles.show', $article) }}" class="back-link">
-    <i class="fas fa-arrow-right"></i> بازگشت به مقاله
-</a>
-
-<form method="POST" action="{{ route('lawyer.articles.update', $article) }}" enctype="multipart/form-data">
-    @csrf
-    @method('PUT')
-
-    <div class="article-layout">
-
-        {{-- ─── ستون اصلی ─── --}}
+<div class="form-wrapper">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; padding-bottom: 25px; border-bottom: 2px solid #e2e8f0;">
         <div>
-            <div class="card">
-                <div class="card-title"><i class="fas fa-pen-nib"></i> ویرایش محتوا</div>
-
-                <div class="form-group">
-                    <label class="form-label">عنوان مقاله *</label>
-                    <input type="text" name="title" class="form-input @error('title') is-error @enderror"
-                           value="{{ old('title', $article->title) }}" required>
-                    @error('title')<span class="error-msg">{{ $message }}</span>@enderror
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">چکیده</label>
-                    <textarea name="excerpt" class="form-input" rows="3">{{ old('excerpt', $article->excerpt) }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">متن کامل مقاله *</label>
-                    <div class="editor-wrapper">
-                        <div class="editor-toolbar">
-                            <button type="button" class="tb-btn" data-action="bold"><b>B</b></button>
-                            <button type="button" class="tb-btn" data-action="italic"><i>I</i></button>
-                            <button type="button" class="tb-btn" data-action="h2">H2</button>
-                            <button type="button" class="tb-btn" data-action="h3">H3</button>
-                            <button type="button" class="tb-btn" data-action="list">لیست</button>
-                            <button type="button" class="tb-btn" data-action="quote">نقل‌قول</button>
-                        </div>
-                        <textarea name="content" id="editor"
-                                  class="editor @error('content') is-error @enderror">{{ old('content', $article->content) }}</textarea>
-                    </div>
-                    <div class="word-count" id="wordCount">۰ کلمه</div>
-                    @error('content')<span class="error-msg">{{ $message }}</span>@enderror
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-title"><i class="fas fa-search"></i> سئو</div>
-                <div class="form-group">
-                    <label class="form-label">عنوان متا</label>
-                    <input type="text" name="meta_title" class="form-input"
-                           value="{{ old('meta_title', $article->meta_title) }}" maxlength="255">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">توضیحات متا</label>
-                    <textarea name="meta_description" class="form-input" rows="3"
-                              maxlength="500">{{ old('meta_description', $article->meta_description) }}</textarea>
-                </div>
-            </div>
-        </div>
-
-        {{-- ─── سایدبار ─── --}}
-        <div>
-            <div class="card">
-                <div class="card-title"><i class="fas fa-cog"></i> تنظیمات</div>
-
-                <div class="form-group">
-                    <label class="form-label">وضعیت</label>
-                    <div class="status-switch">
-                        <div class="status-opt">
-                            <input type="radio" name="status" id="st-draft" value="draft"
-                                   {{ old('status',$article->status)==='draft' ? 'checked' : '' }}>
-                            <label for="st-draft" class="draft-lbl"><i class="fas fa-save"></i> پیش‌نویس</label>
-                        </div>
-                        <div class="status-opt">
-                            <input type="radio" name="status" id="st-pub" value="published"
-                                   {{ old('status',$article->status)==='published' ? 'checked' : '' }}>
-                            <label for="st-pub" class="pub-lbl"><i class="fas fa-globe"></i> انتشار</label>
-                        </div>
-                        <div class="status-opt">
-                            <input type="radio" name="status" id="st-arch" value="archived"
-                                   {{ old('status',$article->status)==='archived' ? 'checked' : '' }}>
-                            <label for="st-arch" class="arch-lbl"><i class="fas fa-archive"></i> آرشیو</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">خدمت مرتبط</label>
-                    <select name="service_id" class="form-input">
-                        <option value="">بدون خدمت</option>
-                        @foreach($services as $service)
-                            <option value="{{ $service->id }}" @selected(old('service_id',$article->service_id)==$service->id)>
-                                {{ $service->title }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">دسته‌بندی</label>
-                    <input type="text" name="category" class="form-input"
-                           value="{{ old('category', $article->category) }}">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">تگ‌ها <span style="color:#aaa;font-weight:400;">(با ویرگول)</span></label>
-                    <input type="text" name="tags" class="form-input"
-                           value="{{ old('tags', $article->tags ? implode(', ', $article->tags) : '') }}">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">زمان مطالعه (دقیقه)</label>
-                    <input type="number" name="reading_time" class="form-input" min="1"
-                           value="{{ old('reading_time', $article->reading_time) }}">
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-title"><i class="fas fa-image"></i> تصویر شاخص</div>
-                @if($article->featured_image)
-                    <img src="{{ asset('assets/images/'.$article->featured_image) }}"
-                         alt="{{ $article->title }}" class="current-image">
-                    <p style="font-size:0.75rem;color:#888;margin-bottom:10px;">برای تغییر، تصویر جدید انتخاب کنید</p>
-                @endif
-                <input type="file" name="featured_image" class="form-input"
-                       accept="image/jpeg,image/png,image/webp" style="padding:8px;">
-            </div>
-
-            <div class="btn-row">
-                <button type="submit" class="btn-submit">
-                    <i class="fas fa-save"></i> ذخیره تغییرات
-                </button>
-                <a href="{{ route('lawyer.articles.show', $article) }}" class="btn-cancel">
-                    <i class="fas fa-times"></i>
+            <nav style="margin-bottom: 15px;">
+                <a href="{{ route('lawyer.articles.index') }}" style="color: var(--gold-dark); text-decoration: none; font-weight: 700; font-size: 0.9rem;">
+                    <i class="fas fa-arrow-right"></i> بازگشت به لیست مقالات
                 </a>
-            </div>
+            </nav>
+            <h2 style="font-weight: 900; color: var(--navy); font-size: 2.2rem; margin: 0;">
+                <i class="fas fa-pen-to-square" style="color: var(--gold-main); margin-left: 15px;"></i>
+                ویرایش مقاله حقوقی
+            </h2>
+        </div>
+        <div style="display: flex; gap: 15px;">
+            <a href="{{ route('lawyer.articles.show', $article) }}" target="_blank" style="padding: 12px 25px; border-radius: 10px; background: #fff; border: 1px solid var(--gold-main); color: var(--gold-main); text-decoration: none; font-weight: 700;">
+                <i class="fas fa-eye"></i> مشاهده در سایت
+            </a>
         </div>
     </div>
-</form>
+
+    <form action="{{ route('lawyer.articles.update', $article) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+        
+        <div class="article-grid">
+            
+            <div class="main-content-column">
+                <div class="card" style="border-right: 8px solid var(--navy) !important;">
+                    <div class="card-body">
+                        <div style="margin-bottom: 40px;">
+                            <label class="input-label">عنوان اصلی مقاله</label>
+                            <input type="text" name="title" class="lux-input" value="{{ old('title', $article->title) }}" required>
+                            @error('title') <small style="color: #ef4444; font-weight: 800; margin-top: 10px; display: block;">{{ $message }}</small> @enderror
+                        </div>
+
+                        <div style="margin-bottom: 40px;">
+                            <label class="input-label">خلاصه کوتاه (Excerpt)</label>
+                            <textarea name="excerpt" class="lux-input" rows="3" placeholder="مقدمه‌ای جذاب برای خواننده...">{{ old('excerpt', $article->excerpt) }}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="input-label">متن بدنه مقاله</label>
+                            <textarea name="content" class="lux-input content-area" placeholder="نوشتن را ادامه دهید...">{{ old('content', $article->content) }}</textarea>
+                            @error('content') <small style="color: #ef4444; font-weight: 800; margin-top: 10px; display: block;">{{ $message }}</small> @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-column">
+                
+                <div class="card" style="border-top: 8px solid var(--gold-main) !important;">
+                    <div class="card-title"><i class="fas fa-rocket"></i> وضعیت انتشار</div>
+                    <div class="card-body">
+                        <div style="margin-bottom: 25px;">
+                            <label class="input-label">وضعیت مقاله</label>
+                            <select name="status" class="lux-input">
+                                <option value="published" @selected($article->status == 'published')>منتشر شده</option>
+                                <option value="draft" @selected($article->status == 'draft')>پیش‌نویس</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 35px;">
+                            <label class="input-label">تاریخ انتشار (شمسی)</label>
+                            @php 
+                                $shamsiDate = \Morilog\Jalali\Jalalian::fromCarbon($article->published_at)->format('Y/m/d');
+                            @endphp
+                            <input type="text" class="lux-input persian-datepicker" 
+                                   data-pd-target="pub_date_hidden" 
+                                   value="{{ $shamsiDate }}">
+                            <input type="hidden" name="published_at" id="pub_date_hidden" value="{{ $article->published_at->format('Y-m-d') }}">
+                        </div>
+
+                        <button type="submit" class="btn-update">
+                            <i class="fas fa-save"></i> بروزرسانی نهایی
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-image"></i> تصویر شاخص</div>
+                    <div class="card-body" style="text-align: center;">
+                        <div class="current-thumb-box" id="thumbPreviewBox">
+                            @if($article->thumbnail)
+                                <img id="image_preview" src="{{ asset('storage/' . $article->thumbnail) }}">
+                            @else
+                                <div style="height: 150px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8;">بدون تصویر</div>
+                            @endif
+                        </div>
+                        
+                        <span class="change-img-btn" onclick="document.getElementById('thumbnail_input').click()">
+                            <i class="fas fa-camera"></i> تغییر عکس کاور
+                        </span>
+                        
+                        <input type="file" name="thumbnail" id="thumbnail_input" hidden accept="image/*" onchange="previewImage(this)">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-tags"></i> برچسب‌های سئو</div>
+                    <div class="card-body">
+                        @php
+                            $tagsValue = is_array($article->tags) ? implode(', ', $article->tags) : $article->tags;
+                        @endphp
+                        <input type="text" name="tags" class="lux-input" 
+                               value="{{ old('tags', $tagsValue) }}" 
+                               placeholder="مثلاً: حقوقی, کیفری, وکیل">
+                        <small style="color: #94a3b8; font-size: 0.8rem; margin-top: 12px; display: block;">تگ‌ها را با کاما جدا کنید.</small>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+@endsection
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var editor = document.getElementById('editor');
-    if (!editor) return;
-
-    var wordCountEl = document.getElementById('wordCount');
-
-    var actions = {
-        bold:  { wrap: ['**', '**'] },
-        italic:{ wrap: ['*', '*'] },
-        h2:    { line: '## ' },
-        h3:    { line: '### ' },
-        list:  { line: '- ' },
-        quote: { line: '> ' },
-    };
-
-    document.querySelectorAll('.tb-btn[data-action]').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var action = this.getAttribute('data-action');
-            var def = actions[action];
-            if (!def) return;
-
-            var start = editor.selectionStart;
-            var end   = editor.selectionEnd;
-            var val   = editor.value;
-            var sel   = val.substring(start, end);
-
-            if (def.wrap) {
-                var before = def.wrap[0], after = def.wrap[1];
-                editor.value = val.substring(0, start) + before + sel + after + val.substring(end);
-                editor.setSelectionRange(start + before.length, end + before.length);
-            } else if (def.line) {
-                var lineStart = val.lastIndexOf('\n', start - 1) + 1;
-                editor.value = val.substring(0, lineStart) + def.line + val.substring(lineStart);
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('image_preview');
+                if (img) {
+                    img.src = e.target.result;
+                } else {
+                    document.getElementById('thumbPreviewBox').innerHTML = `<img id="image_preview" src="${e.target.result}">`;
+                }
             }
-
-            editor.focus();
-            updateWordCount();
-        });
-    });
-
-    function updateWordCount() {
-        var text = editor.value.replace(/[#*`>~_\[\]()!\-]/g, '').trim();
-        var words = text ? text.split(/\s+/).length : 0;
-        if (wordCountEl) wordCountEl.textContent = words.toLocaleString('fa-IR') + ' کلمه';
+            reader.readAsDataURL(input.files[0]);
+        }
     }
-
-    editor.addEventListener('input', updateWordCount);
-    updateWordCount();
-});
 </script>
 @endpush
 
-@endsection

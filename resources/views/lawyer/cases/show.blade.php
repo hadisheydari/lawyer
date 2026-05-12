@@ -1,315 +1,340 @@
 @extends('layouts.lawyer')
-@section('title', 'پرونده: '.$case->case_number)
+@section('title', 'جزئیات پرونده: ' . $case->title)
 
 @push('styles')
 <style>
-    .back-link { display:inline-flex; align-items:center; gap:8px; color:var(--gold-dark); font-weight:600; font-size:0.9rem; text-decoration:none; margin-bottom:20px; }
-    .back-link:hover { color:var(--gold-main); }
+    /* --- استایل‌های اصلی صفحه --- */
+    .case-container { width: 100%; display: flex; flex-direction: column; gap: 25px; padding-bottom: 50px; }
+    .case-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 25px; align-items: start; }
+    
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; overflow: hidden; }
+    .card-header { padding: 20px 24px; background: #f8fafc; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+    .card-header h3 { font-size: 1.1rem; font-weight: 800; color: var(--navy); margin: 0; display: flex; align-items: center; gap: 10px; }
+    .card-body { padding: 24px; }
 
-    .case-header { background:linear-gradient(135deg,var(--navy),#1e3a5f); border-radius:16px; padding:28px 32px; color:#fff; margin-bottom:25px; display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
-    .case-header h2 { font-size:1.3rem; font-weight:900; margin:0 0 6px; }
-    .case-header .case-num { font-size:0.85rem; color:rgba(255,255,255,0.6); }
-    .header-actions { display:flex; gap:10px; flex-wrap:wrap; }
-    .btn-edit { padding:9px 18px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:9px; font-family:'Vazirmatn',sans-serif; font-weight:700; font-size:0.88rem; text-decoration:none; display:inline-flex; align-items:center; gap:7px; transition:0.2s; }
-    .btn-edit:hover { background:rgba(255,255,255,0.2); color:#fff; }
-    .badge { padding:5px 14px; border-radius:20px; font-size:0.78rem; font-weight:700; }
-    .badge-active  { background:rgba(16,185,129,0.2); color:#6ee7b7; border:1px solid rgba(16,185,129,0.3); }
-    .badge-on_hold { background:rgba(245,158,11,0.2); color:#fcd34d; border:1px solid rgba(245,158,11,0.3); }
-    .badge-closed, .badge-won, .badge-lost { background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.7); border:1px solid rgba(255,255,255,0.2); }
+    .info-item { margin-bottom: 15px; }
+    .info-label { color: #64748b; font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 5px; }
+    .info-value { color: var(--navy); font-weight: 800; font-size: 1rem; }
 
-    .grid-main { display:grid; grid-template-columns:1fr 320px; gap:25px; align-items:start; }
+    /* --- تایم‌لاین --- */
+    .timeline { position: relative; padding-right: 20px; border-right: 2px solid #e2e8f0; margin-top: 10px; }
+    .timeline-item { position: relative; margin-bottom: 25px; }
+    .timeline-item::before { content: ""; position: absolute; right: -27px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--gold-main); border: 3px solid #fff; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); }
+    .timeline-date { font-size: 0.75rem; color: #94a3b8; font-weight: 700; }
+    .timeline-title { font-weight: 800; color: var(--navy); font-size: 0.95rem; margin: 3px 0; }
+    .timeline-desc { font-size: 0.85rem; color: #64748b; line-height: 1.6; }
 
-    .card { background:#fff; border-radius:14px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:20px; }
-    .card-title { font-size:1rem; font-weight:800; color:var(--navy); margin-bottom:18px; padding-bottom:12px; border-bottom:2px solid #f5f0ea; display:flex; align-items:center; gap:8px; justify-content:space-between; }
-    .card-title .left { display:flex; align-items:center; gap:8px; }
-    .card-title i { color:var(--gold-main); }
+    /* --- بج‌ها و دکمه‌ها --- */
+    .badge { padding: 6px 14px; border-radius: 25px; font-size: 0.75rem; font-weight: 800; }
+    .badge-active { background: #d1fae5; color: #065f46; }
+    .badge-closed { background: #f1f5f9; color: #475569; }
+    
+    .btn-action { padding: 10px 18px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; border: none; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .btn-gold { background: var(--gold-main); color: #fff; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2); }
+    .btn-gold:hover { background: var(--gold-dark); transform: translateY(-2px); }
 
-    .info-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid #f5f5f5; font-size:0.88rem; }
-    .info-row:last-child { border-bottom:none; }
-    .info-label { color:#888; }
-    .info-value { font-weight:700; color:var(--navy); }
+    /* --- بخش مالی --- */
+    .financial-card { background: var(--navy-dark); color: #fff; }
+    .progress-bar { height: 10px; background: rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; margin-top: 10px; }
+    .progress-fill { height: 100%; background: var(--gold-main); box-shadow: 0 0 15px rgba(212,175,55,0.5); }
 
-    /* نوار پیشرفت مالی */
-    .finance-box { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px; }
-    .finance-item { text-align:center; padding:14px; background:#f8fafc; border-radius:10px; }
-    .finance-item .n { font-size:1.1rem; font-weight:900; color:var(--navy); display:block; }
-    .finance-item .l { font-size:0.75rem; color:#888; margin-top:3px; display:block; }
-    .progress-bar { height:8px; background:#f0f0f0; border-radius:10px; overflow:hidden; }
-    .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold-main),var(--gold-dark)); border-radius:10px; }
+    /* 🔴 استایل‌های مربوط به مودال (پنجره پاپ‌آپ) 🔴 */
+    .custom-modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 9999; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    }
+    .custom-modal-overlay.active { opacity: 1; visibility: visible; }
+    
+    .custom-modal {
+        background: #fff; width: 90%; max-width: 600px; border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1); transform: translateY(30px);
+        transition: all 0.3s ease; max-height: 90vh; overflow-y: auto;
+    }
+    .custom-modal-overlay.active .custom-modal { transform: translateY(0); }
+    
+    .modal-head { padding: 20px 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fdfbf7; border-radius: 20px 20px 0 0; }
+    .modal-head h3 { margin: 0; font-size: 1.1rem; font-weight: 900; color: var(--navy); }
+    .close-modal { background: none; border: none; font-size: 1.2rem; color: #94a3b8; cursor: pointer; transition: 0.2s; }
+    .close-modal:hover { color: #ef4444; }
+    
+    .modal-body { padding: 25px; }
+    
+    /* استایل اینپوت‌های داخل مودال */
+    .lux-input { width: 100% !important; padding: 12px 16px !important; border: 2px solid #e2e8f0 !important; border-radius: 10px !important; background-color: #f8fafc !important; font-family: 'Vazirmatn', sans-serif !important; font-size: 0.9rem !important; outline: none !important; transition: 0.3s !important; }
+    .lux-input:focus { background-color: #fff !important; border-color: var(--gold-main) !important; box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1) !important; }
+    .input-label { display: block; font-size: 0.85rem; font-weight: 800; color: #475569; margin-bottom: 8px; }
 
-    /* لاگ وضعیت */
-    .timeline { position:relative; padding-right:24px; }
-    .timeline::before { content:''; position:absolute; right:8px; top:0; bottom:0; width:2px; background:#f0f0f0; }
-    .tl-item { position:relative; margin-bottom:22px; }
-    .tl-dot { position:absolute; right:-24px; top:4px; width:16px; height:16px; border-radius:50%; background:var(--gold-main); border:3px solid #fff; box-shadow:0 0 0 2px rgba(197,160,89,0.3); }
-    .tl-date { font-size:0.75rem; color:#888; margin-bottom:4px; }
-    .tl-title { font-size:0.95rem; font-weight:800; color:var(--navy); margin-bottom:5px; }
-    .tl-body { font-size:0.85rem; color:#666; line-height:1.7; }
-    .tl-docs { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-    .tl-doc { display:inline-flex; align-items:center; gap:6px; background:#f8fafc; border:1px solid #e0e0e0; border-radius:8px; padding:5px 10px; font-size:0.78rem; color:var(--navy); text-decoration:none; }
-    .tl-doc:hover { border-color:var(--gold-main); }
-
-    /* اقساط */
-    .inst-table { width:100%; border-collapse:collapse; }
-    .inst-table th { background:#f8fafc; padding:10px 14px; text-align:right; font-size:0.8rem; color:#64748b; font-weight:700; border-bottom:1px solid #f0f0f0; }
-    .inst-table td { padding:11px 14px; border-bottom:1px solid #f8f8f8; font-size:0.85rem; }
-    .inst-table tr:last-child td { border-bottom:none; }
-    .badge-paid    { background:#d1fae5; color:#065f46; padding:3px 10px; border-radius:20px; font-size:0.72rem; font-weight:700; }
-    .badge-pending { background:#fef3c7; color:#b45309; padding:3px 10px; border-radius:20px; font-size:0.72rem; font-weight:700; }
-    .badge-overdue { background:#fee2e2; color:#b91c1c; padding:3px 10px; border-radius:20px; font-size:0.72rem; font-weight:700; }
-
-    /* فرم ثبت وضعیت */
-    .form-group { margin-bottom:16px; }
-    .form-label { display:block; margin-bottom:7px; font-size:0.85rem; color:var(--navy); font-weight:600; }
-    .form-input { width:100%; padding:10px 14px; border:1.5px solid #e0e0e0; border-radius:9px; font-family:'Vazirmatn',sans-serif; font-size:0.9rem; outline:none; transition:0.2s; }
-    .form-input:focus { border-color:var(--gold-main); }
-    .btn-submit { padding:11px 22px; background:var(--navy); color:#fff; border:none; border-radius:9px; font-family:'Vazirmatn',sans-serif; font-weight:700; font-size:0.88rem; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:0.2s; }
-    .btn-submit:hover { background:var(--gold-main); color:var(--navy); }
-    .btn-add-inst { padding:8px 16px; background:rgba(197,160,89,0.1); border:1.5px solid var(--gold-main); color:var(--gold-dark); border-radius:8px; font-family:'Vazirmatn',sans-serif; font-weight:700; font-size:0.83rem; cursor:pointer; }
-
-    /* سایدبار */
-    .client-box { background:linear-gradient(135deg,var(--navy),#1e3a5f); border-radius:14px; padding:22px; color:#fff; text-align:center; margin-bottom:18px; }
-    .client-avatar { width:58px; height:58px; border-radius:50%; background:rgba(212,175,55,0.2); border:2px solid rgba(212,175,55,0.5); display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:900; color:var(--gold-main); margin:0 auto 10px; }
-    .client-box h4 { font-size:1rem; font-weight:800; margin-bottom:4px; }
-    .client-box p { color:rgba(255,255,255,0.6); font-size:0.8rem; }
-    .btn-client-link { display:block; margin-top:12px; padding:9px; background:rgba(255,255,255,0.08); border-radius:8px; color:#fff; text-decoration:none; font-size:0.82rem; font-weight:600; transition:0.2s; }
-    .btn-client-link:hover { background:rgba(255,255,255,0.15); color:#fff; }
-
-    @media(max-width:960px) { .grid-main { grid-template-columns:1fr; } .finance-box { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width: 1200px) { .case-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 768px) { .case-grid { grid-template-columns: 1fr; } .header-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } }
 </style>
 @endpush
 
 @section('content')
-
-<a href="{{ route('lawyer.cases.index') }}" class="back-link">
-    <i class="fas fa-arrow-right"></i> بازگشت به پرونده‌ها
-</a>
-
-@php
-    $statusLabel = ['active'=>'فعال','on_hold'=>'معلق','closed'=>'بسته','won'=>'برنده','lost'=>'بازنده'][$case->current_status] ?? $case->current_status;
-@endphp
-
-<div class="case-header">
-    <div>
-        <div class="case-num"># {{ $case->case_number }}</div>
-        <h2>{{ $case->title }}</h2>
-        <span class="badge badge-{{ $case->current_status }}">{{ $statusLabel }}</span>
-    </div>
-    <div class="header-actions">
-        <a href="{{ route('lawyer.cases.edit', $case) }}" class="btn-edit">
-            <i class="fas fa-edit"></i> ویرایش پرونده
-        </a>
-    </div>
-</div>
-
-<div class="grid-main">
-
-    {{-- ستون اصلی --}}
-    <div>
-        {{-- اطلاعات مالی --}}
-        <div class="card">
-            <div class="card-title"><span class="left"><i class="fas fa-wallet"></i> اطلاعات مالی</span></div>
-            <div class="finance-box">
-                <div class="finance-item">
-                    <span class="n">{{ number_format($case->total_fee) }}</span>
-                    <span class="l">کل حق‌الوکاله (ت)</span>
-                </div>
-                <div class="finance-item" style="background:#d1fae5;">
-                    <span class="n" style="color:#065f46;">{{ number_format($case->paid_amount) }}</span>
-                    <span class="l">پرداخت‌شده (ت)</span>
-                </div>
-                <div class="finance-item" style="background:#fef3c7;">
-                    <span class="n" style="color:#b45309;">{{ number_format($case->remaining_fee) }}</span>
-                    <span class="l">باقی‌مانده (ت)</span>
+<div class="case-container">
+    
+    <div class="card" style="border-right: 5px solid var(--gold-main);">
+        <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <span class="info-label">پرونده کلاسه: {{ $case->case_number }}</span>
+                <h2 style="margin: 5px 0; font-weight: 900; color: var(--navy);">{{ $case->title }}</h2>
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 8px;">
+                    <span class="badge {{ $case->current_status == 'active' ? 'badge-active' : 'badge-closed' }}">
+                        {{ $case->current_status == 'active' ? 'در جریان' : 'مختومه' }}
+                    </span>
+                    <span style="color: #94a3b8; font-size: 0.85rem;"><i class="far fa-calendar-alt"></i> تشکیل: {{ \Morilog\Jalali\Jalalian::fromCarbon($case->opened_at)->format('Y/m/d') }}</span>
                 </div>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width:{{ $case->progress_percent }}%;"></div>
+            <div class="header-actions">
+                <a href="{{ route('lawyer.cases.edit', $case) }}" class="btn-action btn-gold">
+                    <i class="fas fa-edit"></i> ویرایش پرونده
+                </a>
+                <a href="{{ route('lawyer.cases.index') }}" class="btn-action" style="background: #f1f5f9; color: #64748b;">
+                    <i class="fas fa-arrow-left"></i> لیست پرونده‌ها
+                </a>
             </div>
-            <div style="font-size:0.78rem;color:#888;margin-top:4px;text-align:left;">{{ $case->progress_percent }}٪ پرداخت شده</div>
         </div>
+    </div>
 
-        {{-- نوار پیشرفت پرونده --}}
-        <div class="card">
-            <div class="card-title">
-                <span class="left"><i class="fas fa-history"></i> تاریخچه پرونده</span>
+    <div class="case-grid">
+        
+        <div class="column">
+            <div class="card info-item">
+                <div class="card-header"><h3><i class="fas fa-user-tie"></i> مشخصات موکل</h3></div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div><span class="info-label">نام موکل:</span><span class="info-value">{{ $case->user->name ?? 'نامشخص' }}</span></div>
+                        <div><span class="info-label">تلفن تماس:</span><span class="info-value">{{ $case->user->phone ?? '---' }}</span></div>
+                    </div>
+                </div>
             </div>
-            @if($case->statusLogs->isNotEmpty())
-                <div class="timeline">
-                    @foreach($case->statusLogs as $log)
-                        <div class="tl-item">
-                            <div class="tl-dot"></div>
-                            <div class="tl-date">{{ \Morilog\Jalali\Jalalian::fromCarbon($log->status_date)->format('Y/m/d') }}</div>
-                            <div class="tl-title">{{ $log->status_title }}</div>
-                            @if($log->description)
-                                <div class="tl-body">{{ $log->description }}</div>
-                            @endif
-                            @if($log->documents->isNotEmpty())
-                                <div class="tl-docs">
+
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-history"></i> روند پرونده</h3>
+                    <button type="button" class="btn-action btn-gold" onclick="openModal('statusModal')" style="padding: 6px 12px; font-size: 0.75rem;">
+                        <i class="fas fa-plus"></i> ثبت روند
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        @forelse($case->statusLogs as $log)
+                        <div class="timeline-item">
+                            <span class="timeline-date">{{ \Morilog\Jalali\Jalalian::fromCarbon($log->status_date)->format('Y/m/d') }}</span>
+                            <div class="timeline-title">{{ $log->status_title }}</div>
+                            <p class="timeline-desc">{{ $log->description }}</p>
+                            @if($log->documents->count() > 0)
+                                <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px;">
                                     @foreach($log->documents as $doc)
-                                        <a href="{{ asset('storage/'.$doc->file_path) }}" target="_blank" class="tl-doc">
-                                            <i class="fas fa-file"></i> {{ $doc->title }}
-                                        </a>
+                                        <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" title="{{ $doc->title }}" style="font-size: 0.7rem; color: #3b82f6; background: #eff6ff; padding: 3px 8px; border-radius: 5px; text-decoration: none;"><i class="fas fa-paperclip"></i> ضمیمه</a>
                                     @endforeach
                                 </div>
                             @endif
                         </div>
-                    @endforeach
+                        @empty
+                        <p style="text-align: center; color: #94a3b8; font-size: 0.85rem;">هنوز هیچ روندی ثبت نشده است.</p>
+                        @endforelse
+                    </div>
                 </div>
-            @else
-                <p style="color:#aaa;text-align:center;padding:20px 0;">هنوز وضعیتی ثبت نشده است.</p>
-            @endif
-
-            {{-- فرم ثبت وضعیت جدید --}}
-            <div style="border-top:2px solid #f5f0ea;margin-top:20px;padding-top:20px;">
-                <div style="font-size:0.92rem;font-weight:800;color:var(--navy);margin-bottom:16px;">
-                    <i class="fas fa-plus-circle" style="color:var(--gold-main);margin-left:6px;"></i>ثبت وضعیت جدید
-                </div>
-                <form method="POST" action="{{ route('lawyer.cases.status-log', $case) }}" enctype="multipart/form-data">
-                    @csrf
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-                        <div class="form-group">
-                            <label class="form-label">عنوان وضعیت</label>
-                            <input type="text" name="status_title" class="form-input" placeholder="مثال: تقدیم دادخواست" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">تاریخ</label>
-                            <input type="date" name="status_date" class="form-input" required value="{{ date('Y-m-d') }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">توضیح (نمایش به موکل)</label>
-                        <textarea name="description" class="form-input" rows="3" placeholder="توضیح کوتاه از آنچه اتفاق افتاد..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">یادداشت خصوصی (فقط برای شما)</label>
-                        <textarea name="private_notes" class="form-input" rows="2" placeholder="یادداشت محرمانه..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">اسناد ضمیمه</label>
-                        <input type="file" name="documents[]" class="form-input" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
-                    </div>
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-plus"></i> ثبت وضعیت
-                    </button>
-                </form>
             </div>
         </div>
 
-        {{-- اقساط --}}
-        <div class="card">
-            <div class="card-title">
-                <span class="left"><i class="fas fa-money-bill-wave"></i> اقساط پرونده</span>
-            </div>
-            @if($case->installments->isNotEmpty())
-                <table class="inst-table">
-                    <thead>
-                        <tr>
-                            <th>شماره</th>
-                            <th>مبلغ (ت)</th>
-                            <th>سررسید</th>
-                            <th>وضعیت</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($case->installments as $inst)
-                            <tr>
-                                <td>{{ $inst->installment_number }}</td>
-                                <td style="font-weight:700;">{{ number_format($inst->amount) }}</td>
-                                <td>{{ \Morilog\Jalali\Jalalian::fromCarbon($inst->due_date)->format('Y/m/d') }}</td>
-                                <td>
-                                    @if($inst->status === 'paid')
-                                        <span class="badge-paid">پرداخت‌شده</span>
-                                    @elseif($inst->isOverdue())
-                                        <span class="badge-overdue">سررسید گذشته</span>
-                                    @else
-                                        <span class="badge-pending">در انتظار</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @else
-                <p style="color:#aaa;text-align:center;padding:20px 0;">هنوز قسطی ثبت نشده.</p>
-            @endif
-
-            {{-- فرم ثبت اقساط --}}
-            <div style="border-top:2px solid #f5f0ea;margin-top:20px;padding-top:20px;">
-                <div style="font-size:0.92rem;font-weight:800;color:var(--navy);margin-bottom:16px;">
-                    <i class="fas fa-plus-circle" style="color:var(--gold-main);margin-left:6px;"></i>تعریف جدول اقساط
-                </div>
-                <form method="POST" action="{{ route('lawyer.cases.installments', $case) }}">
-                    @csrf
-                    <div id="installmentRows">
-                        <div class="inst-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-                            <input type="number" name="installments[0][amount]" class="form-input" placeholder="مبلغ (تومان)" min="1000" required>
-                            <input type="date" name="installments[0][due_date]" class="form-input" required>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-add-inst" onclick="addRow()">
-                        <i class="fas fa-plus"></i> افزودن قسط
-                    </button>
-                    <button type="submit" class="btn-submit" style="margin-right:10px;">
-                        <i class="fas fa-save"></i> ذخیره اقساط
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {{-- سایدبار --}}
-    <div>
-        {{-- موکل --}}
-        <div class="client-box">
-            <div class="client-avatar">{{ mb_substr($case->user->name ?? 'م', 0, 1) }}</div>
-            <h4>{{ $case->user->name ?? 'موکل' }}</h4>
-            <p>{{ $case->user->phone ?? '' }}</p>
-            @if($case->user)
-                <a href="{{ route('lawyer.clients.show', $case->user) }}" class="btn-client-link">
-                    <i class="fas fa-user-tie"></i> پروفایل موکل
-                </a>
-            @endif
-        </div>
-
-        {{-- اطلاعات پرونده --}}
-        <div class="card">
-            <div class="card-title"><span class="left"><i class="fas fa-info-circle"></i> اطلاعات</span></div>
-            <div class="info-row"><span class="info-label">خدمت</span><span class="info-value">{{ $case->service->title ?? '—' }}</span></div>
-            <div class="info-row"><span class="info-label">تاریخ افتتاح</span><span class="info-value">{{ \Morilog\Jalali\Jalalian::fromCarbon($case->opened_at ?? $case->created_at)->format('Y/m/d') }}</span></div>
-            @if($case->closed_at)
-                <div class="info-row"><span class="info-label">تاریخ بستن</span><span class="info-value">{{ \Morilog\Jalali\Jalalian::fromCarbon($case->closed_at)->format('Y/m/d') }}</span></div>
-            @endif
-        </div>
-
-        {{-- چت --}}
-        @if($case->conversation)
+        <div class="column">
             <div class="card">
-                <div class="card-title"><span class="left"><i class="fas fa-comments"></i> چت پرونده</span></div>
-                <a href="{{ route('lawyer.chat.show', $case->conversation->id) }}"
-                   style="display:block;text-align:center;padding:12px;background:var(--navy);color:#fff;border-radius:9px;font-weight:700;font-size:0.88rem;text-decoration:none;">
-                    <i class="fas fa-comment-dots"></i> مشاهده گفتگو
-                </a>
+                <div class="card-header">
+                    <h3><i class="fas fa-wallet"></i> اقساط مالی</h3>
+                    <button type="button" class="btn-action btn-gold" onclick="openModal('installmentModal')" style="padding: 6px 12px; font-size: 0.75rem;">
+                        <i class="fas fa-plus"></i> ثبت اقساط
+                    </button>
+                </div>
+                <div class="card-body">
+                    @forelse($case->installments as $inst)
+                    <div style="background: #f8fafc; border-radius: 12px; padding: 15px; margin-bottom: 12px; border: 1px solid #edf2f7;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-weight: 800; color: var(--navy);">{{ number_format($inst->amount) }} تومان</span>
+                            @if($inst->status == 'paid')
+                                <span class="badge badge-active" style="font-size: 0.65rem;">پرداخت شده</span>
+                            @else
+                                <span class="badge" style="background: #fef3c7; color: #92400e; font-size: 0.65rem;">در انتظار</span>
+                            @endif
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.75rem; color: #94a3b8;">سررسید: {{ \Morilog\Jalali\Jalalian::fromCarbon($inst->due_date)->format('%d %B %Y') }}</span>
+                            @if($inst->status != 'paid')
+                                <form action="{{ route('lawyer.payments.installment.mark-paid', $inst->id) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="paid_at" value="{{ now()->format('Y-m-d H:i:s') }}">
+                                    <button type="submit" style="background: none; border: 1px solid var(--gold-main); color: var(--gold-main); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; font-weight: bold; transition: 0.3s;" onmouseover="this.style.background='var(--gold-main)'; this.style.color='#fff';" onmouseout="this.style.background='none'; this.style.color='var(--gold-main)';">تأیید وصول</button>
+                                </form>
+                            @endif
+                        </div>
+                    </div>
+                    @empty
+                    <p style="text-align: center; color: #94a3b8; font-size: 0.85rem;">قسطی ثبت نشده است.</p>
+                    @endforelse
+                </div>
             </div>
-        @endif
+        </div>
+
+        <div class="column" style="display: flex; flex-direction: column; gap: 25px;">
+            <div class="card financial-card">
+                <div class="card-body">
+                    <h3 style="color: var(--gold-main); font-size: 1rem; margin-bottom: 20px;"><i class="fas fa-coins"></i> تراز مالی پرونده</h3>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: #94a3b8;">حق‌الوکاله کل:</span>
+                            <span style="font-weight: 800;">{{ number_format($case->total_fee) }}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: #94a3b8;">دریافتی تا کنون:</span>
+                            <span style="font-weight: 800; color: #10b981;">{{ number_format($case->paid_amount) }}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+                            <span style="color: #f87171;">مانده طلب:</span>
+                            <span style="font-weight: 800; color: #f87171;">{{ number_format($case->remaining_fee) }}</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 25px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--gold-main); font-weight: bold;">
+                            <span>پیشرفت مالی</span>
+                            <span>{{ $case->total_fee > 0 ? round(($case->paid_amount / $case->total_fee) * 100) : 0 }}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ $case->total_fee > 0 ? ($case->paid_amount / $case->total_fee) * 100 : 0 }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-@push('scripts')
-<script>
-let rowCount = 1;
-function addRow() {
-    const div = document.createElement('div');
-    div.className = 'inst-row';
-    div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;';
-    div.innerHTML = `
-        <input type="number" name="installments[${rowCount}][amount]" class="form-input" placeholder="مبلغ (تومان)" min="1000" required style="padding:10px 14px;border:1.5px solid #e0e0e0;border-radius:9px;font-family:'Vazirmatn',sans-serif;font-size:0.9rem;outline:none;">
-        <input type="date" name="installments[${rowCount}][due_date]" class="form-input" required style="padding:10px 14px;border:1.5px solid #e0e0e0;border-radius:9px;font-family:'Vazirmatn',sans-serif;font-size:0.9rem;outline:none;">
-    `;
-    document.getElementById('installmentRows').appendChild(div);
-    rowCount++;
-}
-</script>
-@endpush
+<div class="custom-modal-overlay" id="statusModal">
+    <div class="custom-modal">
+        <div class="modal-head">
+            <h3><i class="fas fa-plus-circle" style="color: var(--gold-main);"></i> ثبت روند جدید پرونده</h3>
+            <button class="close-modal" onclick="closeModal('statusModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <form action="{{ route('lawyer.cases.status-log', $case->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-body">
+                <div style="margin-bottom: 15px;">
+                    <label class="input-label">عنوان وضعیت (مثال: ابلاغیه جدید، جلسه دادگاه)</label>
+                    <input type="text" name="status_title" class="lux-input" required>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label class="input-label">تاریخ روند (شمسی)</label>
+                    <input type="text" class="lux-input persian-datepicker" data-pd-target="status_date_hidden" required>
+                    <input type="hidden" name="status_date" id="status_date_hidden">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label class="input-label">توضیحات (قابل مشاهده برای موکل)</label>
+                    <textarea name="description" class="lux-input" rows="3"></textarea>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label class="input-label">یادداشت محرمانه (فقط برای خودتان)</label>
+                    <textarea name="private_notes" class="lux-input" rows="2" style="background: #fffbeb !important; border-color: #fde68a !important;"></textarea>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label class="input-label">ضمیمه اسناد (اختیاری)</label>
+                    <input type="file" name="documents[]" class="lux-input" multiple accept=".pdf,.jpg,.png,.doc,.docx" style="padding: 8px !important;">
+                </div>
+
+                <button type="submit" class="btn-action btn-gold" style="width: 100%; justify-content: center; padding: 12px; font-size: 1rem;">ثبت روند در پرونده</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="custom-modal-overlay" id="installmentModal">
+    <div class="custom-modal" style="max-width: 800px;">
+        <div class="modal-head">
+            <h3><i class="fas fa-coins" style="color: var(--gold-main);"></i> زمان‌بندی اقساط جدید</h3>
+            <button class="close-modal" onclick="closeModal('installmentModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <form action="{{ route('lawyer.cases.installments', $case->id) }}" method="POST">
+            @csrf
+            <div class="modal-body">
+                <div style="background: #fee2e2; color: #991b1b; padding: 10px 15px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-bottom: 20px;">
+                    <i class="fas fa-exclamation-triangle"></i> توجه: با ثبت اقساط جدید، تمام اقساط قبلی که پرداخت نشده‌اند حذف خواهند شد.
+                </div>
+
+                <div id="installments_container">
+                    <div class="inst-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 15px; align-items: end; background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <div>
+                            <label class="input-label" style="font-size:0.8rem;">مبلغ قسط (تومان)</label>
+                            <input type="number" name="installments[0][amount]" class="lux-input" style="padding: 10px !important;" required>
+                        </div>
+                        <div>
+                            <label class="input-label" style="font-size:0.8rem;">تاریخ سررسید</label>
+                            <input type="text" class="lux-input persian-datepicker" data-pd-target="inst_date_0" style="padding: 10px !important;" required>
+                            <input type="hidden" name="installments[0][due_date]" id="inst_date_0">
+                        </div>
+                        <div>
+                            <label class="input-label" style="font-size:0.8rem;">بابت (اختیاری)</label>
+                            <input type="text" name="installments[0][notes]" class="lux-input" style="padding: 10px !important;" placeholder="مثال: پیش‌پرداخت">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 25px; text-align: left;">
+                    <button type="button" onclick="addInstRow()" style="background: #e0e7ff; color: #3730a3; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 0.8rem; cursor: pointer;">
+                        + افزودن قسط بعدی
+                    </button>
+                </div>
+
+                <button type="submit" class="btn-action btn-gold" style="width: 100%; justify-content: center; padding: 12px; font-size: 1rem;">ذخیره و ثبت اقساط</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 @endsection
+
+@push('scripts')
+<script>
+    // کنترل باز و بسته شدن مودال‌ها
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    // اضافه کردن ردیف جدید برای قسط
+    let instIdx = 0;
+    function addInstRow() {
+        instIdx++;
+        const container = document.getElementById('installments_container');
+        const html = `
+            <div class="inst-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 15px; align-items: end; background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                <div>
+                    <label class="input-label" style="font-size:0.8rem;">مبلغ قسط (تومان)</label>
+                    <input type="number" name="installments[${instIdx}][amount]" class="lux-input" style="padding: 10px !important;" required>
+                </div>
+                <div>
+                    <label class="input-label" style="font-size:0.8rem;">تاریخ سررسید</label>
+                    <input type="text" class="lux-input persian-datepicker" data-pd-target="inst_date_${instIdx}" style="padding: 10px !important;" required>
+                    <input type="hidden" name="installments[${instIdx}][due_date]" id="inst_date_${instIdx}">
+                </div>
+                <div>
+                    <label class="input-label" style="font-size:0.8rem;">بابت (اختیاری)</label>
+                    <input type="text" name="installments[${instIdx}][notes]" class="lux-input" style="padding: 10px !important;">
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" style="background: #ef4444; color: #fff; border: none; padding: 10px; border-radius: 8px; cursor: pointer;"><i class="fas fa-trash"></i></button>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+        
+        // فراخوانی مجدد لودر تاریخ شمسی برای اینپوت‌های جدید ساخته شده
+        if(typeof jalaliDatepicker !== 'undefined') {
+            jalaliDatepicker.start();
+        }
+    }
+</script>
+@endpush
