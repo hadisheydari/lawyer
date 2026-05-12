@@ -95,9 +95,26 @@
                 برای بررسی دقیق‌تر پرونده و اعلام هزینه نهایی، نیاز به مشاوره اولیه داریم.
             </p>
             
-            <a href="{{ route('reserve.index') }}?service_id={{ $service->id }}" class="btn-reserve">
-                <i class="fas fa-calendar-check"></i> رزرو وقت مشاوره
-            </a>
+                <div class="reserve-box">
+                    <h2><i class="fas fa-calendar-check"></i> رزرو نوبت مشاوره</h2>
+                    <p>برای دریافت وقت مشاوره حضوری یا آنلاین، وکیل مورد نظر خود را انتخاب کرده و به صفحه رزرو هدایت شوید.
+                    </p>
+
+                    {{-- فرم با متد GET به صفحه رزرو --}}
+                    <form action="{{ route('reserve.index') }}" method="GET" class="reserve-form">
+                        {{-- <div class="input-box"> --}}
+                            <i class="fas fa-user-tie"></i>
+                            <select class="premium-select" name="lawyer" required>
+                                <option value="" disabled selected>انتخاب وکیل متخصص...</option>
+                                <option value="babak-abdali">دکتر بابک ابدالی (دعاوی ملکی و تجاری)</option>
+                                <option value="zahra-jooshghani">سرکار خانم زهرا جوشقانی (دعاوی خانواده)</option>
+                            </select>
+                        {{-- </div> --}}
+                        <button type="submit" class="btn-reserve">
+                            شروع فرآیند رزرو <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </form>
+                </div>
         </div>
 
         <div class="price-card" style="border-top-color: var(--navy); background: var(--navy); color: #fff; text-align: right;">

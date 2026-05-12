@@ -384,7 +384,7 @@
         <div class="services-grid">
             @forelse($services as $service)
                 <a href="{{ route('services.show', $service->slug) }}" class="service-card">
-                    <img src="{{ $service->image ? asset('storage/'.$service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70' }}"
+                    <img src="{{ $service->image ? asset('assets/images/'.$service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70' }}"
                          alt="{{ $service->title }}" loading="lazy"
                          onerror="this.src='https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70'">
                     <div class="service-content">

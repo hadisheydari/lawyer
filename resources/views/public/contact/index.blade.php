@@ -671,7 +671,7 @@
                             <select class="premium-select" name="lawyer" required>
                                 <option value="" disabled selected>انتخاب وکیل متخصص...</option>
                                 <option value="babak-abdali">دکتر بابک ابدالی (دعاوی ملکی و تجاری)</option>
-                                <option value="zahra-joshaghani">سرکار خانم زهرا جوشقانی (دعاوی خانواده)</option>
+                                <option value="zahra-jooshghani">سرکار خانم زهرا جوشقانی (دعاوی خانواده)</option>
                             </select>
                         </div>
                         <button type="submit" class="btn-reserve">

@@ -196,11 +196,11 @@ class AuthController extends Controller
         }
 
         try {
-            // Http::timeout(10)->get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
-            //     'receptor' => $phone,
-            //     'token'    => $code,
-            //     'template' => 'verify',
-            // ]);
+            Http::timeout(10)->get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
+                'receptor' => $phone,
+                'token'    => $code,
+                'template' => 'verify',
+            ]);
         } catch (\Exception $e) {
             Log::error("SMS send failed for {$phone}: " . $e->getMessage());
         }

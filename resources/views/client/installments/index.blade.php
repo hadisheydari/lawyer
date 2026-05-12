@@ -26,7 +26,6 @@
     .filter-tab { padding: 7px 18px; border-radius: 20px; border: 1.5px solid #e0e0e0; background: #fff; font-family: 'Vazirmatn', sans-serif; font-size: 0.84rem; font-weight: 600; color: #888; cursor: pointer; text-decoration: none; transition: 0.2s; }
     .filter-tab:hover, .filter-tab.active { border-color: var(--navy); background: var(--navy); color: #fff; }
 
-    /* next installment banner */
     .next-inst-banner {
         background: linear-gradient(135deg, var(--navy), #1e3a5f);
         border-radius: 12px; padding: 20px 24px; color: #fff; margin-bottom: 20px;
@@ -35,7 +34,8 @@
     .next-inst-info h4 { font-size: 1rem; font-weight: 800; margin: 0 0 5px; }
     .next-inst-info p { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin: 0; }
     .next-inst-amount { font-size: 1.4rem; font-weight: 900; color: var(--gold-main); }
-    .btn-pay-big { padding: 11px 24px; background: var(--gold-main); color: #fff; border-radius: 10px; font-weight: 700; font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: 0.2s; white-space: nowrap; }
+    
+    .btn-pay-big { padding: 11px 24px; background: var(--gold-main); color: #fff; border-radius: 10px; font-weight: 700; font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: 0.2s; white-space: nowrap; border: none; cursor: pointer; font-family: inherit; }
     .btn-pay-big:hover { background: var(--gold-dark); color: #fff; }
 
     .inst-list { display: flex; flex-direction: column; gap: 14px; }
@@ -72,7 +72,7 @@
     .badge-pending { background: #fef3c7; color: #b45309; }
     .badge-overdue { background: #fee2e2; color: #b91c1c; }
 
-    .btn-pay { padding: 7px 16px; background: var(--gold-main); color: #fff; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; white-space: nowrap; }
+    .btn-pay { padding: 7px 16px; background: var(--gold-main); color: #fff; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; white-space: nowrap; border: none; cursor: pointer; font-family: inherit; }
     .btn-pay:hover { background: var(--gold-dark); color: #fff; }
     .btn-pay.urgent { background: #dc2626; }
     .btn-pay.urgent:hover { background: #b91c1c; }
@@ -133,9 +133,14 @@
                 </p>
             </div>
             <div class="next-inst-amount">{{ number_format($nxt->amount) }} ت</div>
-            <a href="{{ route('client.installments.pay', $nxt) }}" class="btn-pay-big">
-                <i class="fas fa-credit-card"></i> پرداخت آنلاین
-            </a>
+            
+            <form action="{{ route('client.installments.pay', $nxt) }}" method="POST" style="margin: 0;">
+                @csrf
+                <button type="submit" class="btn-pay-big">
+                    <i class="fas fa-credit-card"></i> پرداخت آنلاین
+                </button>
+            </form>
+            
         </div>
     @endif
 
@@ -178,14 +183,20 @@
                         <span class="badge badge-paid">پرداخت‌شده</span>
                     @elseif($isOverdue)
                         <span class="badge badge-overdue">سررسیدگذشته</span>
-                        <a href="{{ route('client.installments.pay', $inst) }}" class="btn-pay urgent">
-                            <i class="fas fa-credit-card"></i> پرداخت فوری
-                        </a>
+                        <form action="{{ route('client.installments.pay', $inst) }}" method="POST" style="margin: 0;">
+                            @csrf
+                            <button type="submit" class="btn-pay urgent">
+                                <i class="fas fa-credit-card"></i> پرداخت فوری
+                            </button>
+                        </form>
                     @else
                         <span class="badge badge-pending">در انتظار</span>
-                        <a href="{{ route('client.installments.pay', $inst) }}" class="btn-pay">
-                            <i class="fas fa-credit-card"></i> پرداخت
-                        </a>
+                        <form action="{{ route('client.installments.pay', $inst) }}" method="POST" style="margin: 0;">
+                            @csrf
+                            <button type="submit" class="btn-pay">
+                                <i class="fas fa-credit-card"></i> پرداخت
+                            </button>
+                        </form>
                     @endif
                 </div>
             </div>
