@@ -68,12 +68,12 @@ class ArticleController extends Controller
             ->get();
 
         // ─── ری‌اکشن‌های جمع‌بندی شده ──────────────────────
+// ─── ری‌اکشن‌های جمع‌بندی شده ──────────────────────
         $reactionCounts = $article->reactions()
-            ->Raw('type, count(*) as total')
+            ->selectRaw('type, count(*) as total') // ✅ کد اصلاح شده
             ->groupBy('type')
             ->pluck('total', 'type')
             ->toArray();
-
         foreach (ArticleReaction::TYPES as $type => $label) {
             if (! isset($reactionCounts[$type])) {
                 $reactionCounts[$type] = 0;
