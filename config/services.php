@@ -43,5 +43,9 @@ return [
         'merchant_id' => env('ZARINPAL_MERCHANT_ID'),
         'sandbox' => env('ZARINPAL_SANDBOX', true),
     ],
+    'smsir' => [
+        'api_key' => env('SMSIR_API_KEY'),
+        'template_id' => env('SMSIR_TEMPLATE_ID'),
+    ],
 
 ];

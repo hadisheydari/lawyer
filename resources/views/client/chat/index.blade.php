@@ -142,6 +142,18 @@
             background: var(--gold-main);
             border-radius: 4px 0 0 4px;
         }
+        
+        .new-chat-btn {
+            background: rgba(197, 160, 89, 0.1);
+            border-color: var(--gold-main);
+            color: var(--gold-main);
+            justify-content: center;
+            font-weight: bold;
+        }
+        .new-chat-btn:hover {
+            background: rgba(197, 160, 89, 0.2);
+            color: #fff;
+        }
 
         .case-avatar {
             width: 48px;
@@ -479,6 +491,7 @@
             justify-content: center;
             color: var(--text-muted);
             gap: 15px;
+            padding: 20px;
         }
 
         .empty-icon-wrap {
@@ -491,6 +504,57 @@
             align-items: center;
             justify-content: center;
             font-size: 3.5rem;
+        }
+        
+        /* استایل اختصاصی فرم ایجاد گفتگو */
+        .new-chat-form {
+            width: 100%;
+            max-width: 450px;
+            background: #fff;
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            margin-top: 10px;
+        }
+        .form-select {
+            width: 100%;
+            padding: 14px 15px;
+            border-radius: var(--radius-md);
+            border: 2px solid #edf2f7;
+            background: #f8fafc;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.95rem;
+            color: var(--navy);
+            outline: none;
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+        .form-select:focus {
+            border-color: var(--gold-main);
+            background: #fff;
+        }
+        .form-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
+            color: #fff;
+            border: none;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(197, 160, 89, 0.4);
         }
 
         /* --- Responsive --- */
@@ -511,6 +575,9 @@
             .sidebar-title span,
             .case-info,
             .sidebar-header a {
+                display: none;
+            }
+            .new-chat-btn span {
                 display: none;
             }
 
@@ -564,6 +631,11 @@
             </div>
 
             <div class="case-list">
+                <a href="{{ route('client.chat.index') }}" class="case-item new-chat-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>ایجاد گفتگوی جدید</span>
+                </a>
+                
                 @foreach ($conversations as $conv)
                     <a href="{{ route('client.chat.show', $conv->id) }}"
                         class="case-item {{ isset($activeConversation) && $activeConversation->id === $conv->id ? 'active' : '' }}">
@@ -673,9 +745,27 @@
                 </footer>
             @else
                 <div class="empty-chat">
-                    <div class="empty-icon-wrap"><i class="fas fa-comments"></i></div>
-                    <h3 style="color:var(--navy); font-weight:800;">اتاق گفتگو</h3>
-                    <p>لطفاً برای مشاهده پیام‌ها، یک پرونده را از منوی کناری انتخاب کنید.</p>
+                    <div class="empty-icon-wrap"><i class="fas fa-balance-scale"></i></div>
+                    <h3 style="color:var(--navy); font-weight:800; font-size: 1.4rem;">مشاوره و گفتگوی جدید</h3>
+                    <p>جهت شروع مکالمه، وکیل متخصص پرونده خود را انتخاب نمایید.</p>
+                    
+                    <form action="{{ route('client.chat.store') }}" method="POST" class="new-chat-form">
+                        @csrf
+                        <select name="lawyer_id" class="form-select" required>
+                            <option value="" disabled selected>انتخاب وکیل پایه یک...</option>
+                            @foreach($lawyers as $lawyer)
+                                <option value="{{ $lawyer->id }}">{{ $lawyer->name }} - {{ $lawyer->title ?? 'وکیل پایه یک دادگستری' }}</option>
+                            @endforeach
+                        </select>
+                        
+                        <button type="submit" class="form-btn">
+                            <i class="fas fa-comment-dots"></i> شروع مکالمه
+                        </button>
+                        
+                        @error('lawyer_id')
+                            <p style="color: #e74c3c; font-size: 0.85rem; margin-top: 10px; text-align: center;">{{ $message }}</p>
+                        @enderror
+                    </form>
                 </div>
             @endif
         </main>

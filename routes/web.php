@@ -204,7 +204,6 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
 // CLIENT DASHBOARD
 // ═══════════════════════════════════════════════════════════════
 
-
 Route::middleware(['auth'])->prefix('dashboard.index')->name('dashboard.')->group(function () {
     Route::get('/', [ClientDashboardController::class, 'index'])->name('index');
     Route::get('/profile', [ClientDashboardController::class, 'profile'])->name('profile');
@@ -227,11 +226,12 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
     });
 
     // چت
+    // این مسیرها درون گروه Route::middleware(['auth'])->prefix('client')->name('client.')->group(...) قرار دارند:
     Route::prefix('chat')->name('chat.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Client\ChatController::class, 'index'])->name('index');
-        Route::get('/{id}', [\App\Http\Controllers\Client\ChatController::class, 'show'])->name('show');
-        Route::post('/{id}/send', [\App\Http\Controllers\Client\ChatController::class, 'send'])->name('send');
-        Route::post('/start', [\App\Http\Controllers\Client\ChatController::class, 'store'])->name('store');
+        Route::get('/', [\App\Http\Controllers\Client\ChatController::class, 'index'])->name('index'); // client.chat.index
+        Route::get('/{id}', [\App\Http\Controllers\Client\ChatController::class, 'show'])->name('show');   // client.chat.show
+        Route::post('/{id}/send', [\App\Http\Controllers\Client\ChatController::class, 'send'])->name('send'); // client.chat.send
+        Route::post('/start', [\App\Http\Controllers\Client\ChatController::class, 'store'])->name('store'); // client.chat.store
     });
 
     // پرونده‌ها (کاربر ویژه)
