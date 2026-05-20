@@ -31,6 +31,13 @@ class AuthController extends Controller
 
         $phone = $request->phone;
 
+        // ─── فقط کاربران ثبت‌شده می‌توانند از این مسیر وارد شوند ────────────
+        if (! User::where('phone', $phone)->exists()) {
+            return back()
+                ->withInput()
+                ->withErrors(['phone' => 'این شماره در سیستم ثبت نشده است. لطفاً ابتدا ثبت‌نام کنید.']);
+        }
+
         OtpCode::where('phone', $phone)->delete();
 
         $code = str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
@@ -82,18 +89,35 @@ class AuthController extends Controller
 
         $otp->update(['is_used' => true]);
 
-        $registerData = session('register_data');
+        $isRegisterFlow = session('otp_for_register', false);
+        $registerData   = session('register_data');
 
-        $user = User::firstOrCreate(
-            ['phone' => $phone],
-            [
-                'name' => $registerData['name'] ?? ('کاربر '.substr($phone, -4)),
-                'email' => $registerData['email'] ?? null,
+        if ($isRegisterFlow) {
+            // ─── جریان ثبت‌نام: ساخت کاربر جدید ─────────────────────────────
+            // بررسی مضاعف برای جلوگیری از race condition
+            if (User::where('phone', $phone)->exists()) {
+                session()->forget(['otp_phone', 'otp_for_register', 'register_data']);
+                return redirect()->route('login')
+                    ->with('info', 'این شماره قبلاً ثبت شده است. لطفاً وارد شوید.');
+            }
+
+            $user = User::create([
+                'phone'         => $phone,
+                'name'          => $registerData['name'] ?? ('کاربر ' . substr($phone, -4)),
+                'email'         => $registerData['email'] ?? null,
                 'national_code' => $registerData['national_code'] ?? null,
-                'user_type' => 'simple',
-                'status' => 'active',
-            ]
-        );
+                'user_type'     => 'simple',
+                'status'        => 'active',
+            ]);
+        } else {
+            // ─── جریان لاگین: فقط کاربر موجود ────────────────────────────────
+            $user = User::where('phone', $phone)->first();
+
+            if (! $user) {
+                return redirect()->route('login')
+                    ->withErrors(['phone' => 'این شماره در سیستم ثبت نشده است. لطفاً ابتدا ثبت‌نام کنید.']);
+            }
+        }
 
         if ($user->isBlocked()) {
             return redirect()->route('login')
@@ -126,28 +150,28 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'first_name' => ['required', 'string', 'max:50'],
-            'last_name' => ['required', 'string', 'max:50'],
-            'phone' => ['required', 'regex:/^09[0-9]{9}$/', 'unique:users,phone'],
+            'first_name'    => ['required', 'string', 'max:50'],
+            'last_name'     => ['required', 'string', 'max:50'],
+            'phone'         => ['required', 'regex:/^09[0-9]{9}$/', 'unique:users,phone'],
             'national_code' => ['nullable', 'digits:10', 'unique:users,national_code'],
-            'email' => ['nullable', 'email', 'unique:users,email'],
+            'email'         => ['nullable', 'email', 'unique:users,email'],
         ], [
-            'first_name.required' => 'نام الزامی است.',
-            'last_name.required' => 'نام خانوادگی الزامی است.',
-            'phone.required' => 'شماره موبایل الزامی است.',
-            'phone.regex' => 'فرمت شماره موبایل صحیح نیست.',
-            'phone.unique' => 'این شماره قبلاً ثبت شده. وارد شوید.',
-            'national_code.digits' => 'کد ملی باید ۱۰ رقم باشد.',
-            'national_code.unique' => 'این کد ملی قبلاً ثبت شده است.',
-            'email.email' => 'فرمت ایمیل صحیح نیست.',
-            'email.unique' => 'این ایمیل قبلاً ثبت شده است.',
+            'first_name.required'    => 'نام الزامی است.',
+            'last_name.required'     => 'نام خانوادگی الزامی است.',
+            'phone.required'         => 'شماره موبایل الزامی است.',
+            'phone.regex'            => 'فرمت شماره موبایل صحیح نیست.',
+            'phone.unique'           => 'این شماره قبلاً ثبت شده است. لطفاً وارد شوید.',
+            'national_code.digits'   => 'کد ملی باید ۱۰ رقم باشد.',
+            'national_code.unique'   => 'این کد ملی قبلاً ثبت شده است.',
+            'email.email'            => 'فرمت ایمیل صحیح نیست.',
+            'email.unique'           => 'این ایمیل قبلاً ثبت شده است.',
         ]);
 
         session([
             'register_data' => [
-                'name' => $request->first_name.' '.$request->last_name,
-                'phone' => $request->phone,
-                'email' => $request->email,
+                'name'          => $request->first_name . ' ' . $request->last_name,
+                'phone'         => $request->phone,
+                'email'         => $request->email,
                 'national_code' => $request->national_code,
             ],
         ]);
@@ -156,10 +180,10 @@ class AuthController extends Controller
 
         OtpCode::where('phone', $request->phone)->delete();
         OtpCode::create([
-            'phone' => $request->phone,
-            'code' => $code,
+            'phone'      => $request->phone,
+            'code'       => $code,
             'expires_at' => now()->addMinutes(2),
-            'is_used' => false,
+            'is_used'    => false,
         ]);
 
         $this->sendSms($request->phone, $code);
@@ -190,7 +214,7 @@ class AuthController extends Controller
     // ─── ارسال SMS با SMS.ir ──────────────────────────────────────────────────
     private function sendSms(string $phone, string $code): void
     {
-        $apiKey = config('services.smsir.api_key');
+        $apiKey     = config('services.smsir.api_key');
         $templateId = config('services.smsir.template_id');
 
         if (! $apiKey) {
@@ -202,27 +226,25 @@ class AuthController extends Controller
         try {
             $response = Http::withHeaders([
                 'X-API-KEY' => $apiKey,
-                'Accept' => 'application/json',
+                'Accept'    => 'application/json',
             ])->timeout(10)->post('https://api.sms.ir/v1/send/verify', [
-                'mobile' => $phone,
+                'mobile'     => $phone,
                 'templateId' => (int) $templateId,
                 'parameters' => [
                     [
-                        'name' => 'Code', // تغییر به Code
+                        'name'  => 'Code',
                         'value' => $code,
                     ],
-
                 ],
             ]);
 
             if ($response->successful()) {
-                Log::info('SMS Sent Successfully: '.$response->body());
+                Log::info('SMS Sent Successfully: ' . $response->body());
             } else {
-                Log::error('SMS.ir Error: '.$response->body());
+                Log::error('SMS.ir Error: ' . $response->body());
             }
-
         } catch (\Exception $e) {
-            Log::error("SMS send failed for {$phone}: ".$e->getMessage());
+            Log::error("SMS send failed for {$phone}: " . $e->getMessage());
         }
     }
 }
