@@ -96,7 +96,7 @@
 
     .btn-submit {
         background: linear-gradient(135deg, var(--navy), var(--navy-dark));
-        color: #fff; border: none; padding: 15px 30px; border-radius: 10px;
+        color: #1b1616; border: none; padding: 15px 30px; border-radius: 10px;
         font-family: inherit; font-weight: 800; font-size: 1rem; cursor: pointer;
         display: inline-flex; align-items: center; gap: 10px; transition: var(--transition);
         box-shadow: 0 10px 20px rgba(10, 28, 46, 0.2);

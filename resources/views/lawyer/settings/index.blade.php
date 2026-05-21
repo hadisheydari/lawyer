@@ -287,6 +287,7 @@
                         @php $schedule = $schedules[$dayNum] ?? null; @endphp
                         <div class="schedule-row">
                             <label class="day-check-wrap">
+                                <input type="hidden" name="schedules[{{ $dayNum }}][is_available]" value="0">
                                 <input type="checkbox"
                                        name="schedules[{{ $dayNum }}][is_available]" value="1"
                                        id="avail_{{ $dayNum }}"
