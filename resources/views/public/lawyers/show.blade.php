@@ -105,7 +105,7 @@
             <div class="lawyer-sidebar-card">
                 <div class="lsc-photo">
                     @if($lawyer->image)
-                        <img src="{{ $lawyer->image_url }}" alt="{{ $lawyer->name }}">
+                        <img src="{{ 'assets/images/'.$lawyer->image }}" alt="{{ $lawyer->name }}">
                     @else
                         <div class="lsc-photo-placeholder">{{ mb_substr($lawyer->name, 0, 1) }}</div>
                     @endif

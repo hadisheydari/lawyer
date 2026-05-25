@@ -38,7 +38,7 @@ return [
     'kavenegar' => [
         'api_key' => env('KAVENEGAR_API_KEY'),
     ],
-    
+
     'zarinpal' => [
         'merchant_id' => env('ZARINPAL_MERCHANT_ID'),
         'sandbox' => env('ZARINPAL_SANDBOX', true),
@@ -47,5 +47,9 @@ return [
         'api_key' => env('SMSIR_API_KEY'),
         'template_id' => env('SMSIR_TEMPLATE_ID'),
     ],
-
+    'melipayamak' => [
+        'username' => env('MELIPAYAMAK_USERNAME'),
+        'password' => env('MELIPAYAMAK_PASSWORD'),
+        'body_id' => env('MELIPAYAMAK_BODYID'),
+    ],
 ];
