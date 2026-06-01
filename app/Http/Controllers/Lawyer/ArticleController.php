@@ -16,11 +16,9 @@ class ArticleController extends Controller
         return Auth::guard('lawyer')->user();
     }
 
-    // ─── لیست مقالات ─────────────────────────────────────────────────────────
     public function index(Request $request)
     {
         $lawyer = $this->lawyer();
-
         $query = Article::where('lawyer_id', $lawyer->id);
 
         if ($request->filled('status')) {
@@ -42,14 +40,15 @@ class ArticleController extends Controller
         return view('lawyer.articles.index', compact('articles', 'stats'));
     }
 
-    // ─── فرم مقاله جدید ──────────────────────────────────────────────────────
     public function create()
     {
         $services = Service::active()->get();
-        return view('lawyer.articles.create', compact('services'));
+        // گرفتن لیست دسته‌بندی‌های قبلی
+        $categories = Article::whereNotNull('category')->where('category', '!=', '')->distinct()->pluck('category');
+        
+        return view('lawyer.articles.create', compact('services', 'categories'));
     }
 
-    // ─── ذخیره مقاله جدید ────────────────────────────────────────────────────
     public function store(Request $request)
     {
         $lawyer = $this->lawyer();
@@ -102,22 +101,22 @@ class ArticleController extends Controller
             ->with('success', 'مقاله با موفقیت ' . ($request->status === 'published' ? 'منتشر' : 'ذخیره') . ' شد.');
     }
 
-    // ─── نمایش مقاله ─────────────────────────────────────────────────────────
     public function show(Article $article)
     {
         $this->authorizeArticle($article);
         return view('lawyer.articles.show', compact('article'));
     }
 
-    // ─── فرم ویرایش مقاله ────────────────────────────────────────────────────
     public function edit(Article $article)
     {
         $this->authorizeArticle($article);
         $services = Service::active()->get();
-        return view('lawyer.articles.edit', compact('article', 'services'));
+        // گرفتن لیست دسته‌بندی‌های قبلی
+        $categories = Article::whereNotNull('category')->where('category', '!=', '')->distinct()->pluck('category');
+
+        return view('lawyer.articles.edit', compact('article', 'services', 'categories'));
     }
 
-    // ─── به‌روزرسانی مقاله ────────────────────────────────────────────────────
     public function update(Request $request, Article $article)
     {
         $this->authorizeArticle($article);
@@ -149,7 +148,6 @@ class ArticleController extends Controller
             'meta_description' => $request->meta_description,
         ];
 
-        // اگر الان منتشر می‌شود و قبلاً نشده بود
         if ($request->status === 'published' && $article->status !== 'published') {
             $data['published_at'] = now();
         }
@@ -167,7 +165,6 @@ class ArticleController extends Controller
             ->with('success', 'مقاله به‌روز شد.');
     }
 
-    // ─── حذف مقاله ───────────────────────────────────────────────────────────
     public function destroy(Article $article)
     {
         $this->authorizeArticle($article);
@@ -177,7 +174,6 @@ class ArticleController extends Controller
             ->with('success', 'مقاله حذف شد.');
     }
 
-    // ─── Helpers ─────────────────────────────────────────────────────────────
     private function generateUniqueSlug(string $title): string
     {
         $slug  = Str::slug($title);
@@ -194,7 +190,7 @@ class ArticleController extends Controller
     private function estimateReadingTime(string $content): int
     {
         $wordCount = str_word_count(strip_tags($content));
-        return max(1, (int) ceil($wordCount / 200)); // ۲۰۰ کلمه در دقیقه
+        return max(1, (int) ceil($wordCount / 200)); 
     }
 
     private function authorizeArticle(Article $article): void

@@ -15,6 +15,7 @@ class UserAuthController extends Controller
     // ─── ارسال OTP ────────────────────────────────────────────────────────────
     public function sendOtp(Request $request): JsonResponse
     {
+        dd(1);
         $request->validate([
             'phone' => ['required', 'regex:/^09[0-9]{9}$/'],
         ], [
@@ -199,36 +200,39 @@ class UserAuthController extends Controller
     }
 
     // ─── ارسال SMS ────────────────────────────────────────────────────────────
-    private function sendSms(string $phone, string $code): void
+    protected function sendSms($phone, $code)
     {
         $username = config('services.melipayamak.username');
         $password = config('services.melipayamak.password');
         $bodyId = config('services.melipayamak.body_id');
 
-        if (! $username || ! $password) {
+        // اگر اطلاعات در کانفیگ وجود نداشت (مثل محیط لوکال)، کد فقط لاگ می‌شود
+        if (empty($username) || empty($password) || empty($bodyId)) {
             Log::channel('single')->info("📱 OTP [{$code}] for {$phone}");
 
             return;
         }
 
         try {
-            $response = Http::timeout(10)->post('https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber', [
+            $response = Http::withoutVerifying()->post('https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber', [
                 'username' => $username,
                 'password' => $password,
-                'text' => $code, // اگر پترن شما چند متغیر دارد، آن‌ها را با نقطه ویرگول (;) جدا کنید
                 'to' => $phone,
-                'bodyId' => (int) $bodyId,
+                'bodyId' => $bodyId,
+                'text' => (string) $code,
             ]);
 
+           dd(   $response);
             $result = $response->json();
 
-            if ($response->successful() && isset($result['RetStatus']) && $result['RetStatus'] == 1) {
-                Log::info('Melipayamak SMS Sent Successfully: '.$response->body());
-            } else {
-                Log::error('Melipayamak Error: '.$response->body());
+            // بررسی وضعیت موفقیت ارسال در ملی‌پیامک (RetStatus باید 1 باشد)
+            if (! isset($result['RetStatus']) || $result['RetStatus'] != 1) {
+                Log::error('Melipayamak SMS Error for phone '.$phone.':', $result ?? []);
             }
+
         } catch (\Exception $e) {
-            Log::error("Melipayamak send failed for {$phone}: ".$e->getMessage());
+            // ثبت خطاهای ارتباطی (مثل تایم‌اوت شدن سرور پیامک)
+            Log::error('Melipayamak Connection Exception: '.$e->getMessage());
         }
     }
 }

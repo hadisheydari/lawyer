@@ -50,6 +50,6 @@ return [
     'melipayamak' => [
         'username' => env('MELIPAYAMAK_USERNAME'),
         'password' => env('MELIPAYAMAK_PASSWORD'),
-        'body_id' => env('MELIPAYAMAK_BODYID'),
+        'body_id' => env('MELIPAYAMAK_BODY_ID'),
     ],
 ];
