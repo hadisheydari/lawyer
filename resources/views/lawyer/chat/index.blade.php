@@ -48,27 +48,74 @@
         display:flex; align-items:center; justify-content:space-between;
     }
     .ch-left { display:flex; align-items:center; gap:14px; }
+    
+    /* دکمه بازگشت مخصوص موبایل */
+    .mobile-back { display:none; background:#f1f5f9; color:var(--navy); padding:6px 10px; border-radius:8px; text-decoration:none; font-size:1rem; }
+    
     .ch-avatar { width:46px; height:46px; border-radius:50%; background:var(--navy); color:var(--gold-main); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.1rem; }
     .ch-info h3 { font-size:0.95rem; font-weight:800; color:var(--navy); margin:0 0 2px; }
     .ch-info span { font-size:0.75rem; color:#94a3b8; }
     .online-dot { width:7px; height:7px; background:#10b981; border-radius:50%; display:inline-block; margin-left:4px; }
-    .ch-actions { display:flex; gap:6px; }
-    .ch-btn { padding:7px 14px; border-radius:8px; font-size:0.78rem; font-weight:700; cursor:pointer; border:none; font-family:'Vazirmatn',sans-serif; transition:0.2s; }
+    .ch-actions { display:flex; gap:6px; flex-wrap:wrap; }
+    .ch-btn { padding:7px 14px; border-radius:8px; font-size:0.78rem; font-weight:700; cursor:pointer; border:none; font-family:'Vazirmatn',sans-serif; transition:0.2s; white-space:nowrap; }
     .ch-btn.close { background:#fee2e2; color:#b91c1c; }
     .ch-btn.close:hover { background:#b91c1c; color:#fff; }
     .ch-btn.reopen { background:#d1fae5; color:#065f46; }
     .ch-btn.reopen:hover { background:#065f46; color:#fff; }
 
-    .messages { flex:1; overflow-y:auto; padding:24px; display:flex; flex-direction:column; gap:16px; }
-    .msg-row { display:flex; }
-    .msg-row.from-client { justify-content:flex-start; }
-    .msg-row.from-lawyer { justify-content:flex-end; }
-    .msg-bubble { max-width:62%; padding:12px 16px; border-radius:16px; font-size:0.9rem; line-height:1.7; position:relative; }
-    .msg-row.from-client .msg-bubble { background:#fff; color:#1e293b; border-radius:16px 16px 16px 4px; border-right:3px solid var(--gold-main); box-shadow:0 2px 8px rgba(0,0,0,0.04); }
-    .msg-row.from-lawyer .msg-bubble { background:linear-gradient(135deg,var(--navy),#1e3a5f); color:#fff; border-radius:16px 16px 4px 16px; }
-    .msg-meta { font-size:0.68rem; margin-top:6px; opacity:0.7; display:flex; align-items:center; gap:4px; justify-content:flex-end; }
-    .msg-row.from-lawyer .msg-meta { color:rgba(255,255,255,0.7); }
-
+/* ─── استایل نهایی و استاندارد پیام‌ها ─── */
+    .messages { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
+    .msg-row { display:flex; width: 100%; }
+    
+    /* پیام وکیل (خودت) - چسبیده به سمت راست */
+    .msg-row.from-lawyer { justify-content: flex-start; } 
+    
+    /* پیام موکل (طرف مقابل) - چسبیده به سمت چپ */
+    .msg-row.from-client { justify-content: flex-end; } 
+    
+    .msg-bubble { 
+        max-width: 85%; 
+        width: fit-content;
+        min-width: 85px; 
+        padding: 8px 14px 6px 14px; 
+        font-size: 0.9rem; 
+        line-height: 1.5; 
+        position: relative; 
+        display: flex;
+        flex-direction: column;
+        word-break: break-word;
+    }
+    
+    /* حباب وکیل (سمت راست) */
+    .msg-row.from-lawyer .msg-bubble { 
+        background: linear-gradient(135deg,var(--navy),#1e3a5f); 
+        color: #fff; 
+        /* گوشه پایین-راست تیز (ترتیب: بالاچپ، بالاراست، پایین‌راست، پایین‌چپ) */
+        border-radius: 16px 16px 0px 16px; 
+    }
+    
+    /* حباب موکل (سمت چپ) */
+    .msg-row.from-client .msg-bubble { 
+        background: #fff; 
+        color: #1e293b; 
+        /* گوشه پایین-چپ تیز */
+        border-radius: 16px 16px 16px 0px; 
+        /* نوار طلایی هم آوردم سمت چپ تا با جهت حباب هماهنگ بشه */
+        border-left: 3px solid var(--gold-main); 
+        border-right: none;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04); 
+    }
+    
+    .msg-meta { 
+        font-size: 0.65rem; 
+        margin-top: 2px; 
+        opacity: 0.7; 
+        display: flex; 
+        align-items: center; 
+        gap: 4px; 
+        justify-content: flex-end; 
+    }
+    .msg-row.from-lawyer .msg-meta { color: rgba(255,255,255,0.7); }
     .chat-footer { padding:16px 22px; background:#fff; border-top:1px solid #f1f5f9; }
     .cf-form { display:flex; align-items:center; gap:10px; background:#f8fafc; border-radius:26px; padding:6px 6px 6px 16px; border:1px solid transparent; transition:0.3s; }
     .cf-form:focus-within { background:#fff; border-color:var(--gold-main); box-shadow:0 4px 12px rgba(212,175,55,0.1); }
@@ -82,13 +129,36 @@
     .empty-chat { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#94a3b8; gap:14px; }
     .empty-icon { width:80px; height:80px; border-radius:50%; background:rgba(212,175,55,0.08); color:var(--gold-main); display:flex; align-items:center; justify-content:center; font-size:2.5rem; }
 
-    @media(max-width:768px) { .chat-wrap { grid-template-columns:80px 1fr; } .conv-info, .conv-meta, .cs-header h3, .cs-search { display:none; } }
+    /* ─── ریسپانسیو (موبایل) ─── */
+    @media(max-width:768px) { 
+        .chat-wrap { 
+            display:block; 
+            height:calc(100vh - 90px); 
+        }
+        
+        /* اگر مکالمه‌ای باز است: سایدبار مخفی، بخش چت تمام‌صفحه */
+        .chat-wrap.has-active-chat .chat-sidebar { display: none; }
+        .chat-wrap.has-active-chat .chat-main { display: flex; height: 100%; }
+        
+        /* اگر مکالمه‌ای باز نیست: بخش چت مخفی، سایدبار تمام‌صفحه */
+        .chat-wrap:not(.has-active-chat) .chat-sidebar { display: flex; height: 100%; border-left: none; }
+        .chat-wrap:not(.has-active-chat) .chat-main { display: none; }
+        
+        /* تنظیمات ظاهری المان‌ها در موبایل */
+        .mobile-back { display: inline-flex; }
+        .chat-head { padding: 12px; }
+        .ch-actions { display: none; /* اکشن‌های اضافه را در هدر موبایل می‌توان مخفی کرد یا منوی دراپ‌داون گذاشت */ }
+        .msg-bubble { max-width: 85%; } 
+        .chat-footer { padding: 12px; }
+    }
 </style>
 @endpush
 
 @section('content')
 
-<div class="chat-wrap">
+{{-- کلاس پویا برای تشخیص باز بودن یک چت خاص --}}
+<div class="chat-wrap {{ isset($activeConversation) ? 'has-active-chat' : '' }}">
+    
     {{-- سایدبار مکالمات --}}
     <div class="chat-sidebar">
         <div class="cs-header">
@@ -144,6 +214,12 @@
         @if(isset($activeConversation))
             <div class="chat-head">
                 <div class="ch-left">
+                    {{-- دکمه بازگشت به لیست (فقط در موبایل نمایش داده می‌شود) --}}
+                    {{-- می‌توانید روت زیر را به روت لیست اصلی چت‌ها تغییر دهید --}}
+                    <a href="{{ url()->previous() }}" class="mobile-back">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    
                     <div class="ch-avatar">{{ mb_substr($activeConversation->user->name ?? 'م', 0, 1) }}</div>
                     <div class="ch-info">
                         <h3>{{ $activeConversation->user->name ?? 'موکل' }}</h3>
@@ -156,8 +232,6 @@
                             @else
                                 گفتگوی آزاد
                             @endif
-                            &nbsp;·&nbsp;
-                            {{ $activeConversation->status === 'active' ? 'فعال' : 'بسته' }}
                         </span>
                     </div>
                 </div>
@@ -221,9 +295,9 @@
                     <form method="POST" action="{{ route('lawyer.chat.send', $activeConversation->id) }}" enctype="multipart/form-data">
                         @csrf
                         <div class="cf-form">
-                            <label for="fileAttach" class="cf-attach" title="ارسال فایل">
+                            {{-- <label for="fileAttach" class="cf-attach" title="ارسال فایل">
                                 <i class="fas fa-paperclip"></i>
-                            </label>
+                            </label> --}}
                             <input type="file" id="fileAttach" name="attachment" style="display:none;" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
                             <input type="text" name="message" class="cf-input" placeholder="پیام خود را بنویسید..." autocomplete="off">
                             <button type="submit" class="cf-send">

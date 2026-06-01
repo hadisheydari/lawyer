@@ -3,9 +3,10 @@
 
 @push('styles')
 <style>
-    .page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; }
+    /* تنظیمات هدر برای انعطاف‌پذیری */
+    .page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; flex-wrap: wrap; gap: 15px; }
     .page-header h2 { font-size:1.4rem; font-weight:900; color:var(--navy); margin:0; }
-    .btn-new { background:linear-gradient(135deg,var(--gold-main),var(--gold-dark)); color:var(--navy); padding:10px 22px; border-radius:10px; font-weight:800; font-size:0.9rem; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:0.3s; }
+    .btn-new { background:linear-gradient(135deg,var(--gold-main),var(--gold-dark)); color:var(--navy); padding:10px 22px; border-radius:10px; font-weight:800; font-size:0.9rem; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:0.3s; }
     .btn-new:hover { transform:translateY(-2px); color:var(--navy); }
 
     .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:15px; margin-bottom:25px; }
@@ -13,14 +14,15 @@
     .stat-n { font-size:2rem; font-weight:900; color:var(--navy); display:block; }
     .stat-l { font-size:0.8rem; color:#888; margin-top:4px; display:block; }
 
+    /* اصلاح نوار فیلتر */
     .filter-bar { background:#fff; padding:18px 22px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.04); margin-bottom:20px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
-    .filter-bar input, .filter-bar select { padding:9px 14px; border:1.5px solid #e0e0e0; border-radius:8px; font-family:'Vazirmatn',sans-serif; font-size:0.88rem; outline:none; transition:0.2s; }
-    .filter-bar input { flex:1; min-width:180px; }
+    .filter-bar input, .filter-bar select { padding:9px 14px; border:1.5px solid #e0e0e0; border-radius:8px; font-family:'Vazirmatn',sans-serif; font-size:0.88rem; outline:none; transition:0.2s; flex: 1; min-width: 150px; }
     .filter-bar input:focus, .filter-bar select:focus { border-color:var(--gold-main); }
-    .btn-filter { background:var(--navy); color:#fff; padding:9px 18px; border:none; border-radius:8px; font-family:'Vazirmatn',sans-serif; font-weight:700; font-size:0.88rem; cursor:pointer; display:flex; align-items:center; gap:6px; }
+    .btn-filter { background:var(--navy); color:#fff; padding:9px 18px; border:none; border-radius:8px; font-family:'Vazirmatn',sans-serif; font-weight:700; font-size:0.88rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; white-space: nowrap; }
 
-    .cases-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:18px; }
-    .case-card { background:#fff; border-radius:14px; padding:22px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #f0f0f0; transition:0.3s; position:relative; overflow:hidden; }
+    /* استفاده از min(100%, 290px) برای جلوگیری از overflow در موبایل */
+    .cases-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%, 290px),1fr)); gap:18px; }
+    .case-card { background:#fff; border-radius:14px; padding:22px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #f0f0f0; transition:0.3s; position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; }
     .case-card:hover { transform:translateY(-3px); border-color:var(--gold-main); }
     .case-card::before { content:''; position:absolute; right:0; top:0; bottom:0; width:4px; }
     .case-card.active::before { background:#10b981; }
@@ -37,7 +39,7 @@
     .progress-fill { height:100%; background:linear-gradient(90deg,var(--gold-main),var(--gold-dark)); border-radius:10px; transition:0.5s; }
     .progress-label { display:flex; justify-content:space-between; font-size:0.75rem; color:#888; margin-top:4px; }
 
-    .case-footer { display:flex; justify-content:space-between; align-items:center; }
+    .case-footer { display:flex; justify-content:space-between; align-items:center; margin-top:auto; }
     .badge { padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; }
     .badge-active  { background:#d1fae5; color:#065f46; }
     .badge-on_hold { background:#fef3c7; color:#b45309; }
@@ -55,6 +57,26 @@
     .page-btn { padding:7px 13px; border-radius:8px; border:1px solid #ddd; color:var(--navy); text-decoration:none; font-size:0.85rem; font-weight:600; transition:0.2s; }
     .page-btn:hover, .page-btn.active { background:var(--navy); color:#fff; border-color:var(--navy); }
     .page-btn.disabled { color:#ccc; pointer-events:none; }
+
+    /* --- Media Queries برای موبایل و تبلت --- */
+    @media (max-width: 768px) {
+        /* تبدیل فرم جستجو به حالت ستونی در موبایل */
+        .filter-bar { flex-direction: column; align-items: stretch; padding: 15px; }
+        .filter-bar input, .filter-bar select, .btn-filter { width: 100%; min-width: unset; }
+        
+        /* دکمه ایجاد پرونده در یک خط مجزا */
+        .page-header { flex-direction: column; align-items: flex-start; }
+        .btn-new { width: 100%; }
+
+        /* دو ستونه کردن کارت‌های آمار در موبایل‌های کمی بزرگتر */
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+        /* تک ستونه کردن کارت‌های آمار در موبایل‌های خیلی کوچک */
+        .stats-grid { grid-template-columns: 1fr; }
+        .page-header h2 { font-size: 1.2rem; }
+    }
 </style>
 @endpush
 
