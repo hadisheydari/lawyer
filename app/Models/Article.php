@@ -16,7 +16,7 @@ class Article extends Model
         'title',
         'slug',
         'excerpt',
-        'content',          // ✅ Fix: was 'body', DB column is 'content'
+        'content',         
         'featured_image',
         'status',
         'published_at',

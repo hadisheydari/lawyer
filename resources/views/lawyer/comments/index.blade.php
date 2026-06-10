@@ -55,6 +55,7 @@
     .cc-reply-badge { background:#ede9fe; color:#6d28d9; padding:3px 8px; border-radius:8px; font-size:0.72rem; font-weight:700; display:inline-flex; align-items:center; gap:4px; margin-right:6px; }
 
     .cc-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .cc-actions form { display:inline; }
     .btn-sm { padding:6px 13px; border-radius:7px; font-size:0.78rem; font-weight:700; cursor:pointer; border:none; font-family:'Vazirmatn',sans-serif; display:inline-flex; align-items:center; gap:4px; transition:0.2s; text-decoration:none; }
     .btn-approve-sm { background:#d1fae5; color:#065f46; }
     .btn-approve-sm:hover { background:#065f46; color:#fff; }
@@ -106,6 +107,8 @@
 </div>
 
 @if($comments->isNotEmpty())
+
+    {{-- فرم Bulk جداگانه --}}
     <form method="POST" action="{{ route('lawyer.comments.bulk') }}" id="bulkForm">
         @csrf
         <div class="bulk-bar">
@@ -123,73 +126,82 @@
                 <i class="fas fa-trash-alt"></i> حذف انتخاب‌شده‌ها
             </button>
         </div>
+    </form>
 
-        <div class="comments-list">
-            @foreach($comments as $comment)
-                <div class="comment-card {{ $comment->status }}">
-                    <div class="cc-header">
-                        <input type="checkbox" name="ids[]" value="{{ $comment->id }}" class="cc-check comment-cb">
-                        <div class="cc-avatar">{{ mb_substr($comment->user->name ?? 'ک', 0, 1) }}</div>
-                        <div class="cc-meta">
-                            <h4>{{ $comment->user->name ?? 'کاربر ناشناس' }}</h4>
-                            <span>
-                                <i class="far fa-calendar-alt" style="color:var(--gold-main);"></i>
-                                {{ \Morilog\Jalali\Jalalian::fromCarbon($comment->created_at)->format('Y/m/d H:i') }}
-                                @if($comment->parent_id)
-                                    <span class="cc-reply-badge"><i class="fas fa-reply"></i> پاسخ</span>
-                                @endif
-                            </span>
-                        </div>
-                        <span class="badge badge-{{ $comment->status }}">
-                            @if($comment->status==='pending') در انتظار
-                            @elseif($comment->status==='approved') تأیید شده
-                            @else رد شده
+    <div class="comments-list">
+        @foreach($comments as $comment)
+            <div class="comment-card {{ $comment->status }}">
+                <div class="cc-header">
+                    {{-- checkbox خارج از فرم bulk با attribute form --}}
+                    <input type="checkbox" name="ids[]" value="{{ $comment->id }}" 
+                           class="cc-check comment-cb" form="bulkForm">
+                    
+                    <div class="cc-avatar">{{ mb_substr($comment->user->name ?? 'ک', 0, 1) }}</div>
+                    <div class="cc-meta">
+                        <h4>{{ $comment->user->name ?? 'کاربر ناشناس' }}</h4>
+                        <span>
+                            <i class="far fa-calendar-alt" style="color:var(--gold-main);"></i>
+                            {{ \Morilog\Jalali\Jalalian::fromCarbon($comment->created_at)->format('Y/m/d H:i') }}
+                            @if($comment->parent_id)
+                                <span class="cc-reply-badge"><i class="fas fa-reply"></i> پاسخ</span>
                             @endif
                         </span>
                     </div>
-
-                    <div class="cc-article">
-                        <i class="fas fa-newspaper" style="color:var(--gold-main);"></i>
-                        مقاله:
-                        <a href="{{ route('lawyer.articles.show', $comment->article) }}">
-                            {{ Str::limit($comment->article->title ?? '—', 50) }}
-                        </a>
-                    </div>
-
-                    <div class="cc-body">{{ $comment->content }}</div>
-
-                    <div class="cc-actions">
-                        @if($comment->status !== 'approved')
-                            <form method="POST" action="{{ route('lawyer.comments.approve', $comment) }}">
-                                @csrf
-                                <button type="submit" class="btn-sm btn-approve-sm">
-                                    <i class="fas fa-check"></i> تأیید
-                                </button>
-                            </form>
+                    <span class="badge badge-{{ $comment->status }}">
+                        @if($comment->status==='pending') در انتظار
+                        @elseif($comment->status==='approved') تأیید شده
+                        @else رد شده
                         @endif
-                        @if($comment->status !== 'rejected')
-                            <form method="POST" action="{{ route('lawyer.comments.reject', $comment) }}">
-                                @csrf
-                                <button type="submit" class="btn-sm btn-reject-sm">
-                                    <i class="fas fa-times"></i> رد
-                                </button>
-                            </form>
-                        @endif
-                        <a href="{{ route('lawyer.articles.show', $comment->article) }}" class="btn-sm btn-view-sm" target="_blank">
-                            <i class="fas fa-external-link-alt"></i> مشاهده مقاله
-                        </a>
-                        <form method="POST" action="{{ route('lawyer.comments.destroy', $comment) }}"
-                              onsubmit="return confirm('این نظر حذف شود؟')">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn-sm btn-delete-sm">
-                                <i class="fas fa-trash-alt"></i> حذف
+                    </span>
+                </div>
+
+                <div class="cc-article">
+                    <i class="fas fa-newspaper" style="color:var(--gold-main);"></i>
+                    مقاله:
+                    <a href="{{ route('lawyer.articles.show', $comment->article) }}">
+                        {{ Str::limit($comment->article->title ?? '—', 50) }}
+                    </a>
+                </div>
+
+                <div class="cc-body">{{ $comment->content }}</div>
+
+                {{-- اکشن‌های individual هرکدوم فرم جدا دارن --}}
+                <div class="cc-actions">
+                    @if($comment->status !== 'approved')
+                        <form method="POST" action="{{ route('lawyer.comments.approve', $comment) }}">
+                            @csrf
+                            <button type="submit" class="btn-sm btn-approve-sm">
+                                <i class="fas fa-check"></i> تأیید
                             </button>
                         </form>
-                    </div>
+                    @endif
+
+                    @if($comment->status !== 'rejected')
+                        <form method="POST" action="{{ route('lawyer.comments.reject', $comment) }}">
+                            @csrf
+                            <button type="submit" class="btn-sm btn-reject-sm">
+                                <i class="fas fa-times"></i> رد
+                            </button>
+                        </form>
+                    @endif
+
+                    <a href="{{ route('lawyer.articles.show', $comment->article) }}" class="btn-sm btn-view-sm" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> مشاهده مقاله
+                    </a>
+
+                    <form method="POST" action="{{ route('lawyer.comments.destroy', $comment) }}"
+                          onsubmit="return confirm('این نظر حذف شود؟')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-sm btn-delete-sm">
+                            <i class="fas fa-trash-alt"></i> حذف
+                        </button>
+                    </form>
                 </div>
-            @endforeach
-        </div>
-    </form>
+            </div>
+        @endforeach
+    </div>
+
 @else
     <div class="empty-state">
         <i class="fas fa-comments"></i>

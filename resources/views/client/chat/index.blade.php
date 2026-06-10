@@ -609,6 +609,276 @@
                 padding: 15px;
             }
         }
+        /* =====================================
+   TABLET
+===================================== */
+
+@media (max-width:1024px){
+
+    .chat-layout{
+        width:100%;
+        height:100dvh;
+        border-radius:0;
+        grid-template-columns:260px 1fr;
+    }
+
+    .messages{
+        padding:20px;
+    }
+
+    .chat-header,
+    .chat-footer{
+        padding:15px 20px;
+    }
+
+    .msg-bubble{
+        max-width:80%;
+    }
+}
+
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media (max-width:768px){
+
+    body{
+        background:#fff;
+        overflow:hidden;
+    }
+
+    .chat-layout{
+        width:100%;
+        height:100dvh;
+        border-radius:0;
+        display:flex;
+        flex-direction:column;
+    }
+
+    /* sidebar */
+
+    .sidebar{
+        width:100%;
+        height:120px;
+        min-height:120px;
+        border:none;
+    }
+
+    .sidebar-header{
+        padding:12px 15px;
+    }
+
+    .sidebar-title{
+        font-size:.95rem;
+    }
+
+    .case-list{
+        display:flex;
+        overflow-x:auto;
+        overflow-y:hidden;
+        gap:10px;
+        padding:10px;
+    }
+
+    .case-item{
+        min-width:85px;
+        width:85px;
+        margin:0;
+        padding:10px;
+        flex-direction:column;
+        gap:8px;
+        text-align:center;
+    }
+
+    .case-avatar{
+        width:42px;
+        height:42px;
+        min-width:42px;
+        font-size:.9rem;
+    }
+
+    .case-info h4{
+        font-size:.72rem;
+        white-space:normal;
+        line-height:1.4;
+    }
+
+    .case-info p{
+        display:none;
+    }
+
+    .unread-badge{
+        position:absolute;
+        top:5px;
+        left:5px;
+    }
+
+    .new-chat-btn{
+        min-width:85px;
+    }
+
+    /* chat */
+
+    .chat-area{
+        flex:1;
+        min-height:0;
+    }
+
+    .chat-header{
+        padding:10px 12px;
+    }
+
+    .lawyer-profile{
+        gap:10px;
+    }
+
+    .lawyer-img{
+        width:40px;
+        height:40px;
+        font-size:.95rem;
+    }
+
+    .lawyer-details h3{
+        font-size:.9rem;
+    }
+
+    .lawyer-details span{
+        font-size:.72rem;
+    }
+
+    .header-tools a{
+        padding:8px;
+        font-size:1rem;
+    }
+
+    .messages{
+        padding:12px;
+        gap:12px;
+    }
+
+    .msg-bubble{
+        max-width:95%;
+        padding:12px;
+        font-size:.9rem;
+        line-height:1.8;
+    }
+
+    .attachment{
+        padding:8px;
+    }
+
+    .file-icon{
+        width:34px;
+        height:34px;
+        font-size:1rem;
+    }
+
+    .file-name{
+        font-size:.8rem;
+    }
+
+    .file-size{
+        font-size:.65rem;
+    }
+
+    /* footer */
+
+    .chat-footer{
+        padding:8px;
+    }
+
+    .input-wrapper{
+        padding:4px 4px 4px 10px;
+        gap:4px;
+    }
+
+    .msg-input{
+        font-size:16px;
+    }
+
+    .btn-attach{
+        padding:8px;
+        font-size:1rem;
+    }
+
+    .btn-send{
+        width:42px;
+        height:42px;
+        min-width:42px;
+    }
+
+    /* empty state */
+
+    .empty-icon-wrap{
+        width:70px;
+        height:70px;
+        font-size:2rem;
+    }
+
+    .empty-chat h3{
+        font-size:1rem !important;
+        text-align:center;
+    }
+
+    .empty-chat p{
+        text-align:center;
+        font-size:.85rem;
+    }
+
+    .new-chat-form{
+        padding:20px;
+        width:100%;
+        max-width:none;
+    }
+}
+
+
+/* =====================================
+   VERY SMALL PHONES
+===================================== */
+
+@media (max-width:480px){
+
+    .sidebar{
+        height:105px;
+        min-height:105px;
+    }
+
+    .case-item{
+        min-width:75px;
+        width:75px;
+        padding:8px;
+    }
+
+    .case-avatar{
+        width:36px;
+        height:36px;
+        min-width:36px;
+    }
+
+    .case-info h4{
+        font-size:.65rem;
+    }
+
+    .messages{
+        padding:8px;
+    }
+
+    .msg-bubble{
+        max-width:98%;
+        font-size:.85rem;
+    }
+
+    .lawyer-details h3{
+        font-size:.82rem;
+    }
+
+    .lawyer-details span{
+        font-size:.68rem;
+    }
+
+}
     </style>
 </head>
 
