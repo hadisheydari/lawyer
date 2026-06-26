@@ -7,6 +7,7 @@ use App\Models\Lawyer;
 use App\Models\OtpCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http; // <-- این کلاس برای ارسال درخواست اضافه شد
 use Illuminate\Support\Facades\Log;
 
 class AuthLawyerController extends Controller
@@ -41,6 +42,9 @@ class AuthLawyerController extends Controller
 
         // لاگ کردن کد در حالت لوکال
         Log::info("📱 Lawyer OTP [{$code}] for {$request->phone}");
+
+        // فراخوانی متد ارسال پیامک
+        $this->sendSms($request->phone, $code);
 
         session(['lawyer_otp_phone' => $request->phone]);
 
@@ -78,5 +82,41 @@ class AuthLawyerController extends Controller
     {
         Auth::guard('lawyer')->logout();
         return redirect()->route('lawyer.login');
+    }
+
+    // متد ارسال پیامک اضافه شده (مشابه کنترلر کاربران)
+    protected function sendSms($phone, $code)
+    {
+        $username = config('services.melipayamak.username');
+        $password = config('services.melipayamak.password');
+        $bodyId = config('services.melipayamak.body_id');
+
+        // اگر اطلاعات در کانفیگ وجود نداشت (مثل محیط لوکال)، کد فقط لاگ می‌شود
+        if (empty($username) || empty($password) || empty($bodyId)) {
+            Log::channel('single')->info("📱 OTP [{$code}] for {$phone}");
+
+            return;
+        }
+
+        try {
+            $response = Http::withoutVerifying()->post('https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber', [
+                'username' => $username,
+                'password' => $password,
+                'to' => $phone,
+                'bodyId' => $bodyId,
+                'text' => (string) $code,
+            ]);
+
+            $result = $response->json();
+
+            // بررسی وضعیت موفقیت ارسال در ملی‌پیامک (RetStatus باید 1 باشد)
+            if (! isset($result['RetStatus']) || $result['RetStatus'] != 1) {
+                Log::error('Melipayamak SMS Error for phone '.$phone.':', $result ?? []);
+            }
+
+        } catch (\Exception $e) {
+            // ثبت خطاهای ارتباطی (مثل تایم‌اوت شدن سرور پیامک)
+            Log::error('Melipayamak Connection Exception: '.$e->getMessage());
+        }
     }
 }
