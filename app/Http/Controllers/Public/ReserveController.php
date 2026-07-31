@@ -5,22 +5,18 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Consultation;
 use App\Models\Lawyer;
-use App\Models\Payment;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Morilog\Jalali\Jalalian;
 
 class ReserveController extends Controller
 {
     private const CACHE_TTL = 300; // 5 minutes
-
-    private const ZARINPAL_TIMEOUT = 10;
 
     public function index(Request $request)
     {
@@ -128,30 +124,6 @@ class ReserveController extends Controller
         }
     }
 
-    public function verifyPayment(Request $request, Payment $payment)
-    {
-        $authority = $request->query('Authority');
-        $status = $request->query('Status');
-
-        if ($status !== 'OK') {
-            return $this->handleFailedPayment($payment, 'کاربر پرداخت را لغو کرد');
-        }
-
-        try {
-            return DB::transaction(function () use ($payment, $authority) {
-                return $this->verifyWithZarinpal($payment, $authority);
-            });
-        } catch (\Exception $e) {
-            Log::error('Payment Verification Error', [
-                'error' => $e->getMessage(),
-                'payment_id' => $payment->id,
-                'authority' => $authority,
-            ]);
-
-            return $this->handleFailedPayment($payment, 'خطا در تأیید پرداخت');
-        }
-    }
-
     // ─── Private Helper Methods ───────────────────────────────────────────────
 
     private function generateCalendar(int $month, int $year, int $lawyerId): array
@@ -184,7 +156,6 @@ class ReserveController extends Controller
 
     private function getBookedDates(int $lawyerId, int $month, int $year): array
     {
-        // ✅ Fix: key format is {lawyerId}_{year}_{month} — Jalali year and month
         $cacheKey = "booked_dates_{$lawyerId}_{$year}_{$month}";
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($lawyerId, $month, $year) {
@@ -212,6 +183,11 @@ class ReserveController extends Controller
             ->with('info', 'برای ثبت نوبت، لطفاً ابتدا وارد شوید یا ثبت‌نام کنید');
     }
 
+    /**
+     * ثبت نوبت — بدون درگاه پرداخت.
+     * نوبت با وضعیت pending ثبت می‌شود و وکیل باید بعداً از پنل خودش تأیید کند.
+     * هماهنگی پرداخت از طریق تماس/واتساپ با دفتر انجام می‌شود.
+     */
     private function processReservation(array $data, int $userId)
     {
         $lawyer = Lawyer::lockForUpdate()->findOrFail($data['lawyer_id']);
@@ -243,7 +219,7 @@ class ReserveController extends Controller
 
         $appointmentPrice = Setting::where('key', 'pricing.appointment_price')->value('value') ?? 500000;
 
-        $consultation = Consultation::create([
+        Consultation::create([
             'user_id' => $userId,
             'lawyer_id' => $lawyer->id,
             'type' => 'appointment',
@@ -253,123 +229,11 @@ class ReserveController extends Controller
             'scheduled_at' => $scheduledDateTime,
         ]);
 
-        $payment = $this->createPayment($userId, $consultation);
-
-        $authority = $this->requestZarinpalPayment($payment, $lawyer);
-
-        $payment->update(['authority' => $authority]);
-
-        // ✅ Fix: use Jalali year/month for cache key consistency, correct order {year}_{month}
         $jalali = Jalalian::fromCarbon($selectedDate);
         Cache::forget("slots_{$lawyer->id}_{$selectedDate->format('Y-m-d')}");
         Cache::forget("booked_dates_{$lawyer->id}_{$jalali->getYear()}_{$jalali->getMonth()}");
 
-        return redirect($this->getZarinpalStartUrl($authority));
-    }
-
-    private function createPayment(int $userId, Consultation $consultation): Payment
-    {
-        return Payment::create([
-            'user_id' => $userId,
-            'payable_type' => Consultation::class,
-            'payable_id' => $consultation->id,
-            'tracking_code' => 'LAW-'.strtoupper(uniqid()),
-            'amount' => $consultation->price,
-            'status' => 'pending',
-            'gateway' => 'zarinpal',
-        ]);
-    }
-
-    private function requestZarinpalPayment(Payment $payment, Lawyer $lawyer): string
-    {
-        $merchantId = config('services.zarinpal.merchant_id');
-        $isSandbox = config('services.zarinpal.sandbox', true);
-
-        $baseUrl = $isSandbox
-            ? 'https://sandbox.zarinpal.com/pg/v4/payment'
-            : 'https://api.zarinpal.com/pg/v4/payment';
-
-        $response = Http::timeout(10)
-            ->post("{$baseUrl}/request.json", [
-                'merchant_id' => $merchantId,
-                'amount' => (int) ($payment->amount * 10),
-                'description' => "رزرو مشاوره با {$lawyer->name}",
-                'callback_url' => route('reserve.verify', $payment->id),
-                'metadata' => [
-                    'mobile' => Auth::user()->phone ?? '',
-                    'email' => Auth::user()->email ?? '',
-                ],
-            ]);
-
-        if ($response->failed()) {
-            Log::error('Zarinpal Connection Failed: '.$response->body());
-            throw new \Exception('خطا در اتصال به درگاه پرداخت. لطفاً وضعیت اینترنت سرور را چک کنید.');
-        }
-
-        $result = $response->json();
-
-        if (! isset($result['data']['code']) || $result['data']['code'] != 100) {
-            $msg = $result['errors']['message'] ?? 'خطای ناشناخته از درگاه';
-            throw new \Exception('درگاه پرداخت پاسخ نامعتبر داد: '.$msg);
-        }
-
-        return $result['data']['authority'];
-    }
-
-    private function getZarinpalStartUrl(string $authority): string
-    {
-        $isSandbox = config('services.zarinpal.sandbox', true);
-        $baseUrl = $isSandbox
-            ? 'https://sandbox.zarinpal.com/pg/StartPay/'
-            : 'https://www.zarinpal.com/pg/StartPay/';
-
-        return $baseUrl.$authority;
-    }
-
-    private function verifyWithZarinpal(Payment $payment, string $authority)
-    {
-        $merchantId = config('services.zarinpal.merchant_id');
-        $isSandbox = config('services.zarinpal.sandbox', true);
-        $baseUrl = $isSandbox
-            ? 'https://sandbox.zarinpal.com/pg/v4/payment'
-            : 'https://api.zarinpal.com/pg/v4/payment';
-
-        $response = Http::timeout(self::ZARINPAL_TIMEOUT)
-            ->post("{$baseUrl}/verify.json", [
-                'merchant_id' => $merchantId,
-                'authority' => $authority,
-                'amount' => $payment->amount * 10,
-            ]);
-
-        if ($response->failed()) {
-            throw new \Exception('خطا در تأیید پرداخت');
-        }
-
-        $result = $response->json();
-
-        if (! isset($result['data']['code']) || $result['data']['code'] != 100) {
-            throw new \Exception('پرداخت تأیید نشد');
-        }
-
-        $payment->update([
-            'status' => 'paid',
-            'ref_id' => $result['data']['ref_id'] ?? null,
-            'paid_at' => now(),
-        ]);
-
-        $payment->payable->update(['status' => 'confirmed']);
-
-        return redirect()->route('dashboard.index')
-            ->with('success', 'درخواست مشاوره شما با موفقیت ثبت شد.');
-    }
-
-    private function handleFailedPayment(Payment $payment, string $message)
-    {
-        DB::transaction(function () use ($payment) {
-            $payment->update(['status' => 'failed']);
-            $payment->payable->update(['status' => 'cancelled']);
-        });
-
-        return redirect()->route('reserve.index')->with('error', $message);
+        return redirect()->route('reserve.index', ['lawyer' => $lawyer->slug])
+            ->with('success', 'درخواست نوبت شما ثبت شد. جهت هماهنگی نهایی و پرداخت، همکاران ما با شما تماس می‌گیرند یا می‌توانید از طریق تماس/واتساپ با دفتر هماهنگ کنید.');
     }
 }

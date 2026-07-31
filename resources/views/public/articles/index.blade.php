@@ -158,14 +158,14 @@
         <span>دسته‌بندی:</span>
 
         <a href="{{ route('articles.index') }}"
-           class="filter-btn {{ is_null($category) ? 'active' : '' }}">
+        class="filter-btn {{ is_null($activeCategory) ? 'active' : '' }}">
             همه مقالات
         </a>
 
         @foreach($categories as $cat)
-            <a href="{{ route('articles.index', ['cat' => $cat]) }}"
-               class="filter-btn {{ $category === $cat ? 'active' : '' }}">
-                {{ $cat }}
+            <a href="{{ route('articles.index', ['cat' => $cat->slug]) }}"
+            class="filter-btn {{ $activeCategory?->id === $cat->id ? 'active' : '' }}">
+                {{ $cat->name }}
             </a>
         @endforeach
     </div>
