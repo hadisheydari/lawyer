@@ -67,11 +67,12 @@
                     <div class="card-title"><i class="fas fa-rocket"></i> وضعیت و تنظیمات</div>
                     <div class="card-body">
                         <div style="margin-bottom: 25px;">
-                            <label class="input-label">دسته‌بندی (انتخاب یا تایپ)</label>
-                            <input type="text" name="category" list="categoryList" class="lux-input" value="{{ old('category', $article->category) }}">
+                            <label class="input-label">دسته‌بندی‌ها <small style="color:#94a3b8;">(چند دسته با کاما جدا کنید)</small></label>
+                            <input type="text" name="categories" list="categoryList" class="lux-input"
+                                value="{{ old('categories', $article->categories->pluck('name')->implode(', ')) }}">
                             <datalist id="categoryList">
                                 @foreach($categories as $cat)
-                                    <option value="{{ $cat }}">
+                                    <option value="{{ $cat->name }}">
                                 @endforeach
                             </datalist>
                         </div>
@@ -118,6 +119,20 @@
                     <div class="card-body">
                         @php $tagsValue = is_array($article->tags) ? implode(', ', $article->tags) : $article->tags; @endphp
                         <input type="text" name="tags" class="lux-input" value="{{ old('tags', $tagsValue) }}">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-search"></i> بهینه‌سازی برای گوگل</div>
+                    <div class="card-body">
+                        <div style="margin-bottom: 20px;">
+                            <label class="input-label">عنوان متا (Meta Title)</label>
+                            <input type="text" name="meta_title" class="lux-input" value="{{ old('meta_title', $article->meta_title) }}">
+                        </div>
+                        <div>
+                            <label class="input-label">توضیحات متا (Meta Description)</label>
+                            <textarea name="meta_description" class="lux-input" rows="3">{{ old('meta_description', $article->meta_description) }}</textarea>
+                        </div>
                     </div>
                 </div>
 

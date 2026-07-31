@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 
 class Article extends Model
 {
@@ -16,25 +17,22 @@ class Article extends Model
         'title',
         'slug',
         'excerpt',
-        'content',         
+        'content',
         'featured_image',
         'status',
         'published_at',
         'view_count',
         'reading_time',
-        'category',
         'tags',
         'meta_title',
         'meta_description',
-        'meta_keywords',
     ];
 
     protected $casts = [
-        'tags'          => 'array',
-        'meta_keywords' => 'array',
-        'published_at'  => 'datetime',
-        'view_count'    => 'integer',
-        'reading_time'  => 'integer',
+        'tags'         => 'array',
+        'published_at' => 'datetime',
+        'view_count'   => 'integer',
+        'reading_time' => 'integer',
     ];
 
     // ─── Relations ───────────────────────────────────────────
@@ -46,6 +44,11 @@ class Article extends Model
     public function service()
     {
         return $this->belongsTo(Service::class);
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'article_category');
     }
 
     public function comments()
@@ -74,10 +77,10 @@ class Article extends Model
                      ->where('published_at', '<=', now());
     }
 
-    public function scopeByCategory($query, $category)
+    public function scopeByCategory($query, ?string $categorySlug)
     {
-        return $category
-            ? $query->where('category', $category)
+        return $categorySlug
+            ? $query->whereHas('categories', fn ($q) => $q->where('slug', $categorySlug))
             : $query;
     }
 
@@ -97,6 +100,17 @@ class Article extends Model
         return $this->featured_image
             ? asset('assets/images/' . $this->featured_image)
             : asset('assets/images/default-article.jpg');
+    }
+
+    public function getMetaTitleOrDefaultAttribute(): string
+    {
+        return $this->meta_title ?: $this->title;
+    }
+
+    public function getMetaDescriptionOrDefaultAttribute(): string
+    {
+        return $this->meta_description
+            ?: Str::limit(strip_tags($this->excerpt ?: $this->content), 155);
     }
 
     // ─── Methods ─────────────────────────────────────────────

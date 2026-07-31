@@ -81,11 +81,12 @@
                     <div class="card-body">
                         <div class="two-col">
                             <div class="form-group">
-                                <label class="form-label">دسته‌بندی (انتخاب یا تایپ جدید)</label>
-                                <input type="text" name="category" list="categoryList" class="lux-input" placeholder="مثال: حقوق خانواده" value="{{ old('category') }}">
+                                <label class="form-label">دسته‌بندی‌ها <small style="color:#94a3b8;">(چند دسته با کاما جدا کنید)</small></label>
+                                <input type="text" name="categories" list="categoryList" class="lux-input"
+                                    placeholder="مثال: حقوق خانواده, طلاق" value="{{ old('categories') }}">
                                 <datalist id="categoryList">
                                     @foreach($categories as $cat)
-                                        <option value="{{ $cat }}">
+                                        <option value="{{ $cat->name }}">
                                     @endforeach
                                 </datalist>
                             </div>

@@ -5,92 +5,85 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\ArticleReaction;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
     public function index(Request $request)
     {
-        $category = $request->query('cat');
+        $categorySlug = $request->query('cat');
 
         $articles = Article::published()
-            ->byCategory($category)
+            ->byCategory($categorySlug)
             ->recent()
-            ->with('lawyer')
-            ->paginate(9);
+            ->with(['lawyer', 'categories'])
+            ->paginate(9)
+            ->withQueryString();
 
-        // دسته‌بندی‌های موجود برای فیلتر — از مقالات published واقعی
-        $categories = Article::published()
-            ->whereNotNull('category')
-            ->where('category', '!=', '')
-            ->distinct()
-            ->orderBy('category')
-            ->pluck('category');
+        $categories = Category::whereHas('articles', fn ($q) => $q->published())
+            ->orderBy('name')
+            ->get();
 
-        return view('public.articles.index', compact('articles', 'category', 'categories'));
+        $activeCategory = $categorySlug
+            ? $categories->firstWhere('slug', $categorySlug)
+            : null;
+
+        return view('public.articles.index', compact('articles', 'categories', 'activeCategory'));
     }
 
     public function show(string $slug)
     {
-        $article = Article::with(['lawyer']) // ✅ فقط lawyer که رابطه واقعیه
+        $article = Article::with(['lawyer', 'categories'])
             ->published()
             ->where('slug', $slug)
             ->firstOrFail();
 
-        // ✅ جلوگیری از شمارش تکراری با کوکی
-        $cookieKey = 'viewed_article_'.$article->id;
+        $cookieKey = 'viewed_article_' . $article->id;
 
         if (! request()->cookie($cookieKey)) {
             $article->incrementViewCount();
             cookie()->queue($cookieKey, true, 60 * 24);
         }
 
-        // ─── کامنت‌های تایید شده ─────────────────────────
         $comments = $article->comments()
             ->with([
                 'user',
-                'replies' => fn ($q) => $q->approved()
-                    ->with('user')
-                    ->oldest(),
+                'replies' => fn ($q) => $q->approved()->with('user')->oldest(),
             ])
             ->roots()
             ->approved()
             ->latest()
             ->get();
 
-        // ─── مقالات مرتبط ─────────────────────────────────
+        $categoryIds = $article->categories->pluck('id');
+
         $related = Article::published()
-            ->byCategory($article->category)
             ->where('id', '!=', $article->id)
+            ->when($categoryIds->isNotEmpty(), function ($q) use ($categoryIds) {
+                $q->whereHas('categories', fn ($qq) => $qq->whereIn('categories.id', $categoryIds));
+            })
             ->with('lawyer')
             ->recent()
             ->take(3)
             ->get();
 
-        // ─── ری‌اکشن‌های جمع‌بندی شده ──────────────────────
-// ─── ری‌اکشن‌های جمع‌بندی شده ──────────────────────
         $reactionCounts = $article->reactions()
-            ->selectRaw('type, count(*) as total') // ✅ کد اصلاح شده
+            ->selectRaw('type, count(*) as total')
             ->groupBy('type')
             ->pluck('total', 'type')
             ->toArray();
+
         foreach (ArticleReaction::TYPES as $type => $label) {
-            if (! isset($reactionCounts[$type])) {
-                $reactionCounts[$type] = 0;
-            }
+            $reactionCounts[$type] = $reactionCounts[$type] ?? 0;
         }
 
-        // ─── ری‌اکشن کاربر لاگین شده ────────────────────────
         $userReaction = auth()->check()
             ? $article->reactions()->where('user_id', auth()->id())->value('type')
             : null;
 
         return view('public.articles.show', compact(
-            'article',
-            'comments',
-            'related',
-            'reactionCounts',
-            'userReaction'
+            'article', 'comments', 'related', 'reactionCounts', 'userReaction'
         ));
     }
 }

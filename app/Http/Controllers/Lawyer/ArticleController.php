@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Lawyer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,12 +20,11 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $lawyer = $this->lawyer();
-        $query = Article::where('lawyer_id', $lawyer->id);
+        $query  = Article::where('lawyer_id', $lawyer->id)->with('categories');
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
-
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
@@ -42,10 +42,9 @@ class ArticleController extends Controller
 
     public function create()
     {
-        $services = Service::active()->get();
-        // گرفتن لیست دسته‌بندی‌های قبلی
-        $categories = Article::whereNotNull('category')->where('category', '!=', '')->distinct()->pluck('category');
-        
+        $services   = Service::active()->get();
+        $categories = Category::orderBy('name')->get();
+
         return view('lawyer.articles.create', compact('services', 'categories'));
     }
 
@@ -57,7 +56,7 @@ class ArticleController extends Controller
             'title'            => 'required|string|max:255',
             'content'          => 'required|string|min:100',
             'excerpt'          => 'nullable|string|max:500',
-            'category'         => 'nullable|string|max:100',
+            'categories'       => 'nullable|string|max:500',
             'tags'             => 'nullable|string',
             'status'           => 'required|in:draft,published',
             'service_id'       => 'nullable|exists:services,id',
@@ -77,7 +76,6 @@ class ArticleController extends Controller
             'slug'             => $this->generateUniqueSlug($request->title),
             'content'          => $request->content,
             'excerpt'          => $request->excerpt,
-            'category'         => $request->category,
             'tags'             => $request->tags ? array_map('trim', explode(',', $request->tags)) : null,
             'status'           => $request->status,
             'service_id'       => $request->service_id,
@@ -89,13 +87,14 @@ class ArticleController extends Controller
         ];
 
         if ($request->hasFile('featured_image')) {
-            $file   = $request->file('featured_image');
-            $name   = time() . '_' . Str::slug($request->title) . '.' . $file->getClientOriginalExtension();
+            $file = $request->file('featured_image');
+            $name = time() . '_' . Str::slug($request->title, '-') . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('assets/images'), $name);
             $data['featured_image'] = $name;
         }
 
         $article = Article::create($data);
+        $this->syncCategories($article, $request->categories);
 
         return redirect()->route('lawyer.articles.show', $article)
             ->with('success', 'مقاله با موفقیت ' . ($request->status === 'published' ? 'منتشر' : 'ذخیره') . ' شد.');
@@ -104,15 +103,17 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         $this->authorizeArticle($article);
+        $article->load('categories');
+
         return view('lawyer.articles.show', compact('article'));
     }
 
     public function edit(Article $article)
     {
         $this->authorizeArticle($article);
-        $services = Service::active()->get();
-        // گرفتن لیست دسته‌بندی‌های قبلی
-        $categories = Article::whereNotNull('category')->where('category', '!=', '')->distinct()->pluck('category');
+        $services   = Service::active()->get();
+        $categories = Category::orderBy('name')->get();
+        $article->load('categories');
 
         return view('lawyer.articles.edit', compact('article', 'services', 'categories'));
     }
@@ -125,7 +126,7 @@ class ArticleController extends Controller
             'title'            => 'required|string|max:255',
             'content'          => 'required|string|min:100',
             'excerpt'          => 'nullable|string|max:500',
-            'category'         => 'nullable|string|max:100',
+            'categories'       => 'nullable|string|max:500',
             'tags'             => 'nullable|string',
             'status'           => 'required|in:draft,published,archived',
             'service_id'       => 'nullable|exists:services,id',
@@ -139,7 +140,6 @@ class ArticleController extends Controller
             'title'            => $request->title,
             'content'          => $request->content,
             'excerpt'          => $request->excerpt,
-            'category'         => $request->category,
             'tags'             => $request->tags ? array_map('trim', explode(',', $request->tags)) : null,
             'status'           => $request->status,
             'service_id'       => $request->service_id,
@@ -153,13 +153,14 @@ class ArticleController extends Controller
         }
 
         if ($request->hasFile('featured_image')) {
-            $file   = $request->file('featured_image');
-            $name   = time() . '_' . Str::slug($request->title) . '.' . $file->getClientOriginalExtension();
+            $file = $request->file('featured_image');
+            $name = time() . '_' . Str::slug($request->title, '-') . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('assets/images'), $name);
             $data['featured_image'] = $name;
         }
 
         $article->update($data);
+        $this->syncCategories($article, $request->categories);
 
         return redirect()->route('lawyer.articles.show', $article)
             ->with('success', 'مقاله به‌روز شد.');
@@ -174,9 +175,33 @@ class ArticleController extends Controller
             ->with('success', 'مقاله حذف شد.');
     }
 
+    private function syncCategories(Article $article, ?string $rawCategories): void
+    {
+        $ids = [];
+
+        foreach (explode(',', $rawCategories ?? '') as $name) {
+            $name = trim($name);
+            if ($name === '') {
+                continue;
+            }
+
+            $category = Category::firstOrCreate(
+                ['slug' => Category::makeSlug($name)],
+                ['name' => $name]
+            );
+            $ids[] = $category->id;
+        }
+
+        $article->categories()->sync($ids);
+    }
+
+    // اسلاگ فارسی سالم — حروف فارسی حذف نمی‌شوند (برای سئوی فارسی بهتر است)
     private function generateUniqueSlug(string $title): string
     {
-        $slug  = Str::slug($title);
+        $slug = trim(preg_replace('/\s+/u', '-', trim($title)));
+        $slug = preg_replace('/[^\p{L}\p{N}\-]+/u', '', $slug);
+        $slug = trim($slug, '-') ?: Str::random(8);
+
         $base  = $slug;
         $count = 1;
 
@@ -190,7 +215,7 @@ class ArticleController extends Controller
     private function estimateReadingTime(string $content): int
     {
         $wordCount = str_word_count(strip_tags($content));
-        return max(1, (int) ceil($wordCount / 200)); 
+        return max(1, (int) ceil($wordCount / 200));
     }
 
     private function authorizeArticle(Article $article): void

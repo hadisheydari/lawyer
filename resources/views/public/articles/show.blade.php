@@ -1,5 +1,31 @@
 @extends('layouts.public')
-@section('title', $article->meta_title ?? $article->title . ' | دفتر وکالت ابدالی و جوشقانی')
+@section('title', $article->meta_title_or_default . ' | دفتر وکالت ابدالی و جوشقانی')
+@section('meta_description', $article->meta_description_or_default)
+@section('canonical', route('articles.show', $article->slug))
+@section('og_type', 'article')
+@section('og_image', $article->featured_image ? $article->image_url : asset('assets/images/hero.png'))
+
+@push('schema')
+<script type="application/ld+json">
+{!! json_encode([
+    '@context' => 'https://schema.org',
+    '@type' => 'Article',
+    'headline' => $article->title,
+    'description' => $article->meta_description_or_default,
+    'image' => $article->featured_image ? $article->image_url : asset('assets/images/hero.png'),
+    'datePublished' => optional($article->published_at)->toIso8601String(),
+    'dateModified' => $article->updated_at->toIso8601String(),
+    'author' => [
+        '@type' => 'Person',
+        'name' => $article->lawyer->name ?? 'دفتر وکالت ابدالی و جوشقانی',
+    ],
+    'publisher' => [
+        '@type' => 'Organization',
+        'name' => 'دفتر وکالت ابدالی و جوشقانی',
+    ],
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+</script>
+@endpush
 
 @push('styles')
 <style>
@@ -434,8 +460,8 @@
             <i class="fas fa-chevron-right"></i>
             <a href="{{ route('articles.index') }}">مقالات</a>
             <i class="fas fa-chevron-right"></i>
-            @if($article->category)
-                <a href="{{ route('articles.index', ['cat' => $article->category]) }}">{{ $article->category }}</a>
+            @if($article->categories->isNotEmpty())
+                <a href="{{ route('articles.index', ['cat' => $article->categories->first()->slug]) }}">{{ $article->categories->first()->name }}</a>
                 <i class="fas fa-chevron-right"></i>
             @endif
             <span>{{ Str::limit($article->title, 40) }}</span>
@@ -450,13 +476,14 @@
 
             <div class="article-header">
 
-                @if($article->category)
+                @if($article->categories->isNotEmpty())
                     <div class="article-category-badge">
                         <i class="fas fa-folder"></i>
-                        <a href="{{ route('articles.index', ['cat' => $article->category]) }}"
-                           style="color:inherit;text-decoration:none;">
-                            {{ $article->category }}
-                        </a>
+                        @foreach($article->categories as $cat)
+                            <a href="{{ route('articles.index', ['cat' => $cat->slug]) }}" style="color:inherit;text-decoration:none;">
+                                {{ $cat->name }}
+                            </a>@if(!$loop->last)،@endif
+                        @endforeach
                     </div>
                 @endif
 
