@@ -121,28 +121,16 @@
         </div>
     </div>
 
-    {{-- قسط بعدی --}}
-    @if($stats['next_due'])
-        @php $nxt = $stats['next_due']; $isOverdue = $nxt->due_date < now(); @endphp
-        <div class="next-inst-banner">
-            <div class="next-inst-info">
-                <h4>{{ $isOverdue ? '⚠️ قسط سررسیدگذشته' : '📅 قسط پیش رو' }}</h4>
-                <p>
-                    {{ $nxt->case->title ?? 'پرونده' }} — قسط {{ $nxt->installment_number }}
-                    &nbsp;·&nbsp; سررسید: {{ \Morilog\Jalali\Jalalian::fromCarbon($nxt->due_date)->format('Y/m/d') }}
-                </p>
-            </div>
             <div class="next-inst-amount">{{ number_format($nxt->amount) }} ت</div>
-            
-            <form action="{{ route('client.installments.pay', $nxt) }}" method="POST" style="margin: 0;">
-                @csrf
-                <button type="submit" class="btn-pay-big">
-                    <i class="fas fa-credit-card"></i> پرداخت آنلاین
-                </button>
-            </form>
-            
-        </div>
-    @endif
+
+            <div style="display:flex;gap:8px;">
+                <a href="tel:09131146888" class="btn-pay-big" style="background:var(--navy);">
+                    <i class="fas fa-phone"></i> تماس
+                </a>
+                <a href="https://wa.me/989131146888" target="_blank" class="btn-pay-big" style="background:#25d366;">
+                    <i class="fab fa-whatsapp"></i> واتساپ
+                </a>
+            </div>
 
     {{-- فیلتر --}}
     <div class="filter-bar">
@@ -183,20 +171,14 @@
                         <span class="badge badge-paid">پرداخت‌شده</span>
                     @elseif($isOverdue)
                         <span class="badge badge-overdue">سررسیدگذشته</span>
-                        <form action="{{ route('client.installments.pay', $inst) }}" method="POST" style="margin: 0;">
-                            @csrf
-                            <button type="submit" class="btn-pay urgent">
-                                <i class="fas fa-credit-card"></i> پرداخت فوری
-                            </button>
-                        </form>
+                            <a href="https://wa.me/989131146888" target="_blank" class="btn-pay">
+                                <i class="fab fa-whatsapp"></i> هماهنگی پرداخت
+                            </a>
                     @else
                         <span class="badge badge-pending">در انتظار</span>
-                        <form action="{{ route('client.installments.pay', $inst) }}" method="POST" style="margin: 0;">
-                            @csrf
-                            <button type="submit" class="btn-pay">
-                                <i class="fas fa-credit-card"></i> پرداخت
-                            </button>
-                        </form>
+                        <a href="https://wa.me/989131146888" target="_blank" class="btn-pay">
+                            <i class="fab fa-whatsapp"></i> هماهنگی پرداخت
+                        </a>
                     @endif
                 </div>
             </div>

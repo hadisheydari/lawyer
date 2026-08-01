@@ -70,7 +70,6 @@ Route::prefix('reserve')->name('reserve.')->group(function () {
     Route::get('/', [ReserveController::class, 'index'])->name('index');
     Route::post('/', [ReserveController::class, 'store'])->name('store');
     Route::get('/slots', [ReserveController::class, 'getAvailableSlots'])->name('slots');
-    Route::get('/verify/{payment}', [ReserveController::class, 'verifyPayment'])->name('verify');
 });
 
 // ═══════════════════════════════════════════════════════════════
@@ -243,7 +242,5 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
     // اقساط (کاربر ویژه)
     Route::prefix('installments')->name('installments.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Client\InstallmentController::class, 'index'])->name('index');
-        Route::post('/{installment}/pay', [\App\Http\Controllers\Client\InstallmentController::class, 'pay'])->name('pay');
-        Route::get('/{payment}/verify', [\App\Http\Controllers\Client\InstallmentController::class, 'verify'])->name('verify');
     });
 });

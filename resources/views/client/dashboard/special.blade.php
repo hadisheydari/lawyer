@@ -256,9 +256,9 @@
                         </div>
                         <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
                             <span class="inst-amount">{{ number_format($inst->amount) }} ت</span>
-                            <a href="{{ route('client.installments.pay', $inst) }}" class="btn-pay">
-                                <i class="fas fa-credit-card"></i> پرداخت
-                            </a>
+                            <a href="https://wa.me/989131146888" target="_blank" class="btn-pay">
+                               <i class="fab fa-whatsapp"></i> هماهنگی پرداخت
+                             </a>
                         </div>
                     </div>
                 @empty
