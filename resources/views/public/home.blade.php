@@ -54,8 +54,12 @@
             position: relative; padding: clamp(60px, 10vw, 120px) 0 clamp(120px, 15vw, 180px); overflow: hidden;
             background: linear-gradient(to left, rgba(253,251,247,0.85) 0%, rgba(253,251,247,1) 70%),
                 url("{{ asset('assets/images/hero.png') }}");
-            background-size: cover; background-position: center; background-attachment: fixed;
+            background-size: cover; background-position: center; 
+            background-attachment: fixed;
         }
+        @media (max-width: 992px){
+             .hero { background-attachment: scroll; }
+            }
         .hero-container {
             max-width: 1300px; margin: 0 auto; padding: 0 20px;
             display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; position: relative; z-index: 2;

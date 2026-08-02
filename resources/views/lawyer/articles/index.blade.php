@@ -368,9 +368,9 @@
                         </div>
                     </div>
                     <div class="ac-body">
-                        @if ($article->category)
-                            <div class="ac-cat"><i class="fas fa-tag"></i> {{ $article->category }}</div>
-                        @endif
+                        @foreach($article->categories as $cat)
+                           <span class="ac-cat"><i class="fas fa-tag"></i> {{ $cat->name }}</span>
+                        @endforeach
                         <div class="ac-title">{{ $article->title }}</div>
                         <div class="ac-meta">
                             @if ($article->published_at->year > 1900)

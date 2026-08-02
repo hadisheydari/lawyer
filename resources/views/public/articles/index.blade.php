@@ -238,16 +238,16 @@
                         <div class="ac-img">
                             <img src="{{ asset('assets/images/' . $article->featured_image) }}"
                                  alt="{{ $article->title }}" loading="lazy">
-                            @if($article->category)
-                                <span class="ac-cat">{{ $article->category }}</span>
-                            @endif
+                            @foreach($article->categories as $cat)
+                               <span class="ac-cat">{{ $cat->name }}</span>
+                            @endforeach
                         </div>
                     @else
                         <div class="ac-img-placeholder">
                             <i class="fas fa-newspaper"></i>
-                            @if($article->category)
-                                <span class="ac-cat">{{ $article->category }}</span>
-                            @endif
+                            @foreach($article->categories as $cat)
+                               <span class="ac-cat">{{ $cat->name }}</span>
+                            @endforeach
                         </div>
                     @endif
 

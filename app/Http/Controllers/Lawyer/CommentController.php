@@ -28,7 +28,7 @@ class CommentController extends Controller
         }
 
         // نظرات pending را ابتدا نشان بده
-        $comments = $query->orderByRaw("FIELD(status, 'pending', 'approved', 'rejected')")
+        $comments = $query->orderByRaw("CASE status WHEN 'pending' THEN 1 WHEN 'approved' THEN 2 ELSE 3 END")
             ->latest()
             ->paginate(20)
             ->withQueryString();

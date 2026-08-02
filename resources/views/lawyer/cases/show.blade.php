@@ -66,6 +66,8 @@
     .lux-input:focus { background-color: #fff !important; border-color: var(--gold-main) !important; box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1) !important; }
     .input-label { display: block; font-size: 0.85rem; font-weight: 800; color: #475569; margin-bottom: 8px; }
 
+    @media (max-width:600px){
+    .inst-row { grid-template-columns: 1fr; }}
     @media (max-width: 1200px) { .case-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 768px) { .case-grid { grid-template-columns: 1fr; } .header-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } }
 </style>

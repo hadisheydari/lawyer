@@ -90,7 +90,7 @@
     .doc-icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(197,160,89,0.1); color: var(--gold-main); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
     .doc-info h4 { font-size: 0.85rem; font-weight: 700; margin: 0 0 3px; }
     .doc-info p { font-size: 0.72rem; color: #888; margin: 0; }
-
+    .inst-table-wrap { overflow-x: auto; }
     @media (max-width: 960px) { .grid-main { grid-template-columns: 1fr; } .fin-grid { grid-template-columns: 1fr 1fr; } }
 </style>
 @endpush

@@ -15,7 +15,6 @@ class UserAuthController extends Controller
     // ─── ارسال OTP ────────────────────────────────────────────────────────────
     public function sendOtp(Request $request): JsonResponse
     {
-        dd(1);
         $request->validate([
             'phone' => ['required', 'regex:/^09[0-9]{9}$/'],
         ], [
@@ -222,7 +221,6 @@ class UserAuthController extends Controller
                 'text' => (string) $code,
             ]);
 
-           dd(   $response);
             $result = $response->json();
 
             // بررسی وضعیت موفقیت ارسال در ملی‌پیامک (RetStatus باید 1 باشد)

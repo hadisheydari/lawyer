@@ -287,6 +287,7 @@
             border: 1px solid #bfdbfe;
             color: #1e40af;
         }
+        body { height: 100vh; overflow: hidden; }
     </style>
 </head>
 

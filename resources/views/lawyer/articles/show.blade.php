@@ -68,9 +68,11 @@
 <div class="article-header">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">
         <div>
-            @if($article->category)
-                <div class="art-category"><i class="fas fa-tag"></i> {{ $article->category }}</div>
-            @endif
+
+            @foreach($article->categories as $cat)
+               <div class="art-category"><i class="fas fa-tag"></i> {{ $cat->name }}</div>
+            @endforeach
+
             <div class="art-title">{{ $article->title }}</div>
             <div class="art-meta">
                 @if($article->published_at)
@@ -145,7 +147,11 @@
         <div class="card">
             <div class="card-title"><i class="fas fa-info-circle"></i> اطلاعات</div>
             <div class="info-row"><span class="info-label">خدمت</span><span class="info-value">{{ $article->service->title ?? '—' }}</span></div>
-            <div class="info-row"><span class="info-label">دسته‌بندی</span><span class="info-value">{{ $article->category ?? '—' }}</span></div>
+            <div class="info-row"><span class="info-label">دسته‌بندی</span>
+                @foreach($article->categories as $cat)
+                    <span class="info-value">{{ $cat->name }}</span>
+                @endforeach
+            </div>
             <div class="info-row"><span class="info-label">تاریخ ایجاد</span><span class="info-value">{{ \Morilog\Jalali\Jalalian::fromCarbon($article->created_at)->format('Y/m/d') }}</span></div>
             @if($article->updated_at != $article->created_at)
                 <div class="info-row"><span class="info-label">آخرین ویرایش</span><span class="info-value">{{ \Morilog\Jalali\Jalalian::fromCarbon($article->updated_at)->format('Y/m/d') }}</span></div>
