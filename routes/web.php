@@ -204,7 +204,7 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
 // CLIENT DASHBOARD
 // ═══════════════════════════════════════════════════════════════
 
-Route::middleware(['auth'])->prefix('dashboard')->name('dashboard.')->group(function () {
+Route::middleware(['auth'])->prefix('dashboard.index')->name('dashboard.')->group(function () {
     Route::get('/', [ClientDashboardController::class, 'index'])->name('index');
     Route::get('/profile', [ClientDashboardController::class, 'profile'])->name('profile');
 });
