@@ -434,13 +434,11 @@
                     پس از تأیید، درخواست شما ثبت می‌شود و برای هماهنگی نهایی نوبت و پرداخت، تماس یا از واتساپ زیر استفاده کنید.
                 </div>
 
-                <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
-                    <a href="tel:09131146888" style="flex:1;min-width:150px;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--pnav);color:#fff;padding:12px;border-radius:10px;font-weight:700;font-size:0.88rem;text-decoration:none;">
-                        <i class="fas fa-phone"></i> تماس با دفتر
-                    </a>
-                    <a href="https://wa.me/989131146888" target="_blank" style="flex:1;min-width:150px;display:flex;align-items:center;justify-content:center;gap:8px;background:#25d366;color:#fff;padding:12px;border-radius:10px;font-weight:700;font-size:0.88rem;text-decoration:none;">
-                        <i class="fab fa-whatsapp"></i> واتساپ
-                    </a>
+
+
+                <div style="background:#f0fdf4;border-radius:10px;padding:15px 18px;margin-bottom:20px;font-size:0.85rem;color:#065f46;border:1px solid #a7f3d0;">
+                    <i class="fas fa-shield-alt" style="margin-left:6px;"></i>
+                    پرداخت شما از طریق درگاه امن زرین‌پال انجام می‌شود.
                 </div>
 
                 <label class="terms-check">
@@ -455,8 +453,8 @@
                     <input type="hidden" name="lawyer_id"     value="{{ $lawyer->id }}">
 
                     <button type="submit" id="submit-btn" class="btn-reserve-final" disabled>
-                        <i class="fas fa-check-circle"></i>
-                        ثبت نهایی درخواست نوبت
+                        <i class="fas fa-credit-card"></i>
+                        انتقال به درگاه پرداخت
                     </button>
                 </form>
 

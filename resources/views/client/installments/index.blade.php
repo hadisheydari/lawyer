@@ -121,16 +121,18 @@
         </div>
     </div>
 
-            <div class="next-inst-amount">{{ number_format($nxt->amount) }} ت</div>
-
-            <div style="display:flex;gap:8px;">
-                <a href="tel:09131146888" class="btn-pay-big" style="background:var(--navy);">
-                    <i class="fas fa-phone"></i> تماس
-                </a>
-                <a href="https://wa.me/989131146888" target="_blank" class="btn-pay-big" style="background:#25d366;">
-                    <i class="fab fa-whatsapp"></i> واتساپ
-                </a>
+    @if($stats['next_due'])
+        <div class="next-inst-banner">
+            <div class="next-inst-info">
+                <h4><i class="fas fa-bell" style="color:var(--gold-main);margin-left:6px;"></i>قسط بعدی شما</h4>
+                <p>سررسید: {{ \Morilog\Jalali\Jalalian::fromCarbon($stats['next_due']->due_date)->format('Y/m/d') }}</p>
             </div>
+            <div class="next-inst-amount">{{ number_format($stats['next_due']->amount) }} ت</div>
+            <a href="{{ route('client.installments.pay', $stats['next_due']) }}" class="btn-pay-big">
+                <i class="fas fa-credit-card"></i> پرداخت آنلاین
+            </a>
+        </div>
+    @endif
 
     {{-- فیلتر --}}
     <div class="filter-bar">
@@ -171,13 +173,14 @@
                         <span class="badge badge-paid">پرداخت‌شده</span>
                     @elseif($isOverdue)
                         <span class="badge badge-overdue">سررسیدگذشته</span>
-                            <a href="https://wa.me/989131146888" target="_blank" class="btn-pay">
-                                <i class="fab fa-whatsapp"></i> هماهنگی پرداخت
+                            <a href="{{ route('client.installments.pay', $inst) }}" class="btn-pay {{ $isOverdue ? 'urgent' : '' }}">
+                                <i class="fas fa-credit-card"></i> پرداخت آنلاین
                             </a>
                     @else
                         <span class="badge badge-pending">در انتظار</span>
-                        <a href="https://wa.me/989131146888" target="_blank" class="btn-pay">
-                            <i class="fab fa-whatsapp"></i> هماهنگی پرداخت
+
+                        <a href="{{ route('client.installments.pay', $inst) }}" class="btn-pay">
+                            <i class="fas fa-credit-card"></i> پرداخت
                         </a>
                     @endif
                 </div>

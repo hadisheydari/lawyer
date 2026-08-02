@@ -215,9 +215,10 @@
                                 </td>
                                 <td>
                                     @if($inst->status !== 'paid')
-                                        <a href="https://wa.me/989131146888" target="_blank" class="btn-pay">
-                                            <i class="fab fa-whatsapp"></i> هماهنگی پرداخت
-                                        </a>
+
+                                    <a href="{{ route('client.installments.pay', $inst) }}" class="btn-pay">
+                                        <i class="fas fa-credit-card"></i> پرداخت
+                                    </a>
                                     @else
                                         <span style="font-size:0.78rem;color:#888;">{{ $inst->paid_at ? \Morilog\Jalali\Jalalian::fromCarbon($inst->paid_at)->format('Y/m/d') : '—' }}</span>
                                     @endif
