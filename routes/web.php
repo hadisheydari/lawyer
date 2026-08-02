@@ -244,6 +244,6 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
     Route::prefix('installments')->name('installments.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Client\InstallmentController::class, 'index'])->name('index');
         Route::get('/{installment}/pay', [\App\Http\Controllers\Client\InstallmentController::class, 'pay'])->name('pay');
-        Route::get('/{installment}/verify/{payment}', [\App\Http\Controllers\Client\InstallmentController::class, 'verify'])->name('verify');
+        Route::get('/verify/{payment}', [\App\Http\Controllers\Client\InstallmentController::class, 'verify'])->name('verify');
     });
 });

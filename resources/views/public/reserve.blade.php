@@ -429,11 +429,6 @@
                     </div>
                 </div>
 
-                <div style="background:#f0fdf4;border-radius:10px;padding:15px 18px;margin-bottom:20px;font-size:0.85rem;color:#065f46;border:1px solid #a7f3d0;">
-                    <i class="fas fa-info-circle" style="margin-left:6px;"></i>
-                    پس از تأیید، درخواست شما ثبت می‌شود و برای هماهنگی نهایی نوبت و پرداخت، تماس یا از واتساپ زیر استفاده کنید.
-                </div>
-
 
 
                 <div style="background:#f0fdf4;border-radius:10px;padding:15px 18px;margin-bottom:20px;font-size:0.85rem;color:#065f46;border:1px solid #a7f3d0;">
