@@ -81,20 +81,6 @@ class LegalCase extends Model
         return $this->hasOne(ChatConversation::class, 'case_id');
     }
 
-    public function getProgressPercentAttribute(): int
-    {
-        if ($this->total_fee == 0) {
-            return 0;
-        }
-
-        return (int) round(($this->paid_amount / $this->total_fee) * 100);
-    }
-
-    public function getRemainingFeeAttribute(): float
-    {
-        return max(0, $this->total_fee - $this->paid_amount);
-    }
-
     public function isActive(): bool
     {
         return $this->current_status === 'active';
@@ -105,10 +91,22 @@ class LegalCase extends Model
         return in_array($this->current_status, ['closed', 'won', 'lost']);
     }
 
+    /**
+     * تولید شماره پرونده بر اساس سال شمسی
+     * ✅ Fix: قبلاً شمارش بر اساس سال میلادی (now()->year) انجام می‌شد
+     * در حالی‌که برچسب سال بر اساس شمسی چاپ می‌شد — باعث می‌شد شمارنده
+     * درست سر سال شمسی (اسفند/فروردین) ریست نشه و اعداد دو سال شمسی
+     * مختلف با هم قاطی بشن. الان بازهٔ شروع/پایان سال شمسی به میلادی
+     * تبدیل می‌شه و شمارش دقیقاً در همون بازه انجام می‌شه.
+     */
     public static function generateCaseNumber(): string
     {
         $jalaliYear = Jalalian::now()->getYear();
-        $count = self::whereYear('created_at', now()->year)->count() + 1;
+
+        $startOfJalaliYear = Jalalian::fromFormat('Y/m/d', $jalaliYear . '/01/01')->toCarbon()->startOfDay();
+        $endOfJalaliYear   = $startOfJalaliYear->copy()->addYear()->subSecond();
+
+        $count = self::whereBetween('created_at', [$startOfJalaliYear, $endOfJalaliYear])->count() + 1;
 
         return sprintf('LAW-%d-%03d', $jalaliYear, $count);
     }
@@ -128,6 +126,9 @@ class LegalCase extends Model
         return $query->where('lawyer_id', $lawyerId);
     }
 
+    // ✅ Fix: قبلاً هم accessor قدیمی (getProgressPercentAttribute/getRemainingFeeAttribute)
+    // و هم نسخهٔ Attribute-based هم‌زمان تعریف شده بودند (تعریف تکراری).
+    // فقط نسخهٔ استاندارد Attribute نگه داشته شد.
     protected function progressPercent(): Attribute
     {
         return Attribute::make(
