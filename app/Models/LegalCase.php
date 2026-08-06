@@ -91,14 +91,7 @@ class LegalCase extends Model
         return in_array($this->current_status, ['closed', 'won', 'lost']);
     }
 
-    /**
-     * تولید شماره پرونده بر اساس سال شمسی
-     * ✅ Fix: قبلاً شمارش بر اساس سال میلادی (now()->year) انجام می‌شد
-     * در حالی‌که برچسب سال بر اساس شمسی چاپ می‌شد — باعث می‌شد شمارنده
-     * درست سر سال شمسی (اسفند/فروردین) ریست نشه و اعداد دو سال شمسی
-     * مختلف با هم قاطی بشن. الان بازهٔ شروع/پایان سال شمسی به میلادی
-     * تبدیل می‌شه و شمارش دقیقاً در همون بازه انجام می‌شه.
-     */
+
     public static function generateCaseNumber(): string
     {
         $jalaliYear = Jalalian::now()->getYear();
@@ -126,9 +119,7 @@ class LegalCase extends Model
         return $query->where('lawyer_id', $lawyerId);
     }
 
-    // ✅ Fix: قبلاً هم accessor قدیمی (getProgressPercentAttribute/getRemainingFeeAttribute)
-    // و هم نسخهٔ Attribute-based هم‌زمان تعریف شده بودند (تعریف تکراری).
-    // فقط نسخهٔ استاندارد Attribute نگه داشته شد.
+
     protected function progressPercent(): Attribute
     {
         return Attribute::make(
