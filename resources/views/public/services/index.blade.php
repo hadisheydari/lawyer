@@ -258,7 +258,7 @@
                 
                 {{-- عکس و آیکون شناور --}}
                 <div class="pc-img-box">
-                    <img src="{{ $service->image ? asset('assets/images/' . $service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80' }}" 
+                    <img src="{{ $service->image ? asset( $service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80' }}" 
                          alt="{{ $service->title }}" loading="lazy"
                          onerror="this.src='https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80'">
                     

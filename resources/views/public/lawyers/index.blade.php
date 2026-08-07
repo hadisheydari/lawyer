@@ -432,7 +432,7 @@
                 {{-- عکس --}}
                 <div class="lawyer-img-wrap">
                     @if($lawyer->image)
-                        <img src="{{ 'assets/images/'.$lawyer->image }}" alt="{{ $lawyer->name }}">
+                        <img src="{{$lawyer->image }}" alt="{{ $lawyer->name }}">
                     @else
                         <div class="lawyer-img-placeholder">
                             {{ mb_substr($lawyer->name, 0, 1) }}

@@ -144,7 +144,18 @@
         .footer-socials a { width: 38px; height: 38px; border-radius: 50%; border: 1px solid #333; display: flex; align-items: center; justify-content: center; color: #888; font-size: 0.9rem; transition: 0.3s; }
         .footer-socials a:hover { border-color: var(--gold-main); color: var(--gold-main); }
         .footer-copy { font-size: 0.8rem; color: #555; border-top: 1px solid #2a2520; padding-top: 20px; }
-
+/* ─── Trust Seals (eNamad) ─── */
+        .footer-certs { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .footer-certs a { 
+            background: #fff; 
+            padding: 10px; 
+            border-radius: var(--radius-md); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+            transition: var(--transition); 
+            display: inline-block; 
+        }
+        .footer-certs a:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3); }
+        .footer-certs img { width: 75px; height: auto; display: block; }
         /* ─── Flash Messages ─────────────────────────────────── */
         .flash-container { max-width: 1200px; margin: 20px auto 0; padding: 0 20px; }
         .flash { padding: 14px 20px; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
@@ -235,6 +246,12 @@
             <a href="{{ route('articles.index') }}">مقالات</a>
             <a href="{{ route('contact') }}">تماس با ما</a>
         </div>
+        <div class="footer-certs">
+            <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=770536&Code=Vxr7HKG8NhV37uhcuZ9cELfSpoOfV3QI'>
+                <img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=770536&Code=Vxr7HKG8NhV37uhcuZ9cELfSpoOfV3QI' alt='اینماد' style='cursor:pointer' code='Vxr7HKG8NhV37uhcuZ9cELfSpoOfV3QI'>
+            </a>
+        </div>
+
         <div class="footer-copy">
             <p>© {{ now()->year }} تمام حقوق محفوظ است. دفتر وکالت ابدالی و جوشقانی</p>
         </div>
