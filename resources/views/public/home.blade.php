@@ -311,7 +311,7 @@
             <div class="hero-visual">
                 <div class="hero-pattern-circle"></div>
                 <div class="hero-img-frame">
-                    <img src="{{ asset('assets/images/babak.png') }}"
+                    <img src="{{ asset('assets/images/babak.webp') }}"
                          onerror="this.style.background='linear-gradient(135deg,#d4af37,#aa8222)'"
                          alt="بابک ابدالی" class="hero-img">
                     <div class="img-label">
@@ -320,7 +320,7 @@
                     </div>
                 </div>
                 <div class="hero-img-frame">
-                    <img src="{{ asset('assets/images/zahra.png') }}"
+                    <img src="{{ asset('assets/images/zahra.webp') }}"
                          onerror="this.style.background='linear-gradient(135deg,#e6cfa3,#9e7f41)'"
                          alt="زهرا جوشقانی" class="hero-img">
                     <div class="img-label">
@@ -388,7 +388,7 @@
         <div class="services-grid">
             @forelse($services as $service)
                 <a href="{{ route('services.show', $service->slug) }}" class="service-card">
-                    <img src="{{ $service->image ? asset('assets/images/'.$service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70' }}"
+                    <img src="{{ $service->image ? asset($service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70' }}"
                          alt="{{ $service->title }}" loading="lazy"
                          onerror="this.src='https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70'">
                     <div class="service-content">
