@@ -466,7 +466,7 @@
                 <div class="summary-card">
                     <div class="lawyer-mini">
                         @if($lawyer->image)
-                            <img src="{{ $lawyer->image_url }}" alt="{{ $lawyer->name }}">
+                            <img src="{{ asset($lawyer->image) }}" alt="{{ $lawyer->name }}">
                         @else
                             <div class="lawyer-mini-placeholder">{{ mb_substr($lawyer->name, 0, 1) }}</div>
                         @endif

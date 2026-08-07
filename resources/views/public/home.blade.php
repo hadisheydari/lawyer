@@ -53,7 +53,7 @@
         .hero {
             position: relative; padding: clamp(60px, 10vw, 120px) 0 clamp(120px, 15vw, 180px); overflow: hidden;
             background: linear-gradient(to left, rgba(253,251,247,0.85) 0%, rgba(253,251,247,1) 70%),
-                url("{{ asset('assets/images/hero.png') }}");
+                url("{{ asset('assets/images/hero.webp') }}");
             background-size: cover; background-position: center; 
             background-attachment: fixed;
         }

@@ -3,7 +3,7 @@
 @section('meta_description', $article->meta_description_or_default)
 @section('canonical', route('articles.show', $article->slug))
 @section('og_type', 'article')
-@section('og_image', $article->featured_image ? $article->image_url : asset('assets/images/hero.png'))
+@section('og_image', $article->featured_image ? $article->image_url : asset('assets/images/hero.webp'))
 
 @push('schema')
 <script type="application/ld+json">
@@ -12,7 +12,7 @@
     '@type' => 'Article',
     'headline' => $article->title,
     'description' => $article->meta_description_or_default,
-    'image' => $article->featured_image ? $article->image_url : asset('assets/images/hero.png'),
+    'image' => $article->featured_image ? $article->image_url : asset('assets/images/hero.webp'),
     'datePublished' => optional($article->published_at)->toIso8601String(),
     'dateModified' => $article->updated_at->toIso8601String(),
     'author' => [
@@ -517,7 +517,7 @@
                 </div>
 
                 @if($article->featured_image)
-                    <img src="{{ asset('assets/images/' . $article->featured_image) }}"
+                    <img src="{{ asset($article->featured_image) }}"
                          alt="{{ $article->title }}"
                          class="article-featured-img">
                 @endif
@@ -632,7 +632,7 @@
                     <div class="lawyer-card-s-header">
                         <div class="lawyer-avatar-s">
                             @if($article->lawyer->image)
-                                <img src="{{ $article->lawyer->image_url }}"
+                                <img src="{{ asset($article->lawyer->image) }}"
                                      alt="{{ $article->lawyer->name }}">
                             @else
                                 {{ mb_substr($article->lawyer->name, 0, 1) }}
@@ -662,7 +662,7 @@
                     @foreach($related as $rel)
                         <a href="{{ route('articles.show', $rel->slug) }}" class="related-item">
                             @if($rel->featured_image)
-                                <img src="{{ asset('assets/images/' . $rel->featured_image) }}"
+                                <img src="{{ asset($rel->featured_image) }}"
                                      alt="{{ $rel->title }}" class="related-img">
                             @else
                                 <div class="related-img-placeholder">

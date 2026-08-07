@@ -104,7 +104,7 @@
                     <div class="card-body" style="text-align: center;">
                         <div class="current-thumb-box" id="thumbPreviewBox">
                             @if($article->featured_image)
-                                <img id="image_preview" src="{{ asset('assets/images/' . $article->featured_image) }}">
+                                <img id="image_preview" src="{{ asset($article->featured_image) }}">
                             @else
                                 <div style="height: 150px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #94a3b8;">بدون تصویر</div>
                             @endif

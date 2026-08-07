@@ -357,7 +357,7 @@
                 <div class="article-card">
                     <div class="ac-image">
                         @if ($article->featured_image)
-                            <img src="{{ asset('assets/images/' . $article->featured_image) }}" alt="{{ $article->title }}">
+                            <img src="{{ asset($article->featured_image) }}" alt="{{ $article->title }}">
                         @else
                             <div class="ac-image-placeholder"><i class="fas fa-newspaper"></i></div>
                         @endif

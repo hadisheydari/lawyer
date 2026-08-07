@@ -94,7 +94,7 @@
     <div>
         @if($article->featured_image)
             <div class="card" style="padding:0;overflow:hidden;">
-                <img src="{{ asset('assets/images/'.$article->featured_image) }}" alt="{{ $article->title }}"
+                <img src="{{ asset($article->featured_image) }}" alt="{{ $article->title }}"
                      style="width:100%;max-height:350px;object-fit:cover;">
             </div>
         @endif

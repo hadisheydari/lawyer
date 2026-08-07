@@ -196,7 +196,7 @@
             <a href="{{ route('articles.show', $featured->slug) }}" class="article-featured">
                 <div class="af-img">
                     @if($featured->featured_image)
-                        <img src="{{ asset('assets/images/' . $featured->featured_image) }}"
+                        <img src="{{ asset( $featured->featured_image) }}"
                              alt="{{ $featured->title }}" loading="lazy">
                     @else
                         <div class="af-img-placeholder">
@@ -236,7 +236,7 @@
 
                     @if($article->featured_image)
                         <div class="ac-img">
-                            <img src="{{ asset('assets/images/' . $article->featured_image) }}"
+                            <img src="{{ asset( $article->featured_image) }}"
                                  alt="{{ $article->title }}" loading="lazy">
                             @foreach($article->categories as $cat)
                                <span class="ac-cat">{{ $cat->name }}</span>
