@@ -9,9 +9,10 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+    // app/Providers/AppServiceProvider.php
     public function register(): void
     {
-        //
+        require_once app_path('helpers.php');
     }
 
     /**

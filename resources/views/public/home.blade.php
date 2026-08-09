@@ -53,7 +53,7 @@
         .hero {
             position: relative; padding: clamp(60px, 10vw, 120px) 0 clamp(120px, 15vw, 180px); overflow: hidden;
             background: linear-gradient(to left, rgba(253,251,247,0.85) 0%, rgba(253,251,247,1) 70%),
-                url("{{ asset('assets/images/hero.png') }}");
+                url("{{ asset('assets/images/hero.webp') }}");
             background-size: cover; background-position: center; 
             background-attachment: fixed;
         }
@@ -233,9 +233,10 @@
         .read-more { margin-top: auto; color: var(--navy); font-weight: 800; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
         .article-card:hover .read-more { color: var(--gold-main); gap: 12px; }
 
-        /* ─── CONTACT ─── */
+        /* ─── CONTACT FORM ─── */
         .contact-section { padding: 100px 20px; background-color: #fff; position: relative; }
         .contact-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.5fr; gap: clamp(30px, 5vw, 50px); align-items: stretch; }
+        
         .contact-info-box { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); color: #fff; padding: clamp(30px, 5vw, 50px); border-radius: var(--radius-lg); position: relative; overflow: hidden; box-shadow: var(--shadow-card); }
         .contact-info-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, var(--gold-main), var(--gold-light)); }
         .info-title { font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 40px; color: var(--gold-main); font-weight: 900;}
@@ -250,6 +251,49 @@
             font-weight:700; font-size:0.95rem; margin-top:15px; transition:var(--transition); text-decoration:none; width: 100%;
         }
         .whatsapp-btn:hover { background: #25d366; color: #fff; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3); transform: translateY(-2px);}
+
+        /* اضافه شده برای فرم تماس */
+        .contact-form-box {
+            background: #fff;
+            padding: clamp(30px, 5vw, 50px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        .form-group-c { margin-bottom: 20px; }
+        .input-box { position: relative; }
+        .input-box i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.1rem;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+        .input-box.textarea-box i { top: 20px; transform: none; }
+        .input-box input,
+        .input-box textarea {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 0.95rem;
+            color: var(--navy);
+            background: #f8fafc;
+            transition: var(--transition);
+            outline: none;
+        }
+        .input-box textarea { min-height: 120px; resize: vertical; }
+        .input-box:focus-within i { color: var(--gold-main); }
+        .input-box input:focus,
+        .input-box textarea:focus {
+            border-color: var(--gold-main);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+        }
 
         /* RESPONSIVE MEDIA QUERIES */
         @media (max-width: 1024px) {
@@ -311,7 +355,7 @@
             <div class="hero-visual">
                 <div class="hero-pattern-circle"></div>
                 <div class="hero-img-frame">
-                    <img src="{{ asset('assets/images/babak.png') }}"
+                    <img src="{{ asset('assets/images/babak.webp') }}"
                          onerror="this.style.background='linear-gradient(135deg,#d4af37,#aa8222)'"
                          alt="بابک ابدالی" class="hero-img">
                     <div class="img-label">
@@ -320,7 +364,7 @@
                     </div>
                 </div>
                 <div class="hero-img-frame">
-                    <img src="{{ asset('assets/images/zahra.png') }}"
+                    <img src="{{ asset('assets/images/zahra.webp') }}"
                          onerror="this.style.background='linear-gradient(135deg,#e6cfa3,#9e7f41)'"
                          alt="زهرا جوشقانی" class="hero-img">
                     <div class="img-label">
@@ -388,7 +432,7 @@
         <div class="services-grid">
             @forelse($services as $service)
                 <a href="{{ route('services.show', $service->slug) }}" class="service-card">
-                    <img src="{{ $service->image ? asset('assets/images/'.$service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70' }}"
+                    <img src="{{ $service->image ? asset($service->image) : 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70' }}"
                          alt="{{ $service->title }}" loading="lazy"
                          onerror="this.src='https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=70'">
                     <div class="service-content">
