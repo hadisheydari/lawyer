@@ -31,7 +31,7 @@ class ReserveController extends Controller
 
         $appointmentPrice = Setting::where('key', 'pricing.appointment_price')->value('value') ?? 500000;
         $currentMonth = (int) $request->query('month', Jalalian::now()->getMonth());
-        $currentYear  = (int) $request->query('year', Jalalian::now()->getYear());
+        $currentYear = (int) $request->query('year', Jalalian::now()->getYear());
         $calendar = $this->generateCalendar($currentMonth, $currentYear, $lawyer->id);
 
         return view('public.reserve', compact('lawyer', 'calendar', 'currentMonth', 'currentYear', 'appointmentPrice'));
@@ -56,9 +56,8 @@ class ReserveController extends Controller
                 return response()->json(['success' => false, 'message' => 'روز جمعه تعطیل است'], 400);
             }
 
-            $cacheKey = "slots_{$lawyer->id}_{$date->format('Y-m-d')}";
-
-            $slots = Cache::remember($cacheKey, self::CACHE_TTL, fn() => $lawyer->getAvailableSlots($date->format('Y-m-d')));
+            $cacheKey = $this->slotsCacheKey($lawyer, $date->format('Y-m-d'));
+            $slots = Cache::remember($cacheKey, self::CACHE_TTL, fn () => $lawyer->getAvailableSlots($date->format('Y-m-d')));
 
             return response()->json(['success' => true, 'slots' => $slots, 'date' => $date->format('Y-m-d')]);
         } catch (\Exception $e) {
@@ -73,7 +72,7 @@ class ReserveController extends Controller
         $validated = $request->validate([
             'selected_date' => 'required|date|after_or_equal:today',
             'selected_time' => 'required|date_format:H:i',
-            'lawyer_id'     => 'required|exists:lawyers,id',
+            'lawyer_id' => 'required|exists:lawyers,id',
         ], [
             'selected_date.required' => 'لطفاً تاریخ را انتخاب کنید',
             'selected_date.after_or_equal' => 'نمی‌توانید برای تاریخ گذشته نوبت بگیرید',
@@ -86,7 +85,7 @@ class ReserveController extends Controller
         }
 
         try {
-            return DB::transaction(fn() => $this->processReservation($validated, Auth::id()));
+            return DB::transaction(fn () => $this->processReservation($validated, Auth::id()));
         } catch (\Exception $e) {
             Log::error('Reservation Error', ['error' => $e->getMessage(), 'user_id' => Auth::id()]);
 
@@ -108,7 +107,7 @@ class ReserveController extends Controller
                 ->with('error', 'پرداخت لغو شد یا انجام نشد.');
         }
 
-        $zarinpal = new ZarinpalService();
+        $zarinpal = new ZarinpalService;
         $result = $zarinpal->verify((float) $payment->amount, $request->query('Authority'));
 
         if (! $result['success']) {
@@ -119,14 +118,14 @@ class ReserveController extends Controller
         }
 
         $payment->update([
-            'status'           => 'paid',
-            'ref_id'           => $result['ref_id'],
-            'paid_at'          => now(),
+            'status' => 'paid',
+            'ref_id' => $result['ref_id'],
+            'paid_at' => now(),
             'gateway_response' => $result['raw'] ?? null,
         ]);
 
         return redirect()->route('reserve.index', ['lawyer' => $lawyerSlug])
-            ->with('success', 'پرداخت با موفقیت انجام شد. کد پیگیری: ' . $result['ref_id'] . ' — نوبت شما پس از تأیید وکیل نهایی می‌شود.');
+            ->with('success', 'پرداخت با موفقیت انجام شد. کد پیگیری: '.$result['ref_id'].' — نوبت شما پس از تأیید وکیل نهایی می‌شود.');
     }
 
     // ─── Private Helper Methods ───────────────────────────────────────────────
@@ -139,12 +138,12 @@ class ReserveController extends Controller
         $startDayOfWeek = ($carbonFirstDay->dayOfWeek + 1) % 7;
 
         $prevMonth = $month === 1 ? 12 : $month - 1;
-        $prevYear  = $month === 1 ? $year - 1 : $year;
+        $prevYear = $month === 1 ? $year - 1 : $year;
         $nextMonth = $month === 12 ? 1 : $month + 1;
-        $nextYear  = $month === 12 ? $year + 1 : $year;
+        $nextYear = $month === 12 ? $year + 1 : $year;
 
         return [
-            'days_in_month'     => $daysInMonth,
+            'days_in_month' => $daysInMonth,
             'start_day_of_week' => $startDayOfWeek,
             'month' => $month,
             'year' => $year,
@@ -158,7 +157,11 @@ class ReserveController extends Controller
 
     private function getBookedDates(int $lawyerId, int $month, int $year): array
     {
-        $cacheKey = "booked_dates_{$lawyerId}_{$year}_{$month}";
+        $lawyer = Lawyer::find($lawyerId);
+        if (! $lawyer) {
+            return [];
+        }
+        $cacheKey = "booked_dates_{$lawyerId}_{$year}_{$month}_{$lawyer->updated_at->timestamp}";
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($lawyerId, $month, $year) {
             $firstDayOfMonth = new Jalalian($year, $month, 1);
@@ -195,7 +198,7 @@ class ReserveController extends Controller
         }
 
         $availableSlots = $lawyer->getAvailableSlots($selectedDate->format('Y-m-d'));
-        $slotExists = collect($availableSlots)->contains(fn($slot) => $slot['start_time'] === $startTime);
+        $slotExists = collect($availableSlots)->contains(fn ($slot) => $slot['start_time'] === $startTime);
 
         if (! $slotExists) {
             throw new \Exception('این ساعت در برنامه وکیل موجود نیست یا قبلاً رزرو شده است');
@@ -216,29 +219,29 @@ class ReserveController extends Controller
         $appointmentPrice = Setting::where('key', 'pricing.appointment_price')->value('value') ?? 500000;
 
         $consultation = Consultation::create([
-            'user_id'      => $userId,
-            'lawyer_id'    => $lawyer->id,
-            'type'         => 'appointment',
-            'title'        => 'مشاوره حضوری با ' . $lawyer->name,
-            'price'        => $appointmentPrice,
-            'status'       => 'pending',
+            'user_id' => $userId,
+            'lawyer_id' => $lawyer->id,
+            'type' => 'appointment',
+            'title' => 'مشاوره حضوری با '.$lawyer->name,
+            'price' => $appointmentPrice,
+            'status' => 'pending',
             'scheduled_at' => $scheduledDateTime,
         ]);
 
         $payment = Payment::create([
-            'user_id'       => $userId,
-            'payable_type'  => Consultation::class,
-            'payable_id'    => $consultation->id,
+            'user_id' => $userId,
+            'payable_type' => Consultation::class,
+            'payable_id' => $consultation->id,
             'tracking_code' => Payment::generateTrackingCode(),
-            'amount'        => $appointmentPrice,
-            'status'        => 'pending',
-            'gateway'       => 'zarinpal',
-            'description'   => 'پرداخت مشاوره حضوری - ' . $consultation->title,
+            'amount' => $appointmentPrice,
+            'status' => 'pending',
+            'gateway' => 'zarinpal',
+            'description' => 'پرداخت مشاوره حضوری - '.$consultation->title,
         ]);
 
         $consultation->update(['payment_id' => $payment->id]);
 
-        $zarinpal = new ZarinpalService();
+        $zarinpal = new ZarinpalService;
         $result = $zarinpal->request(
             (float) $payment->amount,
             $payment->description,
@@ -256,5 +259,10 @@ class ReserveController extends Controller
         Cache::forget("booked_dates_{$lawyer->id}_{$jalali->getYear()}_{$jalali->getMonth()}");
 
         return redirect()->away($result['url']);
+    }
+
+    private function slotsCacheKey(Lawyer $lawyer, string $date): string
+    {
+        return "slots_{$lawyer->id}_{$lawyer->updated_at->timestamp}_{$date}";
     }
 }

@@ -123,6 +123,7 @@ class SettingController extends Controller
                 ]
             );
         }
+        $lawyer->touch();
 
         return back()->with('success', 'ساعات کاری به‌روز شد.');
     }
@@ -154,6 +155,8 @@ class SettingController extends Controller
 
         $label = $request->is_available ? 'روز کاری اضافه' : 'روز تعطیل';
 
+        $lawyer->touch();
+
         return back()->with('success', "{$label} ثبت شد.");
     }
 
@@ -163,8 +166,8 @@ class SettingController extends Controller
         if ($exception->lawyer_id !== $this->lawyer()->id) {
             abort(403);
         }
-
         $exception->delete();
+        $this->lawyer()->touch();
 
         return back()->with('success', 'روز استثنا حذف شد.');
     }

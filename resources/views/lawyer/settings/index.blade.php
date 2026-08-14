@@ -110,6 +110,89 @@
         .schedule-row { grid-template-columns:1fr; }
         .time-inputs { flex-wrap:wrap; }
     }
+/* ─── موبایل واقعی ─── */
+@media (max-width: 640px) {
+    .form-wrapper { padding: 15px !important; }
+
+    /* تب‌ها: اسکرول افقی به‌جای شکستن نامرتب */
+    .settings-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 12px;
+        gap: 8px;
+        scrollbar-width: thin;
+    }
+    .s-tab {
+        flex: 0 0 auto;
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    .card { padding: 20px !important; }
+    .card-title { font-size: 1rem; }
+
+    /* بالای پروفایل: عمودی و وسط‌چین */
+    .profile-top {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+        padding: 18px;
+    }
+    .profile-avatar { width: 75px; height: 75px; font-size: 2rem; }
+    .profile-info h3 { font-size: 1.15rem; }
+
+    .form-grid { gap: 15px; }
+    .form-input { padding: 12px 14px !important; font-size: 0.9rem !important; }
+
+    /* سوییچ‌های دسترسی‌پذیری: عمودی */
+    .toggle-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 16px;
+    }
+    .toggle-label-wrap small { margin-right: 0; display: block; margin-top: 4px; }
+    .toggle-switch { align-self: flex-end; margin-top: -34px; } /* سوییچ گوشه بالا-چپ می‌مونه */
+
+    /* ردیف ساعات کاری */
+    .schedule-row { padding: 14px; gap: 12px; }
+    .time-inputs { gap: 8px; width: 100%; }
+    .time-inputs input[type="time"] {
+        width: 100% !important;
+        flex: 1;
+        min-width: 0;
+        padding: 8px 10px !important;
+        font-size: 0.85rem !important;
+    }
+    .time-sep { font-size: 0.8rem; flex-shrink: 0; }
+
+    /* روزهای استثنا */
+    .exception-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 15px;
+    }
+    .exception-item form { width: 100%; }
+    .btn-del { width: 100%; justify-content: center; padding: 10px; }
+
+    .add-exc-grid { gap: 15px; }
+
+    .btn-submit {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 20px;
+        font-size: 0.95rem;
+    }
+}
+.toggle-group {
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+.toggle-label-wrap { flex: 1 1 200px; }
+.toggle-switch { flex-shrink: 0; margin-top: 2px; }
 </style>
 @endpush
 

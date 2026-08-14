@@ -26,6 +26,7 @@ class AuthLawyerController extends Controller
         $request->validate([
             'phone' => ['required', 'regex:/^09[0-9]{9}$/'],
         ]);
+        
 
         // چک می‌کنیم که آیا اصلاً این شماره موبایل متعلق به یک وکیل هست؟
         $lawyerExists = Lawyer::where('phone', $request->phone)->where('is_active', true)->exists();
@@ -78,6 +79,26 @@ class AuthLawyerController extends Controller
         return redirect()->route('lawyer.dashboard');
     }
 
+    public function resendOtp(Request $request)
+    {
+        $phone = session('lawyer_otp_phone');
+        if (!$phone) return redirect()->route('lawyer.login');
+
+        $code = str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
+
+        OtpCode::updateOrCreate(
+            ['phone' => $phone],
+            ['code' => $code, 'expires_at' => now()->addMinutes(2), 'is_used' => false]
+        );
+
+        // لاگ کردن کد در حالت لوکال
+        Log::info("📱 Resent Lawyer OTP [{$code}] for {$phone}");
+
+        // فراخوانی متد ارسال پیامک
+        $this->sendSms($phone, $code);
+
+        return back()->with('info', "کد تایید مجدداً برای شما ارسال شد.");
+    }
     public function logout()
     {
         Auth::guard('lawyer')->logout();

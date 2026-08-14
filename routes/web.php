@@ -93,7 +93,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
-    Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('auth.send-otp')->middleware('throttle:5,1');
+    Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('auth.send-otp');
     Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('auth.verify-otp');
 });
 
@@ -109,6 +109,7 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
     Route::get('/login', [AuthLawyerController::class, 'showLogin'])->name('login');
     Route::post('/send-otp', [AuthLawyerController::class, 'sendOtp'])->name('send-otp');
     Route::post('/verify-otp', [AuthLawyerController::class, 'verifyOtp'])->name('verify-otp');
+    Route::get('/resend-otp', [AuthLawyerController::class, 'resendOtp'])->name('resend.otp');
 
     Route::middleware('auth.lawyer')->group(function () {
 

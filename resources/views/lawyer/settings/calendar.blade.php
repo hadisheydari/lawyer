@@ -62,6 +62,13 @@
     @media (max-width: 1024px) {
         .calendar-section { grid-template-columns: 1fr; }
     }
+    @media (max-width: 640px) {
+    .cal-grid { gap: 4px; }
+    .cal-cell { min-height: 55px; padding: 4px; }
+    .cal-date { font-size: 0.75rem; }
+    .event { font-size: 0.62rem; padding: 2px 4px; }
+    .up-date { min-width: 45px; padding: 4px 6px; }
+}
 </style>
 @endpush
 
