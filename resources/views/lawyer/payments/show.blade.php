@@ -78,7 +78,7 @@
         <p>{{ $payment->tracking_code }}</p>
         <span class="badge {{ $s['c'] }}" style="margin-top:10px;display:inline-flex;">{{ $s['l'] }}</span>
     </div>
-    <div class="ph-amount">{{ number_format($payment->amount) }} ت</div>
+    <div class="ph-amount">{{ fa_number($payment->amount) }} ت</div>
 </div>
 
 <div class="grid-2">
@@ -106,7 +106,7 @@
         {{-- اطلاعات پرداخت --}}
         <div class="card">
             <div class="card-title"><i class="fas fa-info-circle"></i> اطلاعات پرداخت</div>
-            <div class="info-row"><span class="info-label">مبلغ</span><span class="info-value" style="color:var(--gold-dark);font-size:1.05rem;">{{ number_format($payment->amount) }} تومان</span></div>
+            <div class="info-row"><span class="info-label">مبلغ</span><span class="info-value" style="color:var(--gold-dark);font-size:1.05rem;">{{ fa_number($payment->amount) }} تومان</span></div>
             <div class="info-row"><span class="info-label">درگاه</span><span class="info-value">{{ ucfirst($payment->gateway ?? 'zarinpal') }}</span></div>
             <div class="info-row"><span class="info-label">کد رهگیری</span><span class="info-value" style="font-family:monospace;font-size:0.85rem;">{{ $payment->tracking_code }}</span></div>
             @if($payment->ref_id)

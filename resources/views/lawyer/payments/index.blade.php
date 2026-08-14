@@ -47,14 +47,14 @@
             <div class="stat-icon" style="background: #fdfbf7; color: var(--gold-main);"><i class="fas fa-hourglass-half"></i></div>
             <div class="stat-info">
                 <h4>مجموع اقساط در انتظار</h4>
-                <div class="value">{{ number_format($stats['total_pending_installments']) }} <span style="font-size:0.8rem; color:#94a3b8;">تومان</span></div>
+                <div class="value">{{ fa_number($stats['total_pending_installments']) }} <span style="font-size:0.8rem; color:#94a3b8;">تومان</span></div>
             </div>
         </div>
         <div class="stat-card" style="border-bottom: 4px solid #10b981;">
             <div class="stat-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-check-double"></i></div>
             <div class="stat-info">
                 <h4>دریافتی موفق (درگاه)</h4>
-                <div class="value" style="color: #10b981;">{{ number_format($stats['total_online_paid']) }} <span style="font-size:0.8rem; color:#94a3b8;">تومان</span></div>
+                <div class="value" style="color: #10b981;">{{ fa_number($stats['total_online_paid']) }} <span style="font-size:0.8rem; color:#94a3b8;">تومان</span></div>
             </div>
         </div>
     </div>
@@ -81,7 +81,7 @@
                         <tr>
                             <td><a href="{{ route('lawyer.cases.show', $inst->case->id) }}" style="color:var(--navy);font-weight:900;">{{ $inst->case->case_number }}</a></td>
                             <td>{{ $inst->case->user->name ?? '---' }}</td>
-                            <td style="font-weight: 900;">{{ number_format($inst->amount) }}</td>
+                            <td style="font-weight: 900;">{{ fa_number($inst->amount) }}</td>
                             <td><span style="color: {{ $isOverdue ? '#ef4444' : '#64748b' }};">{{ \Morilog\Jalali\Jalalian::fromCarbon($inst->due_date)->format('%d %B %Y') }}</span></td>
                             <td>
                                 @if($isOverdue) <span class="badge badge-overdue">سررسید گذشته</span>
@@ -124,7 +124,7 @@
                         <tr>
                             <td style="font-family: monospace; font-weight: bold; color: #64748b;">{{ $payment->tracking_code }}</td>
                             <td>{{ $payment->user->name ?? '---' }}</td>
-                            <td style="font-weight: 900;">{{ number_format($payment->amount) }}</td>
+                            <td style="font-weight: 900;">{{ fa_number($payment->amount) }}</td>
                             <td style="font-size: 0.85rem; color: #475569;">{{ mb_substr($payment->description, 0, 40) }}...</td>
                             <td>
                                 @if($payment->status == 'paid') <span class="badge badge-paid">موفق</span>

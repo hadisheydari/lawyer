@@ -243,12 +243,6 @@
     .sum-value { font-weight: 700; color: var(--gold-light, #e6cfa3); }
     .sum-value.pending { color: rgba(255,255,255,0.3); font-weight: 400; font-style: italic; }
 
-    .price-box {
-        background: rgba(255,255,255,0.06); border-radius: 12px;
-        padding: 18px; text-align: center; margin-top: 18px;
-    }
-    .price-box small { color: rgba(255,255,255,0.5); font-size: 0.78rem; display: block; margin-bottom: 5px; }
-    .price-box strong { font-size: 1.3rem; font-weight: 900; }
 
     .help-box {
         background: #fff; border-radius: 14px; padding: 20px;
@@ -425,7 +419,7 @@
                     </div>
                     <div class="confirm-row">
                         <span class="confirm-label">هزینه</span>
-                        <span class="confirm-value" style="color:var(--pgold-d);">{{ number_format($appointmentPrice) }} تومان</span>
+                        <span class="confirm-value" style="color:var(--pgold-d);">{{ fa_number($appointmentPrice) }} تومان</span>
                     </div>
                 </div>
 
@@ -491,7 +485,7 @@
 
                     <div class="price-box">
                         <small>هزینه مشاوره</small>
-                        <strong>{{ number_format($appointmentPrice) }} تومان</strong>
+                        <strong>{{ fa_number($appointmentPrice) }} تومان</strong>
                     </div>
                 </div>
 

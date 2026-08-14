@@ -108,11 +108,11 @@
     {{-- آمار --}}
     <div class="stats-grid">
         <div class="stat-card" style="border-bottom-color:#f59e0b;">
-            <span class="n">{{ number_format($stats['total_pending'] / 1000000, 1) }}M</span>
+            <span class="n">{{ fa_number($stats['total_pending'] / 1000000, 1) }}M</span>
             <span class="l">کل مانده (تومان)</span>
         </div>
         <div class="stat-card" style="border-bottom-color:#10b981;">
-            <span class="n">{{ number_format($stats['total_paid'] / 1000000, 1) }}M</span>
+            <span class="n">{{ fa_number($stats['total_paid'] / 1000000, 1) }}M</span>
             <span class="l">کل پرداخت‌شده (تومان)</span>
         </div>
         <div class="stat-card" style="border-bottom-color:#ef4444;">
@@ -127,7 +127,7 @@
                 <h4><i class="fas fa-bell" style="color:var(--gold-main);margin-left:6px;"></i>قسط بعدی شما</h4>
                 <p>سررسید: {{ \Morilog\Jalali\Jalalian::fromCarbon($stats['next_due']->due_date)->format('Y/m/d') }}</p>
             </div>
-            <div class="next-inst-amount">{{ number_format($stats['next_due']->amount) }} ت</div>
+            <div class="next-inst-amount">{{ fa_number($stats['next_due']->amount) }} ت</div>
             <a href="{{ route('client.installments.pay', $stats['next_due']) }}" class="btn-pay-big">
                 <i class="fas fa-credit-card"></i> پرداخت آنلاین
             </a>
@@ -168,7 +168,7 @@
                     </div>
                 </div>
                 <div class="inst-right">
-                    <span class="inst-amount {{ $inst->status === 'paid' ? 'paid-amount' : '' }}">{{ number_format($inst->amount) }} ت</span>
+                    <span class="inst-amount {{ $inst->status === 'paid' ? 'paid-amount' : '' }}">{{ fa_number($inst->amount) }} ت</span>
                     @if($inst->status === 'paid')
                         <span class="badge badge-paid">پرداخت‌شده</span>
                     @elseif($isOverdue)

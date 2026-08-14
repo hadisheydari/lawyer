@@ -139,15 +139,15 @@
 
                 <div class="case-body">
                     <div class="case-stat">
-                        <span class="n">{{ number_format($case->total_fee / 1000000, 1) }}M</span>
+                        <span class="n">{{ fa_number($case->total_fee / 1000000, 1) }}M</span>
                         <span class="l">حق‌الوکاله (ت)</span>
                     </div>
                     <div class="case-stat" style="background:#f0fdf4;">
-                        <span class="n" style="color:#059669;">{{ number_format($case->paid_amount / 1000000, 1) }}M</span>
+                        <span class="n" style="color:#059669;">{{ fa_number($case->paid_amount / 1000000, 1) }}M</span>
                         <span class="l">پرداخت‌شده (ت)</span>
                     </div>
                     <div class="case-stat" style="background:#fffbeb;">
-                        <span class="n" style="color:#d97706;">{{ number_format(max(0, $case->total_fee - $case->paid_amount) / 1000000, 1) }}M</span>
+                        <span class="n" style="color:#d97706;">{{ fa_number(max(0, $case->total_fee - $case->paid_amount) / 1000000, 1) }}M</span>
                         <span class="l">باقی‌مانده (ت)</span>
                     </div>
                 </div>

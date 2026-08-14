@@ -126,7 +126,7 @@
             @endif
             <div class="info-row">
                 <span class="info-label">هزینه</span>
-                <span class="info-value" style="color:var(--gold-dark);">{{ number_format($consultation->price) }} تومان</span>
+                <span class="info-value" style="color:var(--gold-dark);">{{ fa_number($consultation->price) }} تومان</span>
             </div>
             <div class="info-row">
                 <span class="info-label">تاریخ ثبت</span>

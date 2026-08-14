@@ -169,7 +169,7 @@
                         <span class="l">مشاوره</span>
                     </div>
                     <div class="cs-item">
-                        <span class="n">{{ number_format($paidAmount / 1000000, 0) }}M</span>
+                        <span class="n">{{ fa_number($paidAmount / 1000000, 0) }}M</span>
                         <span class="l">پرداختی</span>
                     </div>
                 </div>

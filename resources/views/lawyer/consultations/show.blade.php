@@ -353,7 +353,7 @@
                     </div>
                 @endif
                 <div class="info-row"><span class="info-label">مبلغ</span><span class="info-value"
-                        style="color:var(--gold-dark);">{{ number_format($consultation->price) }} تومان</span></div>
+                        style="color:var(--gold-dark);">{{ fa_number($consultation->price) }} تومان</span></div>
                 <div class="info-row"><span class="info-label">تاریخ ثبت</span><span
                         class="info-value">{{ \Morilog\Jalali\Jalalian::fromCarbon($consultation->created_at)->format('Y/m/d') }}</span>
                 </div>

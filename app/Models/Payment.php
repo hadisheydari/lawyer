@@ -28,11 +28,10 @@ class Payment extends Model
     {
         return [
             'gateway_response' => 'array',
-            'paid_at'          => 'datetime',
-            'amount'           => 'decimal:0',
+            'paid_at' => 'datetime',
+            'amount' => 'decimal:0',
         ];
     }
-
 
     public function user()
     {
@@ -49,23 +48,43 @@ class Payment extends Model
         return $this->morphTo();
     }
 
+    public function isPaid(): bool
+    {
+        return $this->status === 'paid';
+    }
 
-    public function isPaid(): bool     { return $this->status === 'paid'; }
-    public function isPending(): bool  { return $this->status === 'pending'; }
-    public function isFailed(): bool   { return $this->status === 'failed'; }
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function isFailed(): bool
+    {
+        return $this->status === 'failed';
+    }
 
     public function getFormattedAmountAttribute(): string
     {
-        return number_format($this->amount) . ' تومان';
+        return fa_price($this->amount);
     }
 
     public static function generateTrackingCode(): string
     {
-        return 'LAW-' . strtoupper(uniqid());
+        return 'LAW-'.strtoupper(uniqid());
     }
 
+    public function scopePaid($query)
+    {
+        return $query->where('status', 'paid');
+    }
 
-    public function scopePaid($query)    { return $query->where('status', 'paid'); }
-    public function scopePending($query) { return $query->where('status', 'pending'); }
-    public function scopeFailed($query)  { return $query->where('status', 'failed'); }
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    public function scopeFailed($query)
+    {
+        return $query->where('status', 'failed');
+    }
 }

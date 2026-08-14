@@ -132,7 +132,7 @@
                             <span class="l">سال سابقه</span>
                         </div>
                         <div class="lsc-stat">
-                            <span class="n">+{{ number_format($lawyer['cases']) }}</span>
+                            <span class="n">+{{ fa_number($lawyer['cases']) }}</span>
                             <span class="l">پرونده</span>
                         </div>
                         <div class="lsc-stat">

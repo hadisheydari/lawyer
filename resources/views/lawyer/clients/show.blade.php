@@ -461,7 +461,7 @@
                     </div>
                     <div class="ms-item">
                         @php $totalPaid = $cases->sum('paid_amount'); @endphp
-                        <span class="n">{{ number_format($totalPaid / 1000000, 0) }}M</span>
+                        <span class="n">{{ fa_number($totalPaid / 1000000, 0) }}M</span>
                         <span class="l">پرداختی (ت)</span>
                     </div>
                 </div>
@@ -527,7 +527,7 @@
                                             @endif
                                             {{ $case->opened_at->format('H:i') }}
                                         </span>
-                                        <span><i class="fas fa-money-bill-wave"></i> {{ number_format($case->total_fee) }}
+                                        <span><i class="fas fa-money-bill-wave"></i> {{ fa_number($case->total_fee) }}
                                             ت</span>
                                         <span><i class="fas fa-tasks"></i> {{ $case->progress_percent }}٪ پرداخت</span>
                                     </div>
@@ -616,7 +616,7 @@
                                         @else
                                             {{ $c->created_at->diffForHumans() }}
                                         @endif
-                                        · {{ number_format($c->price) }} ت
+                                        · {{ fa_number($c->price) }} ت
                                     </p>
                                 </div>
                             </div>

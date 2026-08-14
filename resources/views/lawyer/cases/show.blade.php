@@ -154,7 +154,7 @@
                     @forelse($case->installments as $inst)
                     <div style="background: #f8fafc; border-radius: 12px; padding: 15px; margin-bottom: 12px; border: 1px solid #edf2f7;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <span style="font-weight: 800; color: var(--navy);">{{ number_format($inst->amount) }} تومان</span>
+                            <span style="font-weight: 800; color: var(--navy);">{{ fa_number($inst->amount) }} تومان</span>
                             @if($inst->status == 'paid')
                                 <span class="badge badge-active" style="font-size: 0.65rem;">پرداخت شده</span>
                             @else
@@ -186,15 +186,15 @@
                     <div style="display: flex; flex-direction: column; gap: 15px;">
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: #94a3b8;">حق‌الوکاله کل:</span>
-                            <span style="font-weight: 800;">{{ number_format($case->total_fee) }}</span>
+                            <span style="font-weight: 800;">{{ fa_number($case->total_fee) }}</span>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span style="color: #94a3b8;">دریافتی تا کنون:</span>
-                            <span style="font-weight: 800; color: #10b981;">{{ number_format($case->paid_amount) }}</span>
+                            <span style="font-weight: 800; color: #10b981;">{{ fa_number($case->paid_amount) }}</span>
                         </div>
                         <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
                             <span style="color: #f87171;">مانده طلب:</span>
-                            <span style="font-weight: 800; color: #f87171;">{{ number_format($case->remaining_fee) }}</span>
+                            <span style="font-weight: 800; color: #f87171;">{{ fa_number($case->remaining_fee) }}</span>
                         </div>
                     </div>
                     <div style="margin-top: 25px;">

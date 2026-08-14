@@ -29,10 +29,10 @@ class Service extends Model
     protected function casts(): array
     {
         return [
-            'features'      => 'array',
+            'features' => 'array',
             'meta_keywords' => 'array',
-            'is_active'     => 'boolean',
-            'base_price'    => 'decimal:0', // کست کردن به عدد صحیح
+            'is_active' => 'boolean',
+            'base_price' => 'decimal:0', // کست کردن به عدد صحیح
         ];
     }
 
@@ -58,10 +58,9 @@ class Service extends Model
         if (is_null($this->base_price) || $this->base_price == 0) {
             return 'توافقی / پس از بررسی پرونده';
         }
-        
-        return 'شروع از ' . number_format($this->base_price) . ' تومان';
-    }
 
+        return 'شروع از '.fa_price($this->base_price);
+    }
     // ─── Scopes ───────────────────────────────────────────────────────────────
 
     public function scopeActive($query)

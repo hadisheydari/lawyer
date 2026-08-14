@@ -136,7 +136,7 @@
                         <div class="progress-fill" style="width:{{ $case->progress_percent }}%;"></div>
                     </div>
                     <div class="progress-label">
-                        <span>پرداخت‌شده: {{ number_format($case->paid_amount) }} ت</span>
+                        <span>پرداخت‌شده: {{ fa_number($case->paid_amount) }} ت</span>
                         <span>{{ $case->progress_percent }}٪</span>
                     </div>
                 </div>

@@ -255,7 +255,7 @@
                             </div>
                         </div>
                         <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
-                            <span class="inst-amount">{{ number_format($inst->amount) }} ت</span>
+                            <span class="inst-amount">{{ fa_number($inst->amount) }} ت</span>
                             <a href="{{ route('client.installments.pay', $inst) }}" class="btn-pay">
                                 <i class="fas fa-credit-card"></i> پرداخت
                             </a>
@@ -280,15 +280,15 @@
 
                 <div class="fin-grid">
                     <div class="fin-item">
-                        <span class="n">{{ number_format($totalFee / 1000000, 1) }}M</span>
+                        <span class="n">{{ fa_number($totalFee / 1000000, 1) }}M</span>
                         <span class="l">کل حق‌الوکاله (ت)</span>
                     </div>
                     <div class="fin-item green">
-                        <span class="n">{{ number_format($totalPaid / 1000000, 1) }}M</span>
+                        <span class="n">{{ fa_number($totalPaid / 1000000, 1) }}M</span>
                         <span class="l">پرداخت‌شده (ت)</span>
                     </div>
                     <div class="fin-item amber">
-                        <span class="n">{{ number_format($totalRemain / 1000000, 1) }}M</span>
+                        <span class="n">{{ fa_number($totalRemain / 1000000, 1) }}M</span>
                         <span class="l">باقی‌مانده (ت)</span>
                     </div>
                 </div>

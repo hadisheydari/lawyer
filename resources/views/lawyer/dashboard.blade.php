@@ -341,11 +341,11 @@
             </div>
             <div class="finance-summary">
                 <div class="fs-item green">
-                    <span class="n">{{ number_format($totalPaid / 1000000, 1) }}M</span>
+                    <span class="n">{{ fa_number($totalPaid / 1000000, 1) }}M</span>
                     <span class="l">دریافت‌شده (ت)</span>
                 </div>
                 <div class="fs-item blue">
-                    <span class="n">{{ number_format(max(0, $totalFee - $totalPaid) / 1000000, 1) }}M</span>
+                    <span class="n">{{ fa_number(max(0, $totalFee - $totalPaid) / 1000000, 1) }}M</span>
                     <span class="l">باقی‌مانده (ت)</span>
                 </div>
             </div>

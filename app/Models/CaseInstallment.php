@@ -25,11 +25,10 @@ class CaseInstallment extends Model
     {
         return [
             'due_date' => 'date',
-            'paid_at'  => 'datetime',
-            'amount'   => 'decimal:0',
+            'paid_at' => 'datetime',
+            'amount' => 'decimal:0',
         ];
     }
-
 
     public function case()
     {
@@ -46,7 +45,6 @@ class CaseInstallment extends Model
         return $this->belongsTo(Payment::class);
     }
 
-
     public function isPaid(): bool
     {
         return $this->status === 'paid';
@@ -59,9 +57,8 @@ class CaseInstallment extends Model
 
     public function getFormattedAmountAttribute(): string
     {
-        return number_format($this->amount) . ' تومان';
+        return fa_price($this->amount);
     }
-
 
     public function scopePending($query)
     {

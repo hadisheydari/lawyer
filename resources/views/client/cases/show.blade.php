@@ -130,15 +130,15 @@
             <div class="card-title"><i class="fas fa-wallet"></i> اطلاعات مالی</div>
             <div class="fin-grid">
                 <div class="fin-item">
-                    <span class="n">{{ number_format($case->total_fee) }}</span>
+                    <span class="n">{{ fa_number($case->total_fee) }}</span>
                     <span class="l">حق‌الوکاله کل (ت)</span>
                 </div>
                 <div class="fin-item green">
-                    <span class="n">{{ number_format($case->paid_amount) }}</span>
+                    <span class="n">{{ fa_number($case->paid_amount) }}</span>
                     <span class="l">پرداخت‌شده (ت)</span>
                 </div>
                 <div class="fin-item amber">
-                    <span class="n">{{ number_format(max(0, $case->total_fee - $case->paid_amount)) }}</span>
+                    <span class="n">{{ fa_number(max(0, $case->total_fee - $case->paid_amount)) }}</span>
                     <span class="l">باقی‌مانده (ت)</span>
                 </div>
             </div>
@@ -202,7 +202,7 @@
                         @foreach($case->installments as $inst)
                             <tr>
                                 <td style="font-weight:700;color:var(--navy);">{{ $inst->installment_number }}</td>
-                                <td style="font-weight:700;">{{ number_format($inst->amount) }}</td>
+                                <td style="font-weight:700;">{{ fa_number($inst->amount) }}</td>
                                 <td>{{ \Morilog\Jalali\Jalalian::fromCarbon($inst->due_date)->format('Y/m/d') }}</td>
                                 <td>
                                     @if($inst->status === 'paid')
@@ -230,7 +230,7 @@
                 @if($nextInstallment)
                     <div style="margin-top:14px;padding:12px 15px;background:rgba(197,160,89,0.08);border-radius:8px;border-right:3px solid var(--gold-main);font-size:0.85rem;">
                         <strong>قسط بعدی:</strong>
-                        {{ number_format($nextInstallment->amount) }} تومان — سررسید {{ \Morilog\Jalali\Jalalian::fromCarbon($nextInstallment->due_date)->format('Y/m/d') }}
+                        {{ fa_number($nextInstallment->amount) }} تومان — سررسید {{ \Morilog\Jalali\Jalalian::fromCarbon($nextInstallment->due_date)->format('Y/m/d') }}
                     </div>
                 @endif
             @else
@@ -251,7 +251,7 @@
                         </div>
                         <div class="doc-info">
                             <h4>{{ $doc->title }}</h4>
-                            <p>{{ strtoupper($doc->file_type) }} &nbsp;·&nbsp; {{ number_format($doc->file_size / 1024) }} KB</p>
+                            <p>{{ strtoupper($doc->file_type) }} &nbsp;·&nbsp; {{ fa_number($doc->file_size / 1024) }} KB</p>
                         </div>
                         <i class="fas fa-download" style="margin-right:auto;color:var(--gold-main);"></i>
                     </a>

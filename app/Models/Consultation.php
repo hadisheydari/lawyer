@@ -33,12 +33,12 @@ class Consultation extends Model
     protected function casts(): array
     {
         return [
-            'scheduled_at'  => 'datetime',
-            'confirmed_at'  => 'datetime',
-            'started_at'    => 'datetime',
-            'completed_at'  => 'datetime',
-            'cancelled_at'  => 'datetime',
-            'price'         => 'decimal:0',
+            'scheduled_at' => 'datetime',
+            'confirmed_at' => 'datetime',
+            'started_at' => 'datetime',
+            'completed_at' => 'datetime',
+            'cancelled_at' => 'datetime',
+            'price' => 'decimal:0',
         ];
     }
 
@@ -67,17 +67,43 @@ class Consultation extends Model
         return $this->hasOne(ChatConversation::class);
     }
 
-    public function isPending(): bool   { return $this->status === 'pending'; }
-    public function isConfirmed(): bool { return $this->status === 'confirmed'; }
-    public function isCompleted(): bool { return $this->status === 'completed'; }
-    public function isCancelled(): bool { return $this->status === 'cancelled'; }
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function isConfirmed(): bool
+    {
+        return $this->status === 'confirmed';
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->status === 'completed';
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->status === 'cancelled';
+    }
 
     public function getFormattedPriceAttribute(): string
     {
-        return number_format($this->price) . ' تومان';
+        return fa_price($this->price);
     }
 
-    public function scopePending($query)    { return $query->where('status', 'pending'); }
-    public function scopeConfirmed($query)  { return $query->where('status', 'confirmed'); }
-    public function scopeCompleted($query)  { return $query->where('status', 'completed'); }
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    public function scopeConfirmed($query)
+    {
+        return $query->where('status', 'confirmed');
+    }
+
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
+    }
 }

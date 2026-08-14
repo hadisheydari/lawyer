@@ -223,7 +223,7 @@
                         </td>
                         <td data-label="مبلغ">
                             <span style="font-weight:700;color:var(--gold-dark);">
-                                {{ number_format($c->price) }} ت
+                                {{ fa_number($c->price) }} ت
                             </span>
                         </td>
                         <td data-label="وضعیت">
