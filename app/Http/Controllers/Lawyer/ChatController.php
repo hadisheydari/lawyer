@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Lawyer;
 
 use App\Http\Controllers\Controller;
 use App\Models\ChatConversation;
+use App\Notifications\NewChatMessageNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +23,7 @@ class ChatController extends Controller
         $conversations = ChatConversation::with(['user', 'latestMessage', 'consultation', 'case'])
             ->where('lawyer_id', $lawyer->id)
             ->get()
-            ->sortByDesc(fn($conv) => $conv->latestMessage
+            ->sortByDesc(fn ($conv) => $conv->latestMessage
                 ? $conv->latestMessage->created_at
                 : $conv->created_at
             );
@@ -52,7 +53,7 @@ class ChatController extends Controller
         $conversations = ChatConversation::with(['user', 'latestMessage'])
             ->where('lawyer_id', $lawyer->id)
             ->get()
-            ->sortByDesc(fn($conv) => $conv->latestMessage
+            ->sortByDesc(fn ($conv) => $conv->latestMessage
                 ? $conv->latestMessage->created_at
                 : $conv->created_at
             );
@@ -77,21 +78,21 @@ class ChatController extends Controller
         }
 
         $request->validate([
-            'message'    => 'required_without:attachment|nullable|string|max:2000',
+            'message' => 'required_without:attachment|nullable|string|max:2000',
             'attachment' => 'required_without:message|nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ], [
-            'message.required_without'    => 'لطفاً متن پیام را بنویسید یا یک فایل انتخاب کنید.',
+            'message.required_without' => 'لطفاً متن پیام را بنویسید یا یک فایل انتخاب کنید.',
             'attachment.required_without' => 'لطفاً متن پیام را بنویسید یا یک فایل انتخاب کنید.',
-            'attachment.mimes'            => 'فرمت فایل مجاز نیست.',
-            'attachment.max'              => 'حجم فایل نباید بیشتر از ۵ مگابایت باشد.',
+            'attachment.mimes' => 'فرمت فایل مجاز نیست.',
+            'attachment.max' => 'حجم فایل نباید بیشتر از ۵ مگابایت باشد.',
         ]);
 
         $attachmentData = null;
 
         if ($request->hasFile('attachment')) {
-            $file     = $request->file('attachment');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $path     = $file->storeAs('chat_files', $fileName, 'public');
+            $file = $request->file('attachment');
+            $fileName = time().'_'.$file->getClientOriginalName();
+            $path = $file->storeAs('chat_files', $fileName, 'public');
 
             $attachmentData = [[
                 'name' => $file->getClientOriginalName(),
@@ -102,14 +103,19 @@ class ChatController extends Controller
         }
 
         $conversation->messages()->create([
-            'sender_id'   => $lawyer->id,
+            'sender_id' => $lawyer->id,
             'sender_type' => 'lawyer',
-            'message'     => $request->message,
+            'message' => $request->message,
             'attachments' => $attachmentData,
-            'is_read'     => false,
+            'is_read' => false,
         ]);
 
         $conversation->touch();
+        $conversation->user?->notify(new NewChatMessageNotification(
+            $lawyer->name,
+            $request->message ?? 'یک فایل ارسال شد',
+            route('client.chat.show', $conversation->id)
+        ));
 
         return back();
     }
@@ -122,7 +128,7 @@ class ChatController extends Controller
         $conversation = ChatConversation::where('lawyer_id', $lawyer->id)->findOrFail($id);
 
         $conversation->update([
-            'status'    => 'closed',
+            'status' => 'closed',
             'closed_at' => now(),
         ]);
 
@@ -137,7 +143,7 @@ class ChatController extends Controller
         $conversation = ChatConversation::where('lawyer_id', $lawyer->id)->findOrFail($id);
 
         $conversation->update([
-            'status'    => 'active',
+            'status' => 'active',
             'closed_at' => null,
         ]);
 

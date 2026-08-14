@@ -7,7 +7,10 @@
     <title>پنل وکیل | @yield('title', 'داشبورد')</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#102a43">
-
+    <meta name="vapid-key" content="{{ config('webpush.vapid.public_key') }}">
+    @auth
+        <script>window.__shouldSubscribePush = true;</script>
+    @endauth
     <!-- iOS specific -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -593,13 +596,13 @@
     </script>
 
 
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(console.error);
-    });
-  }
-</script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(console.error);
+            });
+        }
+    </script>
 </body>
 
 </html>

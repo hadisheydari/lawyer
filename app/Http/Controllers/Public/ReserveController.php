@@ -7,6 +7,8 @@ use App\Models\Consultation;
 use App\Models\Lawyer;
 use App\Models\Payment;
 use App\Models\Setting;
+use App\Notifications\NewReservationNotification;
+use App\Notifications\PaymentReceivedNotification;
 use App\Services\ZarinpalService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -123,6 +125,12 @@ class ReserveController extends Controller
             'paid_at' => now(),
             'gateway_response' => $result['raw'] ?? null,
         ]);
+        if ($payment->payable && $payment->payable->lawyer) {
+            $payment->payable->lawyer->notify(new PaymentReceivedNotification(
+                $payment,
+                route('lawyer.consultations.show', $payment->payable_id)
+            ));
+        }
 
         return redirect()->route('reserve.index', ['lawyer' => $lawyerSlug])
             ->with('success', 'پرداخت با موفقیت انجام شد. کد پیگیری: '.$result['ref_id'].' — نوبت شما پس از تأیید وکیل نهایی می‌شود.');
@@ -227,6 +235,7 @@ class ReserveController extends Controller
             'status' => 'pending',
             'scheduled_at' => $scheduledDateTime,
         ]);
+        $lawyer->notify(new NewReservationNotification($consultation));
 
         $payment = Payment::create([
             'user_id' => $userId,

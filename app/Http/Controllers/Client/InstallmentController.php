@@ -114,6 +114,12 @@ class InstallmentController extends Controller
         $installment = $payment->payable;
         $installment->update(['status' => 'paid', 'paid_at' => now()]);
         $installment->case()->increment('paid_amount', $installment->amount);
+        if ($installment->case && $installment->case->lawyer) {
+    $installment->case->lawyer->notify(new \App\Notifications\PaymentReceivedNotification(
+        $payment,
+        route('lawyer.cases.show', $installment->case_id)
+    ));
+}
 
         return redirect()->route('client.installments.index')
             ->with('success', 'قسط با موفقیت پرداخت شد. کد پیگیری: ' . $result['ref_id']);

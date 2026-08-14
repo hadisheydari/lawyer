@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\ChatConversation;
 use App\Models\Lawyer;
+use App\Notifications\NewChatMessageNotification;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
@@ -13,7 +14,7 @@ class ChatController extends Controller
     public function index()
     {
         $userId = auth()->id();
-        
+
         // لود کردن مکالمات برای سایدبار
         $conversations = ChatConversation::with(['lawyer', 'latestMessage'])
             ->where('user_id', $userId)
@@ -59,7 +60,7 @@ class ChatController extends Controller
             ->findOrFail($id);
 
         $activeConversation->messages()
-            ->where('sender_type', 'lawyer') 
+            ->where('sender_type', 'lawyer')
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
@@ -77,13 +78,12 @@ class ChatController extends Controller
         $lawyers = Lawyer::where('is_active', true)->get();
 
         return view('client.chat.index', compact(
-            'conversations', 
-            'activeConversation', 
+            'conversations',
+            'activeConversation',
             'messages',
             'lawyers'
         ));
     }
-
 
     // ۴. متد send اصلی خودتان (با قابلیت ذخیره درست فایل و sender_id)
     public function send(Request $request, $id)
@@ -95,13 +95,13 @@ class ChatController extends Controller
 
         // اعتبارسنجی ورودی‌ها
         $request->validate([
-            'message'    => 'required_without:attachment|nullable|string|max:2000',
+            'message' => 'required_without:attachment|nullable|string|max:2000',
             'attachment' => 'required_without:message|nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ], [
-            'message.required_without'    => 'لطفاً متن پیام را بنویسید یا یک فایل انتخاب کنید.',
+            'message.required_without' => 'لطفاً متن پیام را بنویسید یا یک فایل انتخاب کنید.',
             'attachment.required_without' => 'لطفاً متن پیام را بنویسید یا یک فایل انتخاب کنید.',
-            'attachment.mimes'            => 'فرمت فایل ارسالی مجاز نیست (فقط تصاویر و اسناد).',
-            'attachment.max'              => 'حجم فایل نباید بیشتر از ۵ مگابایت باشد.',
+            'attachment.mimes' => 'فرمت فایل ارسالی مجاز نیست (فقط تصاویر و اسناد).',
+            'attachment.max' => 'حجم فایل نباید بیشتر از ۵ مگابایت باشد.',
         ]);
 
         $attachmentData = null;
@@ -109,9 +109,9 @@ class ChatController extends Controller
         // بررسی و آپلود فایل پیوست
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            
+
+            $fileName = time().'_'.$file->getClientOriginalName();
+
             // ذخیره فایل
             $path = $file->storeAs('chat_files', $fileName, 'public');
 
@@ -121,20 +121,25 @@ class ChatController extends Controller
                     'path' => $path,
                     'size' => $file->getSize(),
                     'mime' => $file->getMimeType(),
-                ]
+                ],
             ];
         }
 
         // ایجاد پیام (استفاده از relations که به صورت خودکار conversation_id را پر می‌کند)
         $conversation->messages()->create([
-            'sender_id'   => $userId,      // این همان فیلدی است که ارور می‌داد
-            'sender_type' => 'user',       
-            'message'     => $request->message,
+            'sender_id' => $userId,      // این همان فیلدی است که ارور می‌داد
+            'sender_type' => 'user',
+            'message' => $request->message,
             'attachments' => $attachmentData,
-            'is_read'     => false,        
+            'is_read' => false,
         ]);
 
         $conversation->touch();
+        $conversation->lawyer->notify(new NewChatMessageNotification(
+            auth()->user()->name,
+            $request->message ?? 'یک فایل ارسال شد',
+            route('lawyer.chat.show', $conversation->id)
+        ));
 
         return back();
     }

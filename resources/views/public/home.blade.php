@@ -635,5 +635,5 @@
             </div>
         </div>
     </section>
-
+<x-pwa-install-prompt />
 @endsection

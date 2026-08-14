@@ -55,3 +55,9 @@ function urlBase64ToUint8Array(base64String) {
 
 // بعد از لاگین یا با کلیک روی دکمه "فعال‌سازی اعلان‌ها" صداش بزن
 document.getElementById('enableNotifBtn')?.addEventListener('click', subscribeToPush);
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.__shouldSubscribePush) {
+        subscribeToPush();
+    }
+});

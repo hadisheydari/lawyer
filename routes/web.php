@@ -22,11 +22,13 @@ use App\Http\Controllers\Public\LawyerController;
 use App\Http\Controllers\Public\ReserveController;
 use App\Http\Controllers\Public\ServiceController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PushSubscriptionController;
 
 // ═══════════════════════════════════════════════════════════════
 // PUBLIC ROUTES
 // ═══════════════════════════════════════════════════════════════
-Route::post('/push/subscribe', [PushSubscriptionController::class, 'store'])->middleware('auth');
+Route::post('/push/subscribe', [PushSubscriptionController::class, 'store']);
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::prefix('lawyers')->name('lawyers.')->group(function () {
