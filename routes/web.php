@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 // ═══════════════════════════════════════════════════════════════
 // PUBLIC ROUTES
 // ═══════════════════════════════════════════════════════════════
-
+Route::post('/push/subscribe', [PushSubscriptionController::class, 'store'])->middleware('auth');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::prefix('lawyers')->name('lawyers.')->group(function () {

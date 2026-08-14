@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'دفتر وکالت ابدالی و جوشقانی')</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#102a43">
 
+    <!-- iOS specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ابدالی و جوشقانی">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
     <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -24,7 +32,13 @@
             --transition: all 0.3s ease;
         }
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Vazirmatn', sans-serif;
@@ -35,150 +49,507 @@
         }
 
         body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827z' fill='%23c5a059' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
-            z-index: -1; pointer-events: none;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
 
         /* ─── Header ─────────────────────────────────────────── */
         .header {
-            position: sticky; top: 0; z-index: 1000;
-            background: rgba(253, 251, 247, 0.97); backdrop-filter: blur(12px);
-            border-bottom: 3px solid var(--gold-main); padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(253, 251, 247, 0.97);
+            backdrop-filter: blur(12px);
+            border-bottom: 3px solid var(--gold-main);
+            padding: 15px 0;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
         }
 
         .nav-container {
-            max-width: 1200px; margin: 0 auto; padding: 0 20px;
-            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .brand-icon { font-size: 2rem; color: var(--gold-main); }
-        .brand-text h1 { font-size: 1.1rem; font-weight: 900; color: var(--navy); margin: 0; line-height: 1.3; }
-        .brand-text span { font-size: 0.75rem; color: var(--gold-dark); font-weight: 500; }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            font-size: 2rem;
+            color: var(--gold-main);
+        }
+
+        .brand-text h1 {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--navy);
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .brand-text span {
+            font-size: 0.75rem;
+            color: var(--gold-dark);
+            font-weight: 500;
+        }
 
         /* بخش میانی و دکمه‌ها (Wrapper) */
-        .nav-wrapper { display: flex; align-items: center; gap: 30px; }
-        
-        .nav-menu { display: flex; gap: 30px; list-style: none; }
-        .nav-link { font-weight: 600; color: var(--text-body); font-size: 0.95rem; position: relative; padding-bottom: 3px; }
-        .nav-link:hover, .nav-link.active { color: var(--navy); }
-        .nav-link.active::after {
-            content: ''; position: absolute; bottom: -20px; right: 0; width: 100%;
-            height: 3px; background: var(--gold-main); border-radius: 5px 5px 0 0;
+        .nav-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 30px;
         }
 
-        .nav-user-links { display: flex; align-items: center; gap: 12px; }
-        .nav-cta {
-            background: var(--navy); color: #fff !important; padding: 10px 22px;
-            border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem;
-            display: flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition);
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
         }
-        .nav-cta:hover { background: var(--gold-main); color: var(--navy) !important; }
+
+        .nav-link {
+            font-weight: 600;
+            color: var(--text-body);
+            font-size: 0.95rem;
+            position: relative;
+            padding-bottom: 3px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--navy);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            right: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gold-main);
+            border-radius: 5px 5px 0 0;
+        }
+
+        .nav-user-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-cta {
+            background: var(--navy);
+            color: #fff !important;
+            padding: 10px 22px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .nav-cta:hover {
+            background: var(--gold-main);
+            color: var(--navy) !important;
+        }
 
         .nav-login-btn {
-            border: 1.5px solid var(--gold-main); color: var(--gold-dark); padding: 8px 18px;
-            border-radius: var(--radius-md); font-weight: 600; font-size: 0.88rem; transition: var(--transition);
-            display: flex; justify-content: center; align-items: center;
+            border: 1.5px solid var(--gold-main);
+            color: var(--gold-dark);
+            padding: 8px 18px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.88rem;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .nav-login-btn:hover { background: var(--gold-main); color: #fff; }
+
+        .nav-login-btn:hover {
+            background: var(--gold-main);
+            color: #fff;
+        }
 
         .nav-logout-btn {
-            border: 1.5px solid #fecaca; color: #dc2626; padding: 8px 18px; border-radius: var(--radius-md);
-            font-weight: 600; font-size: 0.88rem; background: none; cursor: pointer;
-            font-family: 'Vazirmatn', sans-serif; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 6px;
+            border: 1.5px solid #fecaca;
+            color: #dc2626;
+            padding: 8px 18px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.88rem;
+            background: none;
+            cursor: pointer;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
-        .nav-logout-btn:hover { background: #fef2f2; }
 
-        .hamburger { display: none; cursor: pointer; font-size: 1.5rem; color: var(--navy); }
-        
+        .nav-logout-btn:hover {
+            background: #fef2f2;
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--navy);
+        }
+
         .nav-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
         }
 
         /* 🔴 موبایل: تبدیل منو به سایدبار کشویی 🔴 */
         @media (max-width: 992px) {
-            .hamburger { display: block; z-index: 1002; }
-            
+            .hamburger {
+                display: block;
+                z-index: 1002;
+            }
+
             .nav-wrapper {
-                position: fixed; top: 0; right: -300px; width: 280px; height: 100vh;
-                background: #fff; flex-direction: column; align-items: flex-start;
-                padding: 80px 20px 30px; gap: 30px; transition: 0.3s ease-in-out;
-                z-index: 1001; box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+                position: fixed;
+                top: 0;
+                right: -300px;
+                width: 280px;
+                height: 100vh;
+                background: #fff;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 80px 20px 30px;
+                gap: 30px;
+                transition: 0.3s ease-in-out;
+                z-index: 1001;
+                box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
                 overflow-y: auto;
             }
-            .nav-wrapper.open { right: 0; }
-            .nav-overlay.open { display: block; }
 
-            .nav-menu { flex-direction: column; width: 100%; gap: 15px; }
-            .nav-link { display: block; padding: 10px 0; border-bottom: 1px solid #f1f5f9; width: 100%; }
-            .nav-link.active::after { display: none; } /* مخفی کردن خط زیر لینک در موبایل */
-            .nav-link.active { color: var(--gold-main); font-weight: 800; border-bottom-color: var(--gold-light); }
+            .nav-wrapper.open {
+                right: 0;
+            }
 
-            .nav-user-links { flex-direction: column; width: 100%; gap: 10px; }
-            .nav-user-links .btn { width: 100%; text-align: center; }
-            .nav-logout-btn, .nav-login-btn, .nav-cta { width: 100%; }
-            
-            .brand-text h1 { font-size: 1rem; }
+            .nav-overlay.open {
+                display: block;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                width: 100%;
+                gap: 15px;
+            }
+
+            .nav-link {
+                display: block;
+                padding: 10px 0;
+                border-bottom: 1px solid #f1f5f9;
+                width: 100%;
+            }
+
+            .nav-link.active::after {
+                display: none;
+            }
+
+            /* مخفی کردن خط زیر لینک در موبایل */
+            .nav-link.active {
+                color: var(--gold-main);
+                font-weight: 800;
+                border-bottom-color: var(--gold-light);
+            }
+
+            .nav-user-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
+
+            .nav-user-links .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-logout-btn,
+            .nav-login-btn,
+            .nav-cta {
+                width: 100%;
+            }
+
+            .brand-text h1 {
+                font-size: 1rem;
+            }
         }
 
         /* ─── Page Banner & Footer ───────────────────────────── */
-        .page-banner { background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 100%); padding: 60px 20px; position: relative; overflow: hidden; }
-        .page-banner::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 70% 50%, rgba(197, 160, 89, 0.12), transparent 60%); }
-        .page-banner-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
-        .page-banner h1 { font-size: clamp(1.8rem, 3vw, 2.5rem); color: #fff; font-weight: 900; margin-bottom: 10px; }
-        .page-banner .breadcrumb { display: flex; align-items: center; gap: 8px; color: rgba(255, 255, 255, 0.6); font-size: 0.88rem; }
-        .page-banner .breadcrumb a { color: var(--gold-main); }
-        .page-banner .breadcrumb i { font-size: 0.7rem; }
-
-        .footer { background-color: #1a1612; color: #888; padding: 60px 20px 20px; text-align: center; border-top: 4px solid var(--gold-main); margin-top: 80px; }
-        .footer-logo { font-size: 1.5rem; color: #fff; font-weight: 900; margin-bottom: 10px; display: block; }
-        .footer-tagline { font-size: 0.85rem; color: #666; margin-bottom: 30px; display: block; }
-        .footer-links { display: flex; justify-content: center; gap: 25px; margin-bottom: 30px; flex-wrap: wrap; }
-        .footer-links a { color: #888; font-size: 0.9rem; transition: 0.3s; }
-        .footer-links a:hover { color: var(--gold-main); }
-        .footer-socials { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-        .footer-socials a { width: 38px; height: 38px; border-radius: 50%; border: 1px solid #333; display: flex; align-items: center; justify-content: center; color: #888; font-size: 0.9rem; transition: 0.3s; }
-        .footer-socials a:hover { border-color: var(--gold-main); color: var(--gold-main); }
-        .footer-copy { font-size: 0.8rem; color: #555; border-top: 1px solid #2a2520; padding-top: 20px; }
-/* ─── Trust Seals (eNamad) ─── */
-        .footer-certs { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-        .footer-certs a { 
-            background: #fff; 
-            padding: 10px; 
-            border-radius: var(--radius-md); 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
-            transition: var(--transition); 
-            display: inline-block; 
+        .page-banner {
+            background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 100%);
+            padding: 60px 20px;
+            position: relative;
+            overflow: hidden;
         }
-        .footer-certs a:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3); }
-        .footer-certs img { width: 75px; height: auto; display: block; }
-        /* ─── Flash Messages ─────────────────────────────────── */
-        .flash-container { max-width: 1200px; margin: 20px auto 0; padding: 0 20px; }
-        .flash { padding: 14px 20px; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .flash-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
-        .flash-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
-        .flash-warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
 
-        .input-box { display: flex; align-items: center; background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 0 15px; transition: all 0.3s ease; overflow: hidden; }
-        .input-box:focus-within { background-color: #ffffff; border-color: var(--gold-main); box-shadow: 0 0 0 4px rgba(207, 168, 110, 0.12); }
-        .input-box i { color: #94a3b8; font-size: 1.1rem; margin-left: 10px; transition: all 0.3s ease; }
-        .input-box:focus-within i { color: var(--gold-main); }
-        .input-box input, .input-box textarea { flex: 1; border: none !important; background: transparent !important; padding: 15px 0; font-family: inherit; font-size: 0.95rem; color: var(--text-heading); outline: none !important; box-shadow: none !important; }
+        .page-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 70% 50%, rgba(197, 160, 89, 0.12), transparent 60%);
+        }
+
+        .page-banner-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-banner h1 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: #fff;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .page-banner .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.88rem;
+        }
+
+        .page-banner .breadcrumb a {
+            color: var(--gold-main);
+        }
+
+        .page-banner .breadcrumb i {
+            font-size: 0.7rem;
+        }
+
+        .footer {
+            background-color: #1a1612;
+            color: #888;
+            padding: 60px 20px 20px;
+            text-align: center;
+            border-top: 4px solid var(--gold-main);
+            margin-top: 80px;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            color: #fff;
+            font-weight: 900;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .footer-tagline {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #888;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold-main);
+        }
+
+        .footer-socials {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .footer-socials a {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .footer-socials a:hover {
+            border-color: var(--gold-main);
+            color: var(--gold-main);
+        }
+
+        .footer-copy {
+            font-size: 0.8rem;
+            color: #555;
+            border-top: 1px solid #2a2520;
+            padding-top: 20px;
+        }
+
+        /* ─── Trust Seals (eNamad) ─── */
+        .footer-certs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .footer-certs a {
+            background: #fff;
+            padding: 10px;
+            border-radius: var(--radius-md);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .footer-certs a:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .footer-certs img {
+            width: 75px;
+            height: auto;
+            display: block;
+        }
+
+        /* ─── Flash Messages ─────────────────────────────────── */
+        .flash-container {
+            max-width: 1200px;
+            margin: 20px auto 0;
+            padding: 0 20px;
+        }
+
+        .flash {
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .flash-success {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .flash-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .flash-warning {
+            background: #fffbeb;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .input-box {
+            display: flex;
+            align-items: center;
+            background-color: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0 15px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .input-box:focus-within {
+            background-color: #ffffff;
+            border-color: var(--gold-main);
+            box-shadow: 0 0 0 4px rgba(207, 168, 110, 0.12);
+        }
+
+        .input-box i {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .input-box:focus-within i {
+            color: var(--gold-main);
+        }
+
+        .input-box input,
+        .input-box textarea {
+            flex: 1;
+            border: none !important;
+            background: transparent !important;
+            padding: 15px 0;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-heading);
+            outline: none !important;
+            box-shadow: none !important;
+        }
     </style>
     @stack('styles')
 </head>
+
 <body>
 
     @if (session()->hasAny(['success', 'error', 'warning', 'info']))
         <div class="flash-container">
-            @if (session('success')) <div class="flash flash-success"><i class="fas fa-check-circle"></i> {{ session('success') }}</div> @endif
-            @if (session('error')) <div class="flash flash-error"><i class="fas fa-exclamation-circle"></i> {{ session('error') }}</div> @endif
-            @if (session('warning')) <div class="flash flash-warning"><i class="fas fa-exclamation-triangle"></i> {{ session('warning') }}</div> @endif
-            @if (session('info')) <div class="flash" style="background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;"><i class="fas fa-info-circle"></i> {{ session('info') }}</div> @endif
+            @if (session('success'))
+            <div class="flash flash-success"><i class="fas fa-check-circle"></i> {{ session('success') }}</div> @endif
+            @if (session('error'))
+            <div class="flash flash-error"><i class="fas fa-exclamation-circle"></i> {{ session('error') }}</div> @endif
+            @if (session('warning'))
+                <div class="flash flash-warning"><i class="fas fa-exclamation-triangle"></i> {{ session('warning') }}</div>
+            @endif
+            @if (session('info'))
+                <div class="flash" style="background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;"><i
+            class="fas fa-info-circle"></i> {{ session('info') }}</div> @endif
         </div>
     @endif
 
@@ -193,15 +564,23 @@
             </a>
 
             <div class="nav-overlay" id="navOverlay" onclick="toggleMenu()"></div>
-            
+
             <nav class="nav-wrapper" id="navWrapper">
                 <ul class="nav-menu">
-                    <li><a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">صفحه اصلی</a></li>
-                    <li><a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">درباره وکلا</a></li>
-                    <li><a href="{{ route('services.index') }}" class="nav-link {{ request()->routeIs('services*') ? 'active' : '' }}">حوزه‌های وکالت</a></li>
-                    <li><a href="{{ route('articles.index') }}" class="nav-link {{ request()->routeIs('articles*') ? 'active' : '' }}">مقالات</a></li>
-                    <li><a href="{{ route('calculators.index') }}" class="nav-link {{ request()->routeIs('calculators*') ? 'active' : '' }}">ماشین‌حساب حقوقی</a></li>
-                    <li><a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">تماس با ما</a></li>
+                    <li><a href="{{ route('home') }}"
+                            class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">صفحه اصلی</a></li>
+                    <li><a href="{{ route('about') }}"
+                            class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">درباره وکلا</a></li>
+                    <li><a href="{{ route('services.index') }}"
+                            class="nav-link {{ request()->routeIs('services*') ? 'active' : '' }}">حوزه‌های وکالت</a>
+                    </li>
+                    <li><a href="{{ route('articles.index') }}"
+                            class="nav-link {{ request()->routeIs('articles*') ? 'active' : '' }}">مقالات</a></li>
+                    <li><a href="{{ route('calculators.index') }}"
+                            class="nav-link {{ request()->routeIs('calculators*') ? 'active' : '' }}">ماشین‌حساب
+                            حقوقی</a></li>
+                    <li><a href="{{ route('contact') }}"
+                            class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">تماس با ما</a></li>
                 </ul>
 
                 <div class="nav-user-links">
@@ -237,7 +616,8 @@
     </main>
 
     <footer class="footer">
-        <span class="footer-logo"><i class="fas fa-scale-balanced" style="color:var(--gold-main);margin-left:8px;"></i>ابدالی و جوشقانی</span>
+        <span class="footer-logo"><i class="fas fa-scale-balanced"
+                style="color:var(--gold-main);margin-left:8px;"></i>ابدالی و جوشقانی</span>
         <span class="footer-tagline">دفاع از حق شما، تخصص ماست</span>
         <div class="footer-links">
             <a href="{{ route('home') }}">صفحه اصلی</a>
@@ -247,8 +627,11 @@
             <a href="{{ route('contact') }}">تماس با ما</a>
         </div>
         <div class="footer-certs">
-            <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=770536&Code=Vxr7HKG8NhV37uhcuZ9cELfSpoOfV3QI'>
-                <img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=770536&Code=Vxr7HKG8NhV37uhcuZ9cELfSpoOfV3QI' alt='اینماد' style='cursor:pointer' code='Vxr7HKG8NhV37uhcuZ9cELfSpoOfV3QI'>
+            <a referrerpolicy='origin' target='_blank'
+                href='https://trustseal.enamad.ir/?id=770536&Code=Vxr7HKG8NhV37uhcuZ9cELfSpoOfV3QI'>
+                <img referrerpolicy='origin'
+                    src='https://trustseal.enamad.ir/logo.aspx?id=770536&Code=Vxr7HKG8NhV37uhcuZ9cELfSpoOfV3QI'
+                    alt='اینماد' style='cursor:pointer' code='Vxr7HKG8NhV37uhcuZ9cELfSpoOfV3QI'>
             </a>
         </div>
 
@@ -264,5 +647,13 @@
         }
     </script>
     @stack('scripts')
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(console.error);
+    });
+  }
+</script>
 </body>
+
 </html>

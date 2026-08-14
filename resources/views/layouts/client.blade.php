@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'داشبورد') | دفتر وکالت ابدالی و جوشقانی</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#102a43">
+
+    <!-- iOS specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ابدالی و جوشقانی">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
 
     <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -397,7 +405,8 @@
                         <div class="dropdown-menu">
                             <div style="padding:12px 16px;border-bottom:1px solid #eee;">
                                 <div style="font-weight:700;color:var(--navy);font-size:0.9rem;">
-                                    {{ auth()->user()->name }}</div>
+                                    {{ auth()->user()->name }}
+                                </div>
                                 <div style="font-size:0.78rem;color:#999;">{{ auth()->user()->phone }}</div>
                             </div>
                             <a href="{{ route('client.profile') }}" class="dropdown-item"><i class="far fa-user"></i>
@@ -440,6 +449,13 @@
         }
     </script>
     @stack('scripts')
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(console.error);
+    });
+  }
+</script>
 </body>
 
 </html>
