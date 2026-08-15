@@ -1,9 +1,15 @@
-const CACHE_NAME = "abdali-cache-v1";
+const CACHE_NAME = "abdali-cache-v2";
 const OFFLINE_URL = "/offline.html";
 
 self.addEventListener("install", (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.add(OFFLINE_URL)),
+        caches.open(CACHE_NAME)
+            .then((cache) => cache.add(OFFLINE_URL))
+            .catch((err) => {
+                // اگر کش کردن offline.html به هر دلیلی fail شود،
+                // نصب Service Worker را متوقف نکن
+                console.warn("Offline page could not be cached:", err);
+            })
     );
     self.skipWaiting();
 });
