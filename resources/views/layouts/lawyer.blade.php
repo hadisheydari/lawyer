@@ -8,7 +8,8 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#102a43">
     <meta name="vapid-key" content="{{ config('webpush.vapid.public_key') }}">
-    @auth
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @auth('lawyer')
         <script>window.__shouldSubscribePush = true;</script>
     @endauth
     <!-- iOS specific -->
