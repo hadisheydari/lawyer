@@ -23,10 +23,7 @@ class ChatController extends Controller
         $conversations = ChatConversation::with(['user', 'latestMessage', 'consultation', 'case'])
             ->where('lawyer_id', $lawyer->id)
             ->get()
-            ->sortByDesc(fn ($conv) => $conv->latestMessage
-                ? $conv->latestMessage->created_at
-                : $conv->created_at
-            );
+            ->sortByDesc(fn($conv) => $conv->latestMessage ? $conv->latestMessage->created_at : $conv->created_at);
 
         return view('lawyer.chat.index', compact('conversations'));
     }

@@ -645,58 +645,137 @@
         </div>
 
         {{-- ناحیه چت --}}
+        {{-- ناحیه چت --}}
         <div class="chat-main">
-            @if ($activeConversation->status === 'active')
-                <div class="chat-footer">
-                    <form method="POST" action="{{ route('lawyer.chat.send', $activeConversation->id) }}"
-                        enctype="multipart/form-data" id="lawyerChatForm">
-                        @csrf
+            @if (isset($activeConversation))
 
-                        <div id="filePreviewBar" class="file-preview-bar" style="display:none;">
-                            <i class="fas fa-paperclip"></i>
-                            <span id="filePreviewName"></span>
-                            <button type="button" id="fileRemoveBtn" title="حذف فایل"><i class="fas fa-times"></i></button>
+                <header class="chat-head">
+                    <div class="ch-left">
+                        <a href="{{ route('lawyer.chat.index') }}" class="mobile-back" title="بازگشت به لیست">
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <div class="ch-avatar">{{ mb_substr($activeConversation->user->name ?? 'م', 0, 1) }}</div>
+                        <div class="ch-info">
+                            <h3>{{ $activeConversation->user->name ?? 'موکل' }}</h3>
+                            <span>
+                                <span class="online-dot"></span>
+                                {{ $activeConversation->user->phone ?? '' }}
+                            </span>
                         </div>
+                    </div>
+                    <div class="ch-actions">
+                        @if ($activeConversation->status === 'active')
+                            <form method="POST" action="{{ route('lawyer.chat.close', $activeConversation->id) }}">
+                                @csrf
+                                <button type="submit" class="ch-btn close">
+                                    <i class="fas fa-lock"></i> بستن مکالمه
+                                </button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{ route('lawyer.chat.reopen', $activeConversation->id) }}">
+                                @csrf
+                                <button type="submit" class="ch-btn reopen">
+                                    <i class="fas fa-lock-open"></i> بازگشایی مکالمه
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </header>
 
-                        <div id="templatePanel" class="template-panel" style="display:none;">
-                            <div class="template-panel-head">
-                                <span><i class="fas fa-file-alt"></i> انتخاب قالب آماده</span>
-                                <button type="button" id="templateClose"><i class="fas fa-times"></i></button>
+                <div class="messages" id="msgContainer">
+                    @forelse($messages as $msg)
+                        @php $isLawyer = $msg->sender_type === 'lawyer'; @endphp
+                        <div class="msg-row {{ $isLawyer ? 'from-lawyer' : 'from-client' }}">
+                            <div class="msg-bubble">
+                                {{ $msg->message }}
+
+                                @if ($msg->attachments)
+                                    @foreach ($msg->attachments as $att)
+                                        <div class="attachment"
+                                            style="display:flex;align-items:center;gap:8px;margin-top:6px;padding:6px 10px;background:rgba(0,0,0,0.05);border-radius:8px;">
+                                            <i class="fas fa-file"></i>
+                                            <a href="{{ asset('storage/' . $att['path']) }}" target="_blank"
+                                                style="color:inherit;text-decoration:underline;font-size:0.82rem;">
+                                                {{ $att['name'] ?? 'فایل پیوست' }}
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                @endif
+
+                                <span class="msg-meta">
+                                    {{ $msg->created_at->format('H:i') }}
+                                    @if ($isLawyer && $msg->is_read)
+                                        <i class="fas fa-check-double"></i>
+                                    @endif
+                                </span>
                             </div>
-                            <div class="template-list">
-                                @forelse(config('legal_templates', []) as $tpl)
-                                    <button type="button" class="template-item" data-body="{{ $tpl['body'] }}">
-                                        <strong>{{ $tpl['title'] }}</strong>
-                                    </button>
-                                @empty
-                                    <p style="padding:12px;color:#94a3b8;font-size:0.8rem;">قالبی تعریف نشده است.</p>
-                                @endforelse
-                            </div>
                         </div>
-
-                        <div class="cf-form">
-                            <label for="fileAttach" class="cf-attach" title="ارسال فایل">
-                                <i class="fas fa-paperclip"></i>
-                            </label>
-                            <input type="file" id="fileAttach" name="attachment" style="display:none;"
-                                accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
-
-                            <button type="button" id="templateBtn" class="cf-template-btn" title="انتخاب قالب آماده">
-                                <i class="fas fa-file-alt"></i>
-                            </button>
-
-                            <input type="text" name="message" id="lawyerMsgInput" class="cf-input"
-                                placeholder="پیام خود را بنویسید..." autocomplete="off">
-                            <button type="submit" class="cf-send">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
+                    @empty
+                        <div style="text-align:center;color:#94a3b8;margin:auto;">
+                            <i class="fas fa-comments" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
+                            هنوز پیامی رد و بدل نشده است
                         </div>
-                    </form>
+                    @endforelse
                 </div>
+
+                @if ($activeConversation->status === 'active')
+                    <div class="chat-footer">
+                        <form method="POST" action="{{ route('lawyer.chat.send', $activeConversation->id) }}"
+                            enctype="multipart/form-data" id="lawyerChatForm">
+                            @csrf
+
+                            <div id="filePreviewBar" class="file-preview-bar" style="display:none;">
+                                <i class="fas fa-paperclip"></i>
+                                <span id="filePreviewName"></span>
+                                <button type="button" id="fileRemoveBtn" title="حذف فایل"><i
+                                        class="fas fa-times"></i></button>
+                            </div>
+
+                            <div id="templatePanel" class="template-panel" style="display:none;">
+                                <div class="template-panel-head">
+                                    <span><i class="fas fa-file-alt"></i> انتخاب قالب آماده</span>
+                                    <button type="button" id="templateClose"><i class="fas fa-times"></i></button>
+                                </div>
+                                <div class="template-list">
+                                    @forelse(config('legal_templates', []) as $tpl)
+                                        <button type="button" class="template-item" data-body="{{ $tpl['body'] }}">
+                                            <strong>{{ $tpl['title'] }}</strong>
+                                        </button>
+                                    @empty
+                                        <p style="padding:12px;color:#94a3b8;font-size:0.8rem;">قالبی تعریف نشده است.</p>
+                                    @endforelse
+                                </div>
+                            </div>
+
+                            <div class="cf-form">
+                                <label for="fileAttach" class="cf-attach" title="ارسال فایل">
+                                    <i class="fas fa-paperclip"></i>
+                                </label>
+                                <input type="file" id="fileAttach" name="attachment" style="display:none;"
+                                    accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+
+                                <button type="button" id="templateBtn" class="cf-template-btn" title="انتخاب قالب آماده">
+                                    <i class="fas fa-file-alt"></i>
+                                </button>
+
+                                <input type="text" name="message" id="lawyerMsgInput" class="cf-input"
+                                    placeholder="پیام خود را بنویسید..." autocomplete="off">
+                                <button type="submit" class="cf-send">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                @else
+                    <div
+                        style="padding:14px 22px;background:#fef3c7;text-align:center;font-size:0.85rem;color:#b45309;border-top:1px solid #fde68a;">
+                        <i class="fas fa-lock" style="margin-left:5px;"></i> این مکالمه بسته شده است.
+                    </div>
+                @endif
             @else
-                <div
-                    style="padding:14px 22px;background:#fef3c7;text-align:center;font-size:0.85rem;color:#b45309;border-top:1px solid #fde68a;">
-                    <i class="fas fa-lock" style="margin-left:5px;"></i> این مکالمه بسته شده است.
+                <div class="empty-chat">
+                    <div class="empty-icon"><i class="fas fa-comments"></i></div>
+                    <p style="font-weight:700;color:var(--navy);">یک گفتگو را از لیست انتخاب کنید</p>
                 </div>
             @endif
         </div>
@@ -707,6 +786,55 @@
             document.addEventListener('DOMContentLoaded', () => {
                 const mc = document.getElementById('msgContainer');
                 if (mc) mc.scrollTop = mc.scrollHeight;
+
+                const fileInput = document.getElementById('fileAttach');
+                const previewBar = document.getElementById('filePreviewBar');
+                const previewName = document.getElementById('filePreviewName');
+                const removeBtn = document.getElementById('fileRemoveBtn');
+
+                fileInput?.addEventListener('change', function() {
+                    if (this.files[0]) {
+                        previewName.textContent = this.files[0].name;
+                        previewBar.style.display = 'flex';
+                    }
+                });
+
+                removeBtn?.addEventListener('click', () => {
+                    fileInput.value = '';
+                    previewBar.style.display = 'none';
+                });
+
+                const templateBtn = document.getElementById('templateBtn');
+                const templatePanel = document.getElementById('templatePanel');
+                const templateClose = document.getElementById('templateClose');
+                const msgInput = document.getElementById('lawyerMsgInput');
+
+                templateBtn?.addEventListener('click', () => {
+                    templatePanel.style.display = templatePanel.style.display === 'none' ? 'block' : 'none';
+                });
+                templateClose?.addEventListener('click', () => templatePanel.style.display = 'none');
+
+                document.querySelectorAll('.template-item').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        let body = btn.dataset.body;
+                        @if (isset($activeConversation))
+                            body = body.replaceAll('{client_name}', @json($activeConversation->user->name ?? ''));
+                            @if ($activeConversation->case)
+                                body = body.replaceAll('{case_number}', @json($activeConversation->case->case_number ?? ''));
+                            @endif
+                        @endif
+                        msgInput.value = body;
+                        templatePanel.style.display = 'none';
+                        msgInput.focus();
+                    });
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (templatePanel && !templatePanel.contains(e.target) && e.target !== templateBtn && !
+                        templateBtn.contains(e.target)) {
+                        templatePanel.style.display = 'none';
+                    }
+                });
             });
             document.getElementById('fileAttach')?.addEventListener('change', function() {
                 const inp = document.querySelector('.cf-input');
