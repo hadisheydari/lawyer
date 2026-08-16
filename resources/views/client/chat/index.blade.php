@@ -914,6 +914,63 @@
             color: #b45309;
             cursor: pointer;
         }
+
+        .chat-area {
+            min-height: 0;
+        }
+
+        .messages {
+            min-height: 0;
+        }
+
+        .chat-footer form,
+        .input-group {
+            box-sizing: border-box;
+        }
+
+        .msg-input {
+            min-width: 0;
+        }
+
+
+        .msg-bubble {
+            position: relative;
+        }
+
+        .msg-delete-btn {
+            position: absolute;
+            top: 4px;
+            opacity: 0;
+            background: rgba(0, 0, 0, 0.15);
+            border: none;
+            color: inherit;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .msg-row.sent .msg-delete-btn {
+            left: -26px;
+        }
+
+        .msg-row.received .msg-delete-btn {
+            display: none;
+        }
+
+        .msg-bubble:hover .msg-delete-btn {
+            opacity: 1;
+        }
+
+        .msg-delete-btn:hover {
+            background: #ef4444;
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -994,18 +1051,30 @@
                 <div class="messages" id="messagesContainer">
                     @forelse($messages as $msg)
                         @php $isSent = $msg->sender_type === 'user'; @endphp
-                        <div class="msg-row {{ $isSent ? 'sent' : 'received' }}">
+                        <div class="msg-row {{ $isSent ? 'sent' : 'received' }}"
+                            data-message-id="{{ $msg->id }}">
                             <div class="msg-bubble">
+                                @if ($isSent)
+                                    <button type="button" class="msg-delete-btn"
+                                        onclick="deleteMessage({{ $msg->id }})" title="حذف پیام">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                @endif
+
                                 {{ $msg->message }}
 
                                 @if ($msg->attachments)
                                     @foreach ($msg->attachments as $att)
                                         <div class="attachment">
-                                            <div class="file-icon"><i class="fas fa-file-pdf"></i></div>
+                                            <i class="fas fa-file file-icon"
+                                                style="color:{{ $isSent ? 'var(--gold-main)' : '#e74c3c' }};font-size:1.1rem;"></i>
                                             <div class="file-details">
-                                                <span class="file-name">{{ $att['name'] ?? 'مدرک_پیوست.pdf' }}</span>
+                                                <a href="{{ route('client.chat.download', [$activeConversation->id, $msg->id]) }}"
+                                                    class="file-name" style="color:inherit;text-decoration:underline;">
+                                                    {{ $att['name'] ?? 'فایل' }}
+                                                </a>
                                                 <span
-                                                    class="file-size">{{ isset($att['size']) ? round($att['size'] / 1024, 1) . ' KB' : 'فایل سند' }}</span>
+                                                    class="file-size">{{ isset($att['size']) ? round($att['size'] / 1024, 1) . ' KB' : '' }}</span>
                                             </div>
                                         </div>
                                     @endforeach
@@ -1013,39 +1082,37 @@
 
                                 <span class="msg-meta">
                                     {{ $msg->created_at->format('H:i') }}
-                                    @if ($isSent)
-                                        <i class="fas {{ $msg->is_read ? 'fa-check-double' : 'fa-check' }}"></i>
+                                    @if ($isSent && $msg->is_read)
+                                        <i class="fas fa-check-double" style="margin-right:4px;"></i>
                                     @endif
                                 </span>
                             </div>
                         </div>
                     @empty
-                        <div class="empty-chat" style="height: 100%;">
-                            <div class="empty-icon-wrap"><i class="fas fa-hand-sparkles"></i></div>
-                            <h3 style="color:var(--navy); font-weight:800;">به اتاق گفتگو خوش آمدید</h3>
-                            <p>سؤالات حقوقی یا مدارک خود را در اینجا ارسال کنید.</p>
+                        <div style="text-align:center;color:#ccc;margin:auto;">
+                            <i class="fas fa-comments" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
+                            گفتگو را شروع کنید
                         </div>
                     @endforelse
                 </div>
 
                 <footer class="chat-footer">
                     <form method="POST" action="{{ route('client.chat.send', $activeConversation->id) }}"
+                        id="clientChatForm" style="display:flex;align-items:center;gap:10px;width:100%;"
                         enctype="multipart/form-data">
                         @csrf
-                        <div class="input-wrapper">
-                            <label for="fileInput" class="btn-attach" title="ارسال مدرک/فایل">
+                        <div class="input-group">
+                            <input type="text" name="message" id="clientMsgInput" class="msg-input"
+                                placeholder="پیام خود را بنویسید..." autocomplete="off">
+                            <label for="fileInput" class="btn-attach" title="ارسال فایل">
                                 <i class="fas fa-paperclip"></i>
                             </label>
                             <input type="file" id="fileInput" name="attachment" style="display:none;"
                                 accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
-
-                            <input type="text" name="message" class="msg-input"
-                                placeholder="پیام خود را تایپ کنید..." autocomplete="off">
-
-                            <button type="submit" class="btn-send">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
                         </div>
+                        <button type="submit" class="btn-send">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
                     </form>
                 </footer>
             @else
@@ -1106,6 +1173,44 @@
             document.querySelector('.msg-input').placeholder = 'پیام خود را تایپ کنید...';
             document.querySelector('.msg-input').style.color = '';
         });
+
+        document.getElementById('clientChatForm')?.addEventListener('submit', function(e) {
+            const msg = document.getElementById('clientMsgInput')?.value.trim() || '';
+            const hasFile = document.getElementById('fileInput')?.files.length > 0;
+            if (!msg && !hasFile) {
+                e.preventDefault();
+                alert('لطفاً متن پیام را بنویسید یا یک فایل انتخاب کنید.');
+            }
+        });
+
+        function deleteMessage(messageId) {
+            if (!confirm('این پیام حذف شود؟')) return;
+
+            const conversationId = @json($activeConversation->id ?? null);
+            if (!conversationId) return;
+
+            fetch(`/client/chat/${conversationId}/message/${messageId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const row = document.querySelector(`[data-message-id="${messageId}"]`);
+                        if (row) {
+                            row.style.transition = '0.3s';
+                            row.style.opacity = '0';
+                            setTimeout(() => row.remove(), 300);
+                        }
+                    } else {
+                        alert(data.message || 'خطا در حذف پیام.');
+                    }
+                })
+                .catch(() => alert('خطا در ارتباط با سرور.'));
+        }
     </script>
 
 </body>

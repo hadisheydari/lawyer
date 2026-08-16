@@ -156,6 +156,8 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
             Route::get('/', [LawyerChatController::class, 'index'])->name('index');
             Route::get('/{id}', [LawyerChatController::class, 'show'])->name('show');
             Route::post('/{id}/send', [LawyerChatController::class, 'send'])->name('send');
+            Route::get('/{id}/download/{message}', [LawyerChatController::class, 'downloadAttachment'])->name('download');
+            Route::delete('/{id}/message/{message}', [LawyerChatController::class, 'destroyMessage'])->name('message.destroy'); // جدید
             Route::post('/{id}/close', [LawyerChatController::class, 'close'])->name('close');
             Route::post('/{id}/reopen', [LawyerChatController::class, 'reopen'])->name('reopen');
         });
@@ -231,10 +233,12 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
     // چت
     // این مسیرها درون گروه Route::middleware(['auth'])->prefix('client')->name('client.')->group(...) قرار دارند:
     Route::prefix('chat')->name('chat.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Client\ChatController::class, 'index'])->name('index'); // client.chat.index
-        Route::get('/{id}', [\App\Http\Controllers\Client\ChatController::class, 'show'])->name('show');   // client.chat.show
-        Route::post('/{id}/send', [\App\Http\Controllers\Client\ChatController::class, 'send'])->name('send'); // client.chat.send
-        Route::post('/start', [\App\Http\Controllers\Client\ChatController::class, 'store'])->name('store'); // client.chat.store
+        Route::get('/', [\App\Http\Controllers\Client\ChatController::class, 'index'])->name('index');
+        Route::get('/{id}', [\App\Http\Controllers\Client\ChatController::class, 'show'])->name('show');
+        Route::post('/{id}/send', [\App\Http\Controllers\Client\ChatController::class, 'send'])->name('send');
+        Route::get('/{id}/download/{message}', [\App\Http\Controllers\Client\ChatController::class, 'downloadAttachment'])->name('download');
+        Route::delete('/{id}/message/{message}', [\App\Http\Controllers\Client\ChatController::class, 'destroyMessage'])->name('message.destroy'); // جدید
+        Route::post('/start', [\App\Http\Controllers\Client\ChatController::class, 'store'])->name('store');
     });
 
     // پرونده‌ها (کاربر ویژه)

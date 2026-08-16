@@ -586,6 +586,66 @@
                 padding: 12px;
             }
         }
+
+        /* فیکس اسکرول در فلکس‌باکس (باگ ویندوز) */
+        .chat-main {
+            min-height: 0;
+        }
+
+        .messages {
+            min-height: 0;
+        }
+
+        /* فیکس بیرون‌زدگی در موبایل */
+        .chat-footer,
+        .cf-form {
+            box-sizing: border-box;
+        }
+
+        .cf-input {
+            min-width: 0;
+        }
+
+
+        .msg-bubble {
+            position: relative;
+        }
+
+        .msg-delete-btn {
+            position: absolute;
+            top: 4px;
+            opacity: 0;
+            background: rgba(0, 0, 0, 0.15);
+            border: none;
+            color: inherit;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .msg-row.from-lawyer .msg-delete-btn {
+            left: -26px;
+        }
+
+        .msg-row.from-client .msg-delete-btn {
+            display: none;
+        }
+
+        /* فقط پیام‌های خودم قابل حذف */
+        .msg-bubble:hover .msg-delete-btn {
+            opacity: 1;
+        }
+
+        .msg-delete-btn:hover {
+            background: #ef4444;
+            color: #fff;
+        }
     </style>
 @endpush
 
@@ -685,8 +745,16 @@
                 <div class="messages" id="msgContainer">
                     @forelse($messages as $msg)
                         @php $isLawyer = $msg->sender_type === 'lawyer'; @endphp
-                        <div class="msg-row {{ $isLawyer ? 'from-lawyer' : 'from-client' }}">
+                        <div class="msg-row {{ $isLawyer ? 'from-lawyer' : 'from-client' }}"
+                            data-message-id="{{ $msg->id }}">
                             <div class="msg-bubble">
+                                @if ($isLawyer)
+                                    <button type="button" class="msg-delete-btn"
+                                        onclick="deleteMessage({{ $msg->id }})" title="حذف پیام">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                @endif
+
                                 {{ $msg->message }}
 
                                 @if ($msg->attachments)
@@ -694,7 +762,7 @@
                                         <div class="attachment"
                                             style="display:flex;align-items:center;gap:8px;margin-top:6px;padding:6px 10px;background:rgba(0,0,0,0.05);border-radius:8px;">
                                             <i class="fas fa-file"></i>
-                                            <a href="{{ asset('storage/' . $att['path']) }}" target="_blank"
+                                            <a href="{{ route('lawyer.chat.download', [$activeConversation->id, $msg->id]) }}"
                                                 style="color:inherit;text-decoration:underline;font-size:0.82rem;">
                                                 {{ $att['name'] ?? 'فایل پیوست' }}
                                             </a>
@@ -895,6 +963,43 @@
                     }
                 });
             });
+            document.getElementById('lawyerChatForm')?.addEventListener('submit', function(e) {
+                const msg = document.getElementById('lawyerMsgInput')?.value.trim() || '';
+                const hasFile = document.getElementById('fileAttach')?.files.length > 0;
+                if (!msg && !hasFile) {
+                    e.preventDefault();
+                    alert('لطفاً متن پیام را بنویسید یا یک فایل انتخاب کنید.');
+                }
+            });
+
+            function deleteMessage(messageId) {
+                if (!confirm('این پیام حذف شود؟')) return;
+
+                const conversationId = @json($activeConversation->id ?? null);
+                if (!conversationId) return;
+
+                fetch(`/lawyer/chat/${conversationId}/message/${messageId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                        },
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            const row = document.querySelector(`[data-message-id="${messageId}"]`);
+                            if (row) {
+                                row.style.transition = '0.3s';
+                                row.style.opacity = '0';
+                                setTimeout(() => row.remove(), 300);
+                            }
+                        } else {
+                            alert(data.message || 'خطا در حذف پیام.');
+                        }
+                    })
+                    .catch(() => alert('خطا در ارتباط با سرور.'));
+            }
         </script>
     @endpush
 

@@ -7,6 +7,7 @@ use App\Models\ChatConversation;
 use App\Models\Lawyer;
 use App\Notifications\NewChatMessageNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ChatController extends Controller
 {
@@ -90,57 +91,111 @@ class ChatController extends Controller
     {
         $userId = auth()->id();
 
-        // پیدا کردن مکالمه و بررسی اینکه حتماً متعلق به همین کاربر باشد
         $conversation = ChatConversation::where('user_id', $userId)->findOrFail($id);
 
-        // اعتبارسنجی ورودی‌ها
         $request->validate([
-            'message' => 'required_without:attachment|nullable|string|max:2000',
-            'attachment' => 'required_without:message|nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
+            'message'    => 'nullable|string|max:2000',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
         ], [
-            'message.required_without' => 'لطفاً متن پیام را بنویسید یا یک فایل انتخاب کنید.',
-            'attachment.required_without' => 'لطفاً متن پیام را بنویسید یا یک فایل انتخاب کنید.',
             'attachment.mimes' => 'فرمت فایل ارسالی مجاز نیست (فقط تصاویر و اسناد).',
-            'attachment.max' => 'حجم فایل نباید بیشتر از ۵ مگابایت باشد.',
+            'attachment.max'   => 'حجم فایل نباید بیشتر از ۵ مگابایت باشد.',
         ]);
+
+        $messageText = trim((string) $request->input('message'));
+        $hasFile = $request->hasFile('attachment');
+
+        // ✅ جلوگیری از ارسال کاملاً خالی
+        if ($messageText === '' && !$hasFile) {
+            return back()->with('error', 'لطفاً متن پیام را بنویسید یا یک فایل انتخاب کنید.');
+        }
 
         $attachmentData = null;
 
-        // بررسی و آپلود فایل پیوست
-        if ($request->hasFile('attachment')) {
+        if ($hasFile) {
             $file = $request->file('attachment');
-
-            $fileName = time().'_'.$file->getClientOriginalName();
-
-            // ذخیره فایل
+            $fileName = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('chat_files', $fileName, 'public');
 
-            $attachmentData = [
-                [
-                    'name' => $file->getClientOriginalName(),
-                    'path' => $path,
-                    'size' => $file->getSize(),
-                    'mime' => $file->getMimeType(),
-                ],
-            ];
+            $attachmentData = [[
+                'name' => $file->getClientOriginalName(),
+                'path' => $path,
+                'size' => $file->getSize(),
+                'mime' => $file->getMimeType(),
+            ]];
         }
 
-        // ایجاد پیام (استفاده از relations که به صورت خودکار conversation_id را پر می‌کند)
         $conversation->messages()->create([
-            'sender_id' => $userId,      // این همان فیلدی است که ارور می‌داد
+            'sender_id'   => $userId,
             'sender_type' => 'user',
-            'message' => $request->message,
+            'message'     => $messageText, // ✅ همیشه رشته است
             'attachments' => $attachmentData,
-            'is_read' => false,
+            'is_read'     => false,
         ]);
 
         $conversation->touch();
         $conversation->lawyer->notify(new NewChatMessageNotification(
             auth()->user()->name,
-            $request->message ?? 'یک فایل ارسال شد',
+            $messageText !== '' ? $messageText : 'یک فایل ارسال شد',
             route('lawyer.chat.show', $conversation->id)
         ));
 
         return back();
+    }
+
+    // ─── دانلود امن فایل پیوست ───────────────────────────────────────────────
+    public function downloadAttachment($id, $messageId)
+    {
+        $userId = auth()->id();
+
+        $conversation = ChatConversation::where('user_id', $userId)->findOrFail($id);
+
+        $message = $conversation->messages()->findOrFail($messageId);
+
+        $attachment = $message->attachments[0] ?? null;
+
+        abort_if(
+            !$attachment,
+            404,
+            'فایلی برای این پیام یافت نشد.'
+        );
+
+        $path = $attachment['path'];
+
+        abort_unless(
+            Storage::disk('public')->exists($path),
+            404,
+            'فایل مورد نظر روی سرور یافت نشد.'
+        );
+
+        return response()->download(
+            Storage::disk('public')->path($path),
+            $attachment['name'] ?? basename($path)
+        );
+    }
+
+    // ─── حذف پیام (فقط فرستنده می‌تواند پیام خودش را حذف کند) ───────────────
+    public function destroyMessage($id, $messageId)
+    {
+        $userId = auth()->id();
+
+        $conversation = ChatConversation::where('user_id', $userId)->findOrFail($id);
+        $message = $conversation->messages()->findOrFail($messageId);
+
+        if ($message->sender_type !== 'user' || $message->sender_id !== $userId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'شما فقط می‌توانید پیام‌های خودتان را حذف کنید.',
+            ], 403);
+        }
+
+        if ($message->attachments) {
+            foreach ($message->attachments as $att) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($att['path'] ?? '');
+            }
+        }
+
+        $message->delete();
+
+        return response()->json(['success' => true, 'message' => 'پیام حذف شد.']);
     }
 }
