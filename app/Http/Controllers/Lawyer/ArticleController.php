@@ -56,8 +56,10 @@ class ArticleController extends Controller
             'title'            => 'required|string|max:255',
             'content'          => 'required|string|min:100',
             'excerpt'          => 'nullable|string|max:500',
-            'categories'       => 'nullable|string|max:500',
-            'tags'             => 'nullable|string',
+            'categories'       => 'nullable|array',
+            'categories.*'     => 'string|max:100',
+            'tags'             => 'nullable|array',
+            'tags.*'           => 'string|max:50',
             'status'           => 'required|in:draft,published',
             'service_id'       => 'nullable|exists:services,id',
             'reading_time'     => 'nullable|integer|min:1',
@@ -76,7 +78,7 @@ class ArticleController extends Controller
             'slug'             => $this->generateUniqueSlug($request->title),
             'content'          => $request->content,
             'excerpt'          => $request->excerpt,
-            'tags'             => $request->tags ? array_map('trim', explode(',', $request->tags)) : null,
+            'tags'             => $request->tags ?: null,
             'status'           => $request->status,
             'service_id'       => $request->service_id,
             'reading_time'     => $request->reading_time ?? $this->estimateReadingTime($request->content),
@@ -87,18 +89,16 @@ class ArticleController extends Controller
         ];
 
         if ($request->hasFile('featured_image')) {
-            $file = $request->file('featured_image');
-            $name = time() . '_' . Str::slug($request->title, '-') . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('assets/images'), $name);
-            $data['featured_image'] = $name;
+            $data['featured_image'] = $this->storeFeaturedImage($request->file('featured_image'), $request->title);
         }
 
         $article = Article::create($data);
-        $this->syncCategories($article, $request->categories);
+        $this->syncCategories($article, $request->categories ?? []);
 
         return redirect()->route('lawyer.articles.show', $article)
             ->with('success', 'مقاله با موفقیت ' . ($request->status === 'published' ? 'منتشر' : 'ذخیره') . ' شد.');
     }
+
 
     public function show(Article $article)
     {
@@ -126,8 +126,10 @@ class ArticleController extends Controller
             'title'            => 'required|string|max:255',
             'content'          => 'required|string|min:100',
             'excerpt'          => 'nullable|string|max:500',
-            'categories'       => 'nullable|string|max:500',
-            'tags'             => 'nullable|string',
+            'categories'       => 'nullable|array',
+            'categories.*'     => 'string|max:100',
+            'tags'             => 'nullable|array',
+            'tags.*'           => 'string|max:50',
             'status'           => 'required|in:draft,published,archived',
             'service_id'       => 'nullable|exists:services,id',
             'reading_time'     => 'nullable|integer|min:1',
@@ -140,7 +142,7 @@ class ArticleController extends Controller
             'title'            => $request->title,
             'content'          => $request->content,
             'excerpt'          => $request->excerpt,
-            'tags'             => $request->tags ? array_map('trim', explode(',', $request->tags)) : null,
+            'tags'             => $request->tags ?: null,
             'status'           => $request->status,
             'service_id'       => $request->service_id,
             'reading_time'     => $request->reading_time ?? $this->estimateReadingTime($request->content),
@@ -153,14 +155,12 @@ class ArticleController extends Controller
         }
 
         if ($request->hasFile('featured_image')) {
-            $file = $request->file('featured_image');
-            $name = time() . '_' . Str::slug($request->title, '-') . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('assets/images'), $name);
-            $data['featured_image'] = $name;
+            $this->deleteFeaturedImage($article->featured_image);
+            $data['featured_image'] = $this->storeFeaturedImage($request->file('featured_image'), $request->title);
         }
 
         $article->update($data);
-        $this->syncCategories($article, $request->categories);
+        $this->syncCategories($article, $request->categories ?? []);
 
         return redirect()->route('lawyer.articles.show', $article)
             ->with('success', 'مقاله به‌روز شد.');
@@ -169,17 +169,18 @@ class ArticleController extends Controller
     public function destroy(Article $article)
     {
         $this->authorizeArticle($article);
+        $this->deleteFeaturedImage($article->featured_image);
         $article->delete();
 
         return redirect()->route('lawyer.articles.index')
             ->with('success', 'مقاله حذف شد.');
     }
 
-    private function syncCategories(Article $article, ?string $rawCategories): void
+    private function syncCategories(Article $article, array $categoryNames): void
     {
         $ids = [];
 
-        foreach (explode(',', $rawCategories ?? '') as $name) {
+        foreach ($categoryNames as $name) {
             $name = trim($name);
             if ($name === '') {
                 continue;
@@ -194,6 +195,7 @@ class ArticleController extends Controller
 
         $article->categories()->sync($ids);
     }
+
 
     // اسلاگ فارسی سالم — حروف فارسی حذف نمی‌شوند (برای سئوی فارسی بهتر است)
     private function generateUniqueSlug(string $title): string
@@ -222,6 +224,22 @@ class ArticleController extends Controller
     {
         if ($article->lawyer_id !== $this->lawyer()->id) {
             abort(403, 'شما دسترسی به این مقاله را ندارید.');
+        }
+    }
+
+
+    private function storeFeaturedImage($file, string $title): string
+    {
+        $name = time() . '_' . Str::slug($title, '-') . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('assets/images'), $name);
+
+        return 'assets/images/' . $name; // مسیر کامل ذخیره می‌شود
+    }
+
+    private function deleteFeaturedImage(?string $path): void
+    {
+        if ($path && file_exists(public_path($path))) {
+            @unlink(public_path($path));
         }
     }
 }

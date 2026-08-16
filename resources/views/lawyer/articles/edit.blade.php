@@ -67,14 +67,12 @@
                     <div class="card-title"><i class="fas fa-rocket"></i> وضعیت و تنظیمات</div>
                     <div class="card-body">
                         <div style="margin-bottom: 25px;">
-                            <label class="input-label">دسته‌بندی‌ها <small style="color:#94a3b8;">(چند دسته با کاما جدا کنید)</small></label>
-                            <input type="text" name="categories" list="categoryList" class="lux-input"
-                                value="{{ old('categories', $article->categories->pluck('name')->implode(', ')) }}">
-                            <datalist id="categoryList">
-                                @foreach($categories as $cat)
-                                    <option value="{{ $cat->name }}">
-                                @endforeach
-                            </datalist>
+                            <x-tag-input
+                                name="categories"
+                                label="دسته‌بندی‌ها"
+                                :values="old('categories', $article->categories->pluck('name')->toArray() ?? [])"
+                                placeholder="مثال: حقوق خانواده — Enter بزنید"
+                            />
                         </div>
 
                         <div style="margin-bottom: 25px;">
@@ -115,11 +113,12 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-title"><i class="fas fa-tags"></i> برچسب‌های سئو</div>
-                    <div class="card-body">
-                        @php $tagsValue = is_array($article->tags) ? implode(', ', $article->tags) : $article->tags; @endphp
-                        <input type="text" name="tags" class="lux-input" value="{{ old('tags', $tagsValue) }}">
-                    </div>
+                    <x-tag-input
+                        name="tags"
+                        label="برچسب‌ها"
+                        :values="old('tags', $article->tags ?? [])"
+                        placeholder="برچسب را تایپ و Enter بزنید"
+                    />
                 </div>
 
                 <div class="card">

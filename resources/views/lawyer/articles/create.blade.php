@@ -81,14 +81,12 @@
                     <div class="card-body">
                         <div class="two-col">
                             <div class="form-group">
-                                <label class="form-label">دسته‌بندی‌ها <small style="color:#94a3b8;">(چند دسته با کاما جدا کنید)</small></label>
-                                <input type="text" name="categories" list="categoryList" class="lux-input"
-                                    placeholder="مثال: حقوق خانواده, طلاق" value="{{ old('categories') }}">
-                                <datalist id="categoryList">
-                                    @foreach($categories as $cat)
-                                        <option value="{{ $cat->name }}">
-                                    @endforeach
-                                </datalist>
+                                <x-tag-input
+                                name="categories"
+                                label="دسته‌بندی‌ها"
+                                :values="old('categories', $article->categories->pluck('name')->toArray() ?? [])"
+                                placeholder="مثال: حقوق خانواده — Enter بزنید"
+                            />
                             </div>
                             <div class="form-group">
                                 <label class="form-label">خدمت مرتبط</label>
@@ -101,10 +99,13 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label">برچسب‌ها (با کاما جدا کنید)</label>
-                            <input type="text" name="tags" class="lux-input" value="{{ old('tags') }}">
-                        </div>
+
+                            <x-tag-input
+                                name="tags"
+                                label="برچسب‌ها"
+                                :values="old('tags', $article->tags ?? [])"
+                                placeholder="برچسب را تایپ و Enter بزنید"
+                            />
 
                         <div class="two-col">
                             <div class="form-group">

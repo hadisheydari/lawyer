@@ -98,7 +98,7 @@ class Article extends Model
     public function getImageUrlAttribute(): string
     {
         return $this->featured_image
-            ? asset('assets/images/' . $this->featured_image)
+            ? asset($this->featured_image)
             : asset('assets/images/default-article.jpg');
     }
 

@@ -23,7 +23,10 @@
         '@type' => 'Organization',
         'name' => 'دفتر وکالت ابدالی و جوشقانی',
     ],
+    'keywords' => $article->tags ? implode(', ', $article->tags) : null,
+'articleSection' => $article->categories->pluck('name')->implode(', '),
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+
 </script>
 @endpush
 
