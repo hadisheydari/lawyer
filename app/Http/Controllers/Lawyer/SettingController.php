@@ -49,23 +49,21 @@ class SettingController extends Controller
     }
 
     // ─── به‌روزرسانی پروفایل ─────────────────────────────────────────────────
+    // ─── به‌روزرسانی پروفایل (بدون دست‌زدن به دسترسی‌پذیری) ────────────────
     public function updateProfile(Request $request)
     {
         $lawyer = $this->lawyer();
 
         $request->validate([
             'name' => 'required|string|max:100',
-            'email' => 'nullable|email|unique:lawyers,email,'.$lawyer->id,
-            'phone' => 'required|string|max:15|unique:lawyers,phone,'.$lawyer->id,
+            'email' => 'nullable|email|unique:lawyers,email,' . $lawyer->id,
+            'phone' => 'required|string|max:15|unique:lawyers,phone,' . $lawyer->id,
             'bio' => 'nullable|string|max:2000',
             'education' => 'nullable|string|max:500',
             'experience_years' => 'nullable|integer|min:0|max:60',
             'specializations' => 'nullable|array',
             'specializations.*' => 'string|max:100',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'available_for_chat' => 'boolean',
-            'available_for_call' => 'boolean',
-            'available_for_appointment' => 'boolean',
         ], [
             'name.required' => 'نام الزامی است.',
             'phone.required' => 'شماره موبایل الزامی است.',
@@ -81,20 +79,39 @@ class SettingController extends Controller
             'education' => $request->education,
             'experience_years' => $request->experience_years ?? 0,
             'specializations' => $request->specializations ?? [],
-            'available_for_chat' => $request->boolean('available_for_chat'),
-            'available_for_call' => $request->boolean('available_for_call'),
-            'available_for_appointment' => $request->boolean('available_for_appointment'),
         ];
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $path = $file->store('lawyers', 'public');
-            $data['image'] = $path;
+            // حذف عکس قبلی از استوریج برای جلوگیری از فایل یتیم
+            if ($lawyer->image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($lawyer->image);
+            }
+            $data['image'] = $request->file('image')->store('lawyers', 'public');
         }
 
         $lawyer->update($data);
 
         return back()->with('success', 'پروفایل با موفقیت به‌روز شد.');
+    }
+
+    // ─── به‌روزرسانی دسترسی‌پذیری — کاملاً مستقل از پروفایل ─────────────────
+    public function updateAvailability(Request $request)
+    {
+        $lawyer = $this->lawyer();
+
+        $request->validate([
+            'available_for_chat' => 'boolean',
+            'available_for_call' => 'boolean',
+            'available_for_appointment' => 'boolean',
+        ]);
+
+        $lawyer->update([
+            'available_for_chat' => $request->boolean('available_for_chat'),
+            'available_for_call' => $request->boolean('available_for_call'),
+            'available_for_appointment' => $request->boolean('available_for_appointment'),
+        ]);
+
+        return back()->with('success', 'تنظیمات دسترسی‌پذیری به‌روز شد.');
     }
 
     // ─── به‌روزرسانی ساعات کاری ──────────────────────────────────────────────

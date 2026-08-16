@@ -192,11 +192,11 @@ Route::prefix('lawyer')->name('lawyer.')->group(function () {
             Route::get('/', [LawyerSettingController::class, 'index'])->name('index');
             Route::get('/calendar', [LawyerSettingController::class, 'calendar'])->name('calendar');
             Route::post('/profile', [LawyerSettingController::class, 'updateProfile'])->name('profile');
+            Route::post('/availability', [LawyerSettingController::class, 'updateAvailability'])->name('availability'); // جدید
             Route::post('/schedule', [LawyerSettingController::class, 'updateSchedule'])->name('schedule');
             Route::post('/exception', [LawyerSettingController::class, 'addException'])->name('exception.add');
             Route::delete('/exception/{exception}', [LawyerSettingController::class, 'deleteException'])->name('exception.delete');
         });
-
         // alias تقویم و ساعات کاری → تنظیمات
         // Route::get('/calendar', fn () => redirect()->route('lawyer.settings.index'))->name('calendar');
         // Route::get('/schedule', fn () => redirect()->route('lawyer.settings.index'))->name('schedule');
