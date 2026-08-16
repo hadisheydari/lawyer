@@ -1,66 +1,90 @@
-const CACHE_NAME = "abdali-cache-v2";
-const OFFLINE_URL = "/offline.html";
+import $ from "jquery";
+window.$ = window.jQuery = $;
 
-self.addEventListener("install", (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => cache.add(OFFLINE_URL))
-            .catch((err) => {
-                // اگر کش کردن offline.html به هر دلیلی fail شود،
-                // نصب Service Worker را متوقف نکن
-                console.warn("Offline page could not be cached:", err);
-            })
-    );
-    self.skipWaiting();
-});
+import { loadSelect2CDN } from "./select2-init.js";
+import { loadPersianDatepickerCDN } from "./persian-datepicker-loader.js";
 
-self.addEventListener("activate", (event) =>
-    event.waitUntil(self.clients.claim()),
-);
-
-self.addEventListener("fetch", (event) => {
-    if (event.request.mode === "navigate") {
-        event.respondWith(
-            fetch(event.request).catch(() => caches.match(OFFLINE_URL)),
-        );
-    }
-});
-
-self.addEventListener("push", function (event) {
-    if (!event.data) return;
-    let payload = {};
+document.addEventListener("DOMContentLoaded", async () => {
     try {
-        payload = event.data.json();
-    } catch (e) {
-        payload = { title: "اعلان جدید", options: { body: event.data.text() } };
+        await loadSelect2CDN();
+        await loadPersianDatepickerCDN();
+    } catch (error) {
+        console.error("Error loading resources:", error);
     }
-
-    const title = payload.title || "دفتر وکالت ابدالی و جوشقانی";
-    const opts = payload.options || {};
-    const options = {
-        body: opts.body || "",
-        icon: opts.icon || "/assets/icons/icon-192.png",
-        badge: opts.badge || "/assets/icons/icon-192.png",
-        data: opts.data || {},
-        dir: "rtl",
-        lang: "fa",
-    };
-
-    event.waitUntil(self.registration.showNotification(title, options));
 });
+import "../css/app.css";
+import Alpine from "alpinejs";
 
-self.addEventListener("notificationclick", function (event) {
-    event.notification.close();
-    const url = (event.notification.data && event.notification.data.url) || "/";
-    event.waitUntil(
-        clients
-            .matchAll({ type: "window", includeUncontrolled: true })
-            .then((windowClients) => {
-                for (const client of windowClients) {
-                    if (client.url === url && "focus" in client)
-                        return client.focus();
-                }
-                if (clients.openWindow) return clients.openWindow(url);
-            }),
-    );
+window.Alpine = Alpine;
+Alpine.start();
+
+async function subscribeToPush() {
+    try {
+        if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+            console.warn("Push not supported");
+            return { ok: false, reason: "unsupported" };
+        }
+        const reg = await navigator.serviceWorker.ready;
+        const existing = await reg.pushManager.getSubscription();
+        if (existing) {
+            console.log("Already subscribed", existing);
+            return { ok: true, reason: "already-subscribed" };
+        }
+
+        const permission = await Notification.requestPermission();
+        console.log("Permission:", permission);
+        if (permission !== "granted") {
+            return { ok: false, reason: "permission-" + permission };
+        }
+
+        const vapidMeta = document.querySelector('meta[name="vapid-key"]');
+        const vapidKey = vapidMeta ? vapidMeta.content : "";
+        if (!vapidKey) {
+            console.error("VAPID key missing!");
+            return { ok: false, reason: "vapid-missing" };
+        }
+
+        const subscription = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(vapidKey),
+        });
+
+        const res = await fetch("/push/subscribe", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                ).content,
+            },
+            body: JSON.stringify(subscription),
+        });
+        const data = await res.json();
+        console.log("Subscribe response:", data);
+        return { ok: res.ok, reason: "subscribed", data };
+    } catch (e) {
+        console.error("Push subscribe failed:", e);
+        return { ok: false, reason: "error", error: e };
+    }
+}
+function urlBase64ToUint8Array(base64String) {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
+    const rawData = atob(base64);
+    return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
+}
+
+window.subscribeToPush = subscribeToPush;
+
+document
+    .getElementById("enableNotifBtn")
+    ?.addEventListener("click", subscribeToPush);
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    if (window.__shouldSubscribePush) {
+        subscribeToPush();
+    }
 });
