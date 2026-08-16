@@ -234,10 +234,24 @@ class ArticleController extends Controller
 
     private function storeFeaturedImage($file, string $title): string
     {
-        $name = time() . '_' . Str::slug($title, '-') . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('assets/images'), $name);
+        $directory = public_path('assets/images');
 
-        return 'assets/images/' . $name; // مسیر کامل ذخیره می‌شود
+        if (! is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        $name = time() . '_' . Str::slug($title, '-') . '.' . $file->getClientOriginalExtension();
+
+        try {
+            $file->move($directory, $name);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('خطا در آپلود تصویر مقاله: ' . $e->getMessage());
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'featured_image' => 'آپلود تصویر با خطا مواجه شد. لطفاً دوباره تلاش کنید.',
+            ]);
+        }
+
+        return 'assets/images/' . $name;
     }
 
     private function deleteFeaturedImage(?string $path): void
@@ -246,4 +260,5 @@ class ArticleController extends Controller
             @unlink(public_path($path));
         }
     }
+
 }
