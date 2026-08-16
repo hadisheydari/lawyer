@@ -112,9 +112,8 @@ class InstallmentController extends Controller
         $dueDate = \Morilog\Jalali\Jalalian::fromCarbon($installment->due_date)->format('Y/m/d');
 
         $messageText = "درخواست پرداخت قسط شماره {$installment->installment_number} پرونده «{$case->title}» ثبت شد.\n"
-            . "مبلغ: " . fa_price($installment->amount) . "\n"
-            . "سررسید: {$dueDate}\n"
-            . "پرداخت آنلاین موقتاً غیرفعال است؛ لطفاً نحوه پرداخت را از طریق همین گفتگو با وکیل هماهنگ کنید.";
+
+            . " لطفاً نحوه پرداخت را از طریق همین گفتگو با وکیل هماهنگ کنید.";
 
         $conversation->messages()->create([
             'sender_id'   => $installment->user_id,
@@ -129,7 +128,7 @@ class InstallmentController extends Controller
             ->with('info', 'درخواست پرداخت قسط ثبت شد. برای هماهنگی با وکیل گفتگو کنید.');
     }
 
-    
+
     public function verify(Request $request, Payment $payment)
     {
         if ($payment->payable_type !== CaseInstallment::class || $payment->user_id !== Auth::id()) {

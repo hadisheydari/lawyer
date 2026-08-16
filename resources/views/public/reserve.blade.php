@@ -427,7 +427,7 @@
 
                 <div style="background:#f0fdf4;border-radius:10px;padding:15px 18px;margin-bottom:20px;font-size:0.85rem;color:#065f46;border:1px solid #a7f3d0;">
                     <i class="fas fa-shield-alt" style="margin-left:6px;"></i>
-                    پرداخت شما از طریق درگاه امن زرین‌پال انجام می‌شود.
+                    رزرو  شما از طریق همانگی با وکیل مورد نظر .انجام میگردد
                 </div>
 
                 <label class="terms-check">
@@ -443,7 +443,7 @@
 
                     <button type="submit" id="submit-btn" class="btn-reserve-final" disabled>
                         <i class="fas fa-credit-card"></i>
-                        انتقال به درگاه پرداخت
+                        انتقال به وکیل مورد نظر 
                     </button>
                 </form>
 

@@ -307,8 +307,7 @@ class ReserveController extends Controller
 
         $messageText = "درخواست رزرو نوبت مشاوره حضوری ثبت شد.\n"
             . "تاریخ: {$jalaliDate} — ساعت: {$startTime}\n"
-            . "هزینه مشاوره: " . fa_price($appointmentPrice) . "\n"
-            . "پرداخت آنلاین موقتاً غیرفعال است؛ لطفاً هماهنگی نهایی و نحوه پرداخت را از طریق همین گفتگو انجام دهید.";
+            . " لطفاً هماهنگی نهایی و نحوه پرداخت را از طریق همین گفتگو انجام دهید.";
 
         $conversation->messages()->create([
             'sender_id' => $userId,
