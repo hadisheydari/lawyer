@@ -13,6 +13,9 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'payment_gateway' => [
+        'enabled' => env('PAYMENT_GATEWAY_ENABLED', false),
+    ],
 
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),

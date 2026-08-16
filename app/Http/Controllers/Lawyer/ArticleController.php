@@ -56,8 +56,10 @@ class ArticleController extends Controller
             'title'            => 'required|string|max:255',
             'content'          => 'required|string|min:100',
             'excerpt'          => 'nullable|string|max:500',
-            'categories'       => 'nullable|array',
-            'categories.*'     => 'string|max:100',
+            'category_ids'     => 'nullable|array',
+            'category_ids.*'   => 'exists:categories,id',
+            'new_categories'   => 'nullable|array',
+            'new_categories.*' => 'string|max:100',
             'tags'             => 'nullable|array',
             'tags.*'           => 'string|max:50',
             'status'           => 'required|in:draft,published',
@@ -93,12 +95,30 @@ class ArticleController extends Controller
         }
 
         $article = Article::create($data);
-        $this->syncCategories($article, $request->categories ?? []);
+        $this->syncCategories($article, $request->category_ids ?? [], $request->new_categories ?? []);
 
         return redirect()->route('lawyer.articles.show', $article)
             ->with('success', 'مقاله با موفقیت ' . ($request->status === 'published' ? 'منتشر' : 'ذخیره') . ' شد.');
     }
+    private function syncCategories(Article $article, array $categoryIds = [], array $newCategoryNames = []): void
+    {
+        $ids = array_map('intval', $categoryIds);
 
+        foreach ($newCategoryNames as $name) {
+            $name = trim($name);
+            if ($name === '') {
+                continue;
+            }
+
+            $category = Category::firstOrCreate(
+                ['slug' => Category::makeSlug($name)],
+                ['name' => $name]
+            );
+            $ids[] = $category->id;
+        }
+
+        $article->categories()->sync(array_unique($ids));
+    }
 
     public function show(Article $article)
     {
@@ -118,6 +138,7 @@ class ArticleController extends Controller
         return view('lawyer.articles.edit', compact('article', 'services', 'categories'));
     }
 
+
     public function update(Request $request, Article $article)
     {
         $this->authorizeArticle($article);
@@ -126,8 +147,10 @@ class ArticleController extends Controller
             'title'            => 'required|string|max:255',
             'content'          => 'required|string|min:100',
             'excerpt'          => 'nullable|string|max:500',
-            'categories'       => 'nullable|array',
-            'categories.*'     => 'string|max:100',
+            'category_ids'     => 'nullable|array',
+            'category_ids.*'   => 'exists:categories,id',
+            'new_categories'   => 'nullable|array',
+            'new_categories.*' => 'string|max:100',
             'tags'             => 'nullable|array',
             'tags.*'           => 'string|max:50',
             'status'           => 'required|in:draft,published,archived',
@@ -160,11 +183,12 @@ class ArticleController extends Controller
         }
 
         $article->update($data);
-        $this->syncCategories($article, $request->categories ?? []);
+        $this->syncCategories($article, $request->category_ids ?? [], $request->new_categories ?? []);
 
         return redirect()->route('lawyer.articles.show', $article)
             ->with('success', 'مقاله به‌روز شد.');
     }
+
 
     public function destroy(Article $article)
     {
@@ -174,26 +198,6 @@ class ArticleController extends Controller
 
         return redirect()->route('lawyer.articles.index')
             ->with('success', 'مقاله حذف شد.');
-    }
-
-    private function syncCategories(Article $article, array $categoryNames): void
-    {
-        $ids = [];
-
-        foreach ($categoryNames as $name) {
-            $name = trim($name);
-            if ($name === '') {
-                continue;
-            }
-
-            $category = Category::firstOrCreate(
-                ['slug' => Category::makeSlug($name)],
-                ['name' => $name]
-            );
-            $ids[] = $category->id;
-        }
-
-        $article->categories()->sync($ids);
     }
 
 

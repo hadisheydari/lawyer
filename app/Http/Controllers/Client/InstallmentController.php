@@ -53,6 +53,11 @@ class InstallmentController extends Controller
             return back()->with('error', 'این قسط قبلاً پرداخت شده است.');
         }
 
+        // ─── درگاه پرداخت غیرفعال است — هدایت به چت با وکیل به‌جای پرداخت ───
+        if (! config('services.payment_gateway.enabled', false)) {
+            return $this->redirectToChatForInstallment($installment);
+        }
+
         $payment = Payment::create([
             'user_id'       => Auth::id(),
             'payable_type'  => CaseInstallment::class,
@@ -82,6 +87,49 @@ class InstallmentController extends Controller
         return redirect()->away($result['url']);
     }
 
+    /**
+     * جایگزین موقت درگاه پرداخت: هدایت کاربر به چت با وکیل
+     * با یک پیام آماده درباره‌ی قسط مورد نظر.
+     */
+    private function redirectToChatForInstallment(CaseInstallment $installment)
+    {
+        $case = $installment->case;
+
+        if (! $case || ! $case->lawyer_id) {
+            return back()->with('error', 'اطلاعات پرونده یا وکیل یافت نشد.');
+        }
+
+        $conversation = \App\Models\ChatConversation::firstOrCreate(
+            ['case_id' => $case->id],
+            [
+                'user_id'   => $installment->user_id,
+                'lawyer_id' => $case->lawyer_id,
+                'title'     => 'پرونده: ' . $case->title,
+                'status'    => 'active',
+            ]
+        );
+
+        $dueDate = \Morilog\Jalali\Jalalian::fromCarbon($installment->due_date)->format('Y/m/d');
+
+        $messageText = "درخواست پرداخت قسط شماره {$installment->installment_number} پرونده «{$case->title}» ثبت شد.\n"
+            . "مبلغ: " . fa_price($installment->amount) . "\n"
+            . "سررسید: {$dueDate}\n"
+            . "پرداخت آنلاین موقتاً غیرفعال است؛ لطفاً نحوه پرداخت را از طریق همین گفتگو با وکیل هماهنگ کنید.";
+
+        $conversation->messages()->create([
+            'sender_id'   => $installment->user_id,
+            'sender_type' => 'user',
+            'message'     => $messageText,
+            'is_read'     => false,
+        ]);
+
+        $conversation->touch();
+
+        return redirect()->route('client.chat.show', $conversation->id)
+            ->with('info', 'درخواست پرداخت قسط ثبت شد. برای هماهنگی با وکیل گفتگو کنید.');
+    }
+
+    
     public function verify(Request $request, Payment $payment)
     {
         if ($payment->payable_type !== CaseInstallment::class || $payment->user_id !== Auth::id()) {

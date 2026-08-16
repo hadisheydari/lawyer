@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Morilog\Jalali\Jalalian;
+use App\Models\ChatConversation;
 
 class ReserveController extends Controller
 {
@@ -230,12 +231,21 @@ class ReserveController extends Controller
             'user_id' => $userId,
             'lawyer_id' => $lawyer->id,
             'type' => 'appointment',
-            'title' => 'مشاوره حضوری با '.$lawyer->name,
+            'title' => 'مشاوره حضوری با ' . $lawyer->name,
             'price' => $appointmentPrice,
             'status' => 'pending',
             'scheduled_at' => $scheduledDateTime,
         ]);
         $lawyer->notify(new NewReservationNotification($consultation));
+
+        $jalali = Jalalian::fromCarbon($selectedDate);
+        Cache::forget("slots_{$lawyer->id}_{$selectedDate->format('Y-m-d')}");
+        Cache::forget("booked_dates_{$lawyer->id}_{$jalali->getYear()}_{$jalali->getMonth()}");
+
+        // ─── درگاه پرداخت غیرفعال است — هدایت به چت با وکیل به‌جای پرداخت ───
+        if (! config('services.payment_gateway.enabled', false)) {
+            return $this->redirectToChatForConsultation($consultation, $lawyer, $userId, $selectedDate, $startTime, $appointmentPrice);
+        }
 
         $payment = Payment::create([
             'user_id' => $userId,
@@ -245,7 +255,7 @@ class ReserveController extends Controller
             'amount' => $appointmentPrice,
             'status' => 'pending',
             'gateway' => 'zarinpal',
-            'description' => 'پرداخت مشاوره حضوری - '.$consultation->title,
+            'description' => 'پرداخت مشاوره حضوری - ' . $consultation->title,
         ]);
 
         $consultation->update(['payment_id' => $payment->id]);
@@ -263,15 +273,53 @@ class ReserveController extends Controller
 
         $payment->update(['authority' => $result['authority']]);
 
-        $jalali = Jalalian::fromCarbon($selectedDate);
-        Cache::forget("slots_{$lawyer->id}_{$selectedDate->format('Y-m-d')}");
-        Cache::forget("booked_dates_{$lawyer->id}_{$jalali->getYear()}_{$jalali->getMonth()}");
-
         return redirect()->away($result['url']);
     }
 
     private function slotsCacheKey(Lawyer $lawyer, string $date): string
     {
         return "slots_{$lawyer->id}_{$lawyer->updated_at->timestamp}_{$date}";
+    }
+
+    /**
+     * جایگزین موقت درگاه پرداخت: هدایت کاربر به چت با وکیل
+     * با یک پیام آماده به‌جای رفتن به درگاه زرین‌پال.
+     */
+    private function redirectToChatForConsultation(
+        Consultation $consultation,
+        Lawyer $lawyer,
+        int $userId,
+        Carbon $selectedDate,
+        string $startTime,
+        $appointmentPrice
+    ) {
+        $jalaliDate = Jalalian::fromCarbon($selectedDate)->format('Y/m/d');
+
+        $conversation = ChatConversation::firstOrCreate(
+            ['consultation_id' => $consultation->id],
+            [
+                'user_id' => $userId,
+                'lawyer_id' => $lawyer->id,
+                'title' => 'مشاوره: ' . $consultation->title,
+                'status' => 'active',
+            ]
+        );
+
+        $messageText = "درخواست رزرو نوبت مشاوره حضوری ثبت شد.\n"
+            . "تاریخ: {$jalaliDate} — ساعت: {$startTime}\n"
+            . "هزینه مشاوره: " . fa_price($appointmentPrice) . "\n"
+            . "پرداخت آنلاین موقتاً غیرفعال است؛ لطفاً هماهنگی نهایی و نحوه پرداخت را از طریق همین گفتگو انجام دهید.";
+
+        $conversation->messages()->create([
+            'sender_id' => $userId,
+            'sender_type' => 'user',
+            'message' => $messageText,
+            'is_read' => false,
+        ]);
+
+        $conversation->touch();
+
+        return redirect()->route('client.chat.show', $conversation->id)
+            ->with('info', 'نوبت شما ثبت شد. برای هماهنگی نهایی با وکیل گفتگو کنید.');
     }
 }
