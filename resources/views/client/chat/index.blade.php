@@ -142,7 +142,7 @@
             background: var(--gold-main);
             border-radius: 4px 0 0 4px;
         }
-        
+
         .new-chat-btn {
             background: rgba(197, 160, 89, 0.1);
             border-color: var(--gold-main);
@@ -150,6 +150,7 @@
             justify-content: center;
             font-weight: bold;
         }
+
         .new-chat-btn:hover {
             background: rgba(197, 160, 89, 0.2);
             color: #fff;
@@ -505,7 +506,7 @@
             justify-content: center;
             font-size: 3.5rem;
         }
-        
+
         /* استایل اختصاصی فرم ایجاد گفتگو */
         .new-chat-form {
             width: 100%;
@@ -513,10 +514,11 @@
             background: #fff;
             padding: 30px;
             border-radius: var(--radius-lg);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             border: 1px solid rgba(197, 160, 89, 0.2);
             margin-top: 10px;
         }
+
         .form-select {
             width: 100%;
             padding: 14px 15px;
@@ -530,10 +532,12 @@
             transition: 0.3s;
             margin-bottom: 20px;
         }
+
         .form-select:focus {
             border-color: var(--gold-main);
             background: #fff;
         }
+
         .form-btn {
             width: 100%;
             padding: 14px;
@@ -552,6 +556,7 @@
             align-items: center;
             gap: 10px;
         }
+
         .form-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(197, 160, 89, 0.4);
@@ -577,6 +582,7 @@
             .sidebar-header a {
                 display: none;
             }
+
             .new-chat-btn span {
                 display: none;
             }
@@ -609,276 +615,305 @@
                 padding: 15px;
             }
         }
+
         /* =====================================
    TABLET
 ===================================== */
 
-@media (max-width:1024px){
+        @media (max-width:1024px) {
 
-    .chat-layout{
-        width:100%;
-        height:100dvh;
-        border-radius:0;
-        grid-template-columns:260px 1fr;
-    }
+            .chat-layout {
+                width: 100%;
+                height: 100dvh;
+                border-radius: 0;
+                grid-template-columns: 260px 1fr;
+            }
 
-    .messages{
-        padding:20px;
-    }
+            .messages {
+                padding: 20px;
+            }
 
-    .chat-header,
-    .chat-footer{
-        padding:15px 20px;
-    }
+            .chat-header,
+            .chat-footer {
+                padding: 15px 20px;
+            }
 
-    .msg-bubble{
-        max-width:80%;
-    }
-}
+            .msg-bubble {
+                max-width: 80%;
+            }
+        }
 
 
-/* =====================================
+        /* =====================================
    MOBILE
 ===================================== */
 
-@media (max-width:768px){
+        @media (max-width:768px) {
 
-    body{
-        background:#fff;
-        overflow:hidden;
-    }
+            body {
+                background: #fff;
+                overflow: hidden;
+            }
 
-    .chat-layout{
-        width:100%;
-        height:100dvh;
-        border-radius:0;
-        display:flex;
-        flex-direction:column;
-    }
+            .chat-layout {
+                width: 100%;
+                height: 100dvh;
+                border-radius: 0;
+                display: flex;
+                flex-direction: column;
+            }
 
-    /* sidebar */
+            /* sidebar */
 
-    .sidebar{
-        width:100%;
-        height:120px;
-        min-height:120px;
-        border:none;
-    }
+            .sidebar {
+                width: 100%;
+                height: 120px;
+                min-height: 120px;
+                border: none;
+            }
 
-    .sidebar-header{
-        padding:12px 15px;
-    }
+            .sidebar-header {
+                padding: 12px 15px;
+            }
 
-    .sidebar-title{
-        font-size:.95rem;
-    }
+            .sidebar-title {
+                font-size: .95rem;
+            }
 
-    .case-list{
-        display:flex;
-        overflow-x:auto;
-        overflow-y:hidden;
-        gap:10px;
-        padding:10px;
-    }
+            .case-list {
+                display: flex;
+                overflow-x: auto;
+                overflow-y: hidden;
+                gap: 10px;
+                padding: 10px;
+            }
 
-    .case-item{
-        min-width:85px;
-        width:85px;
-        margin:0;
-        padding:10px;
-        flex-direction:column;
-        gap:8px;
-        text-align:center;
-    }
+            .case-item {
+                min-width: 85px;
+                width: 85px;
+                margin: 0;
+                padding: 10px;
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
 
-    .case-avatar{
-        width:42px;
-        height:42px;
-        min-width:42px;
-        font-size:.9rem;
-    }
+            .case-avatar {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+                font-size: .9rem;
+            }
 
-    .case-info h4{
-        font-size:.72rem;
-        white-space:normal;
-        line-height:1.4;
-    }
+            .case-info h4 {
+                font-size: .72rem;
+                white-space: normal;
+                line-height: 1.4;
+            }
 
-    .case-info p{
-        display:none;
-    }
+            .case-info p {
+                display: none;
+            }
 
-    .unread-badge{
-        position:absolute;
-        top:5px;
-        left:5px;
-    }
+            .unread-badge {
+                position: absolute;
+                top: 5px;
+                left: 5px;
+            }
 
-    .new-chat-btn{
-        min-width:85px;
-    }
+            .new-chat-btn {
+                min-width: 85px;
+            }
 
-    /* chat */
+            /* chat */
 
-    .chat-area{
-        flex:1;
-        min-height:0;
-    }
+            .chat-area {
+                flex: 1;
+                min-height: 0;
+            }
 
-    .chat-header{
-        padding:10px 12px;
-    }
+            .chat-header {
+                padding: 10px 12px;
+            }
 
-    .lawyer-profile{
-        gap:10px;
-    }
+            .lawyer-profile {
+                gap: 10px;
+            }
 
-    .lawyer-img{
-        width:40px;
-        height:40px;
-        font-size:.95rem;
-    }
+            .lawyer-img {
+                width: 40px;
+                height: 40px;
+                font-size: .95rem;
+            }
 
-    .lawyer-details h3{
-        font-size:.9rem;
-    }
+            .lawyer-details h3 {
+                font-size: .9rem;
+            }
 
-    .lawyer-details span{
-        font-size:.72rem;
-    }
+            .lawyer-details span {
+                font-size: .72rem;
+            }
 
-    .header-tools a{
-        padding:8px;
-        font-size:1rem;
-    }
+            .header-tools a {
+                padding: 8px;
+                font-size: 1rem;
+            }
 
-    .messages{
-        padding:12px;
-        gap:12px;
-    }
+            .messages {
+                padding: 12px;
+                gap: 12px;
+            }
 
-    .msg-bubble{
-        max-width:95%;
-        padding:12px;
-        font-size:.9rem;
-        line-height:1.8;
-    }
+            .msg-bubble {
+                max-width: 95%;
+                padding: 12px;
+                font-size: .9rem;
+                line-height: 1.8;
+            }
 
-    .attachment{
-        padding:8px;
-    }
+            .attachment {
+                padding: 8px;
+            }
 
-    .file-icon{
-        width:34px;
-        height:34px;
-        font-size:1rem;
-    }
+            .file-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 1rem;
+            }
 
-    .file-name{
-        font-size:.8rem;
-    }
+            .file-name {
+                font-size: .8rem;
+            }
 
-    .file-size{
-        font-size:.65rem;
-    }
+            .file-size {
+                font-size: .65rem;
+            }
 
-    /* footer */
+            /* footer */
 
-    .chat-footer{
-        padding:8px;
-    }
+            .chat-footer {
+                padding: 8px;
+            }
 
-    .input-wrapper{
-        padding:4px 4px 4px 10px;
-        gap:4px;
-    }
+            .input-wrapper {
+                padding: 4px 4px 4px 10px;
+                gap: 4px;
+            }
 
-    .msg-input{
-        font-size:16px;
-    }
+            .msg-input {
+                font-size: 16px;
+            }
 
-    .btn-attach{
-        padding:8px;
-        font-size:1rem;
-    }
+            .btn-attach {
+                padding: 8px;
+                font-size: 1rem;
+            }
 
-    .btn-send{
-        width:42px;
-        height:42px;
-        min-width:42px;
-    }
+            .btn-send {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+            }
 
-    /* empty state */
+            /* empty state */
 
-    .empty-icon-wrap{
-        width:70px;
-        height:70px;
-        font-size:2rem;
-    }
+            .empty-icon-wrap {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
 
-    .empty-chat h3{
-        font-size:1rem !important;
-        text-align:center;
-    }
+            .empty-chat h3 {
+                font-size: 1rem !important;
+                text-align: center;
+            }
 
-    .empty-chat p{
-        text-align:center;
-        font-size:.85rem;
-    }
+            .empty-chat p {
+                text-align: center;
+                font-size: .85rem;
+            }
 
-    .new-chat-form{
-        padding:20px;
-        width:100%;
-        max-width:none;
-    }
-}
+            .new-chat-form {
+                padding: 20px;
+                width: 100%;
+                max-width: none;
+            }
+        }
 
 
-/* =====================================
+        /* =====================================
    VERY SMALL PHONES
 ===================================== */
 
-@media (max-width:480px){
+        @media (max-width:480px) {
 
-    .sidebar{
-        height:105px;
-        min-height:105px;
-    }
+            .sidebar {
+                height: 105px;
+                min-height: 105px;
+            }
 
-    .case-item{
-        min-width:75px;
-        width:75px;
-        padding:8px;
-    }
+            .case-item {
+                min-width: 75px;
+                width: 75px;
+                padding: 8px;
+            }
 
-    .case-avatar{
-        width:36px;
-        height:36px;
-        min-width:36px;
-    }
+            .case-avatar {
+                width: 36px;
+                height: 36px;
+                min-width: 36px;
+            }
 
-    .case-info h4{
-        font-size:.65rem;
-    }
+            .case-info h4 {
+                font-size: .65rem;
+            }
 
-    .messages{
-        padding:8px;
-    }
+            .messages {
+                padding: 8px;
+            }
 
-    .msg-bubble{
-        max-width:98%;
-        font-size:.85rem;
-    }
+            .msg-bubble {
+                max-width: 98%;
+                font-size: .85rem;
+            }
 
-    .lawyer-details h3{
-        font-size:.82rem;
-    }
+            .lawyer-details h3 {
+                font-size: .82rem;
+            }
 
-    .lawyer-details span{
-        font-size:.68rem;
-    }
+            .lawyer-details span {
+                font-size: .68rem;
+            }
 
-}
+        }
+
+        body,
+        .chat-layout,
+        .msg-input,
+        .msg-bubble {
+            font-family: 'Vazir', Tahoma, sans-serif !important;
+        }
+
+        .file-preview-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff7e6;
+            border: 1px solid #fde68a;
+            border-radius: 12px;
+            padding: 8px 14px;
+            margin: 0 0 8px;
+            font-size: 0.8rem;
+            color: #92400e;
+        }
+
+        .file-preview-bar button {
+            margin-right: auto;
+            background: none;
+            border: none;
+            color: #b45309;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -905,7 +940,7 @@
                     <i class="fas fa-plus-circle"></i>
                     <span>ایجاد گفتگوی جدید</span>
                 </a>
-                
+
                 @foreach ($conversations as $conv)
                     <a href="{{ route('client.chat.show', $conv->id) }}"
                         class="case-item {{ isset($activeConversation) && $activeConversation->id === $conv->id ? 'active' : '' }}">
@@ -1018,22 +1053,24 @@
                     <div class="empty-icon-wrap"><i class="fas fa-balance-scale"></i></div>
                     <h3 style="color:var(--navy); font-weight:800; font-size: 1.4rem;">مشاوره و گفتگوی جدید</h3>
                     <p>جهت شروع مکالمه، وکیل متخصص پرونده خود را انتخاب نمایید.</p>
-                    
+
                     <form action="{{ route('client.chat.store') }}" method="POST" class="new-chat-form">
                         @csrf
                         <select name="lawyer_id" class="form-select" required>
                             <option value="" disabled selected>انتخاب وکیل پایه یک...</option>
-                            @foreach($lawyers as $lawyer)
-                                <option value="{{ $lawyer->id }}">{{ $lawyer->name }} - {{ $lawyer->title ?? 'وکیل پایه یک دادگستری' }}</option>
+                            @foreach ($lawyers as $lawyer)
+                                <option value="{{ $lawyer->id }}">{{ $lawyer->name }} -
+                                    {{ $lawyer->title ?? 'وکیل پایه یک دادگستری' }}</option>
                             @endforeach
                         </select>
-                        
+
                         <button type="submit" class="form-btn">
                             <i class="fas fa-comment-dots"></i> شروع مکالمه
                         </button>
-                        
+
                         @error('lawyer_id')
-                            <p style="color: #e74c3c; font-size: 0.85rem; margin-top: 10px; text-align: center;">{{ $message }}</p>
+                            <p style="color: #e74c3c; font-size: 0.85rem; margin-top: 10px; text-align: center;">
+                                {{ $message }}</p>
                         @enderror
                     </form>
                 </div>
@@ -1052,14 +1089,22 @@
         });
 
         // تغییر دیزاین input در صورت انتخاب فایل
-        document.getElementById('fileInput')?.addEventListener('change', function() {
-            const name = this.files[0]?.name;
-            if (name) {
-                const inputField = document.querySelector('.msg-input');
-                inputField.placeholder = '📎 فایل آماده ارسال: ' + name;
-                inputField.style.color = 'var(--gold-dark)';
-                inputField.style.fontWeight = 'bold';
+        const fileInput = document.getElementById('fileInput');
+        const previewBar = document.getElementById('filePreviewBar');
+        const previewName = document.getElementById('filePreviewName');
+
+        fileInput?.addEventListener('change', function() {
+            if (this.files[0]) {
+                previewName.textContent = this.files[0].name;
+                previewBar.style.display = 'flex';
             }
+        });
+
+        document.getElementById('fileRemoveBtn')?.addEventListener('click', () => {
+            fileInput.value = '';
+            previewBar.style.display = 'none';
+            document.querySelector('.msg-input').placeholder = 'پیام خود را تایپ کنید...';
+            document.querySelector('.msg-input').style.color = '';
         });
     </script>
 
