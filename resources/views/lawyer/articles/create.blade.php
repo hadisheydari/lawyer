@@ -350,6 +350,9 @@
                                 style="display:none;width:100%;border-radius:10px;margin-top:10px;">
                             <input type="file" name="featured_image" id="thumb_input" hidden accept="image/*"
                                 onchange="previewImage(this)">
+                            @error('featured_image')
+                                <span class="error-msg">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>

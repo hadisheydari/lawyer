@@ -1,90 +1,65 @@
-import $ from "jquery";
-window.$ = window.jQuery = $;
+// public/sw.js
+const CACHE_NAME = "lawyer-app-v2"; // هر بار تغییر مهم دادید، این عدد رو افزایش بدید
+const OFFLINE_URL = "/offline.html";
 
-import { loadSelect2CDN } from "./select2-init.js";
-import { loadPersianDatepickerCDN } from "./persian-datepicker-loader.js";
+const PRECACHE_ASSETS = ["/offline.html", "/manifest.json"];
 
-document.addEventListener("DOMContentLoaded", async () => {
-    try {
-        await loadSelect2CDN();
-        await loadPersianDatepickerCDN();
-    } catch (error) {
-        console.error("Error loading resources:", error);
-    }
+self.addEventListener("install", (event) => {
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_ASSETS)),
+    );
+    self.skipWaiting();
 });
-import "../css/app.css";
-import Alpine from "alpinejs";
 
-window.Alpine = Alpine;
-Alpine.start();
+self.addEventListener("activate", (event) => {
+    event.waitUntil(
+        caches
+            .keys()
+            .then((keys) =>
+                Promise.all(
+                    keys
+                        .filter((key) => key !== CACHE_NAME)
+                        .map((key) => caches.delete(key)),
+                ),
+            ),
+    );
+    self.clients.claim();
+});
 
-async function subscribeToPush() {
-    try {
-        if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-            console.warn("Push not supported");
-            return { ok: false, reason: "unsupported" };
-        }
-        const reg = await navigator.serviceWorker.ready;
-        const existing = await reg.pushManager.getSubscription();
-        if (existing) {
-            console.log("Already subscribed", existing);
-            return { ok: true, reason: "already-subscribed" };
-        }
+self.addEventListener("fetch", (event) => {
+    const { request } = event;
 
-        const permission = await Notification.requestPermission();
-        console.log("Permission:", permission);
-        if (permission !== "granted") {
-            return { ok: false, reason: "permission-" + permission };
-        }
-
-        const vapidMeta = document.querySelector('meta[name="vapid-key"]');
-        const vapidKey = vapidMeta ? vapidMeta.content : "";
-        if (!vapidKey) {
-            console.error("VAPID key missing!");
-            return { ok: false, reason: "vapid-missing" };
-        }
-
-        const subscription = await reg.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(vapidKey),
-        });
-
-        const res = await fetch("/push/subscribe", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector(
-                    'meta[name="csrf-token"]',
-                ).content,
-            },
-            body: JSON.stringify(subscription),
-        });
-        const data = await res.json();
-        console.log("Subscribe response:", data);
-        return { ok: res.ok, reason: "subscribed", data };
-    } catch (e) {
-        console.error("Push subscribe failed:", e);
-        return { ok: false, reason: "error", error: e };
+    // ⚠️ حیاتی‌ترین بخش:
+    // فقط درخواست‌های GET رو مدیریت کن. هر متد دیگه (POST, PUT, DELETE)
+    // از جمله آپلود فایل (multipart/form-data) باید مستقیم و دست‌نخورده
+    // به شبکه بره، وگرنه فرم‌ها (مثل ثبت مقاله، آپلود عکس، ارسال پیام چت) می‌شکنن.
+    if (request.method !== "GET") {
+        return; // اجازه بده مرورگر خودش به‌صورت عادی به شبکه بفرسته
     }
-}
-function urlBase64ToUint8Array(base64String) {
-    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding)
-        .replace(/-/g, "+")
-        .replace(/_/g, "/");
-    const rawData = atob(base64);
-    return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
-}
 
-window.subscribeToPush = subscribeToPush;
-
-document
-    .getElementById("enableNotifBtn")
-    ?.addEventListener("click", subscribeToPush);
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    if (window.__shouldSubscribePush) {
-        subscribeToPush();
+    // فقط درخواست‌های هم‌مبدأ رو دست بزن
+    if (new URL(request.url).origin !== self.location.origin) {
+        return;
     }
+
+    // برای ناوبری صفحات: تلاش برای شبکه، در صورت آفلاین بودن نمایش offline.html
+    if (request.mode === "navigate") {
+        event.respondWith(
+            fetch(request).catch(() => caches.match(OFFLINE_URL)),
+        );
+        return;
+    }
+
+    // برای بقیه‌ی GETها (استاتیک‌ها): شبکه اول، در صورت خطا کش
+    event.respondWith(
+        fetch(request)
+            .then((response) => {
+                const clone = response.clone();
+                caches
+                    .open(CACHE_NAME)
+                    .then((cache) => cache.put(request, clone));
+                return response;
+            })
+            .catch(() => caches.match(request)),
+    );
 });

@@ -279,6 +279,10 @@
                                     class="fas fa-camera"></i> تغییر عکس</span>
                             <input type="file" name="featured_image" id="thumbnail_input" hidden accept="image/*"
                                 onchange="previewImage(this)">
+                            @error('featured_image')
+                                <span
+                                    style="color:#ef4444;font-size:0.8rem;font-weight:700;margin-top:8px;display:block;">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
 

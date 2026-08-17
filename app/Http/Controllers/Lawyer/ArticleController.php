@@ -65,7 +65,7 @@ class ArticleController extends Controller
             'status'           => 'required|in:draft,published',
             'service_id'       => 'nullable|exists:services,id',
             'reading_time'     => 'nullable|integer|min:1',
-            'featured_image'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'featured_image'   => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif|max:10240',
             'meta_title'       => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
         ], [
@@ -156,7 +156,7 @@ class ArticleController extends Controller
             'status'           => 'required|in:draft,published,archived',
             'service_id'       => 'nullable|exists:services,id',
             'reading_time'     => 'nullable|integer|min:1',
-            'featured_image'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'featured_image'   => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif|max:10240',
             'meta_title'       => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
         ]);
@@ -260,5 +260,4 @@ class ArticleController extends Controller
             @unlink(public_path($path));
         }
     }
-
 }
