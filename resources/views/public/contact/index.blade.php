@@ -621,7 +621,7 @@
                         <h4>مشاوره تلفنی مستقیم</h4>
                         <p>
                             <a href="tel:09131146888">۰۹۱۳۱۱۴۶۸۸۸</a> — دکتر بابک ابدالی<br>
-                            <a href="tel:09132888859">۰۹۱۳۲۸۸۸۸۵۹</a> — سرکار خانم جوشقانی
+                            <a href="tel:09132888859">۰۹۱۳۱۱۳۲۸۴۲</a> — سرکار خانم جوشقانی
                         </p>
                     </div>
                 </div>
@@ -813,7 +813,7 @@
                     <p>متخصص حقوق خانواده، ارث و احوال شخصیه</p>
                     <div class="ql-actions">
                         <a href="tel:09132888859" class="ql-btn call">
-                            <i class="fas fa-phone"></i> ۰۹۱۳۲۸۸۸۸۵۹
+                            <i class="fas fa-phone"></i> ۰۹۱۳۱۱۳۲۸۴۲
                         </a>
                         <a href="https://wa.me/989132888859" target="_blank" class="ql-btn whatsapp">
                             <i class="fab fa-whatsapp"></i> پیام

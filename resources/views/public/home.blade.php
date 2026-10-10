@@ -566,7 +566,7 @@
                     <div class="info-text">
                         <h4>شماره‌های تماس</h4>
                         <p dir="ltr" style="text-align:right;">۰۹۱۳۱۱۴۶۸۸۸ — بابک ابدالی</p>
-                        <p dir="ltr" style="text-align:right;">۰۹۱۳۲۸۸۸۸۵۹ — زهرا جوشقانی</p>
+                        <p dir="ltr" style="text-align:right;">۰۹۱۳۱۱۳۲۸۴۲ — زهرا جوشقانی</p>
                     </div>
                 </div>
                 <div class="info-item">
