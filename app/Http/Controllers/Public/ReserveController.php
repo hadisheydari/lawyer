@@ -32,7 +32,7 @@ class ReserveController extends Controller
             return redirect()->route('home')->with('error', 'وکیلی یافت نشد');
         }
 
-        $appointmentPrice = Setting::where('key', 'pricing.appointment_price')->value('value') ?? 500000;
+        $appointmentPrice = Setting::where('key', 'pricing.appointment_price')->value('value') ?? 1000000;
         $currentMonth = (int) $request->query('month', Jalalian::now()->getMonth());
         $currentYear = (int) $request->query('year', Jalalian::now()->getYear());
         $calendar = $this->generateCalendar($currentMonth, $currentYear, $lawyer->id);

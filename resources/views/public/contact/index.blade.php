@@ -621,7 +621,7 @@
                         <h4>مشاوره تلفنی مستقیم</h4>
                         <p>
                             <a href="tel:09131146888">۰۹۱۳۱۱۴۶۸۸۸</a> — دکتر بابک ابدالی<br>
-                            <a href="tel:09132888859">۰۹۱۳۱۱۳۲۸۴۲</a> — سرکار خانم جوشقانی
+                            <a href="tel:09131132842">۰۹۱۳۱۱۳۲۸۴۲</a> — سرکار خانم جوشقانی
                         </p>
                     </div>
                 </div>
@@ -630,7 +630,12 @@
                     <h4><i class="far fa-clock"></i> ساعات پذیرش حضوری</h4>
                     <div class="hour-row">
                         <span>شنبه تا چهارشنبه</span>
-                        <span>۱۷:۰۰ – ۲۱:۰۰ <span class="badge-open">باز است</span></span>
+                        <span>۱۸:۰۰ – ۲۱:۰۰ <span class="badge-open">باز است</span></span>
+                    </div>
+                    <h4><i class="far fa-clock"></i> ساعات پذیرش انلاین</h4>
+                    <div class="hour-row">
+                        <span>شنبه تا چهارشنبه</span>
+                        <span>۱۶:۰۰ – ۱۸:۰۰ <span class="badge-open">باز است</span></span>
                     </div>
                     <div class="hour-row">
                         <span>پنج‌شنبه‌ها</span>
@@ -812,10 +817,10 @@
                     <h4>سرکار خانم زهرا جوشقانی</h4>
                     <p>متخصص حقوق خانواده، ارث و احوال شخصیه</p>
                     <div class="ql-actions">
-                        <a href="tel:09132888859" class="ql-btn call">
+                        <a href="tel:09131132842" class="ql-btn call">
                             <i class="fas fa-phone"></i> ۰۹۱۳۱۱۳۲۸۴۲
                         </a>
-                        <a href="https://wa.me/989132888859" target="_blank" class="ql-btn whatsapp">
+                        <a href="https://wa.me/989131132842" target="_blank" class="ql-btn whatsapp">
                             <i class="fab fa-whatsapp"></i> پیام
                         </a>
                     </div>
