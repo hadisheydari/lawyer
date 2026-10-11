@@ -26,6 +26,10 @@ class Article extends Model
         'tags',
         'meta_title',
         'meta_description',
+        'featured_image_alt',
+        'content_updated_at',
+        'faqs',
+        'related_article_ids',
     ];
 
     protected $casts = [
@@ -33,6 +37,9 @@ class Article extends Model
         'published_at' => 'datetime',
         'view_count'   => 'integer',
         'reading_time' => 'integer',
+        'content_updated_at' => 'datetime',
+        'faqs' => 'array',
+        'related_article_ids' => 'array',
     ];
 
     // ─── Relations ───────────────────────────────────────────

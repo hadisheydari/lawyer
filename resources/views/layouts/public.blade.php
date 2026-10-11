@@ -10,7 +10,9 @@
     <meta name="vapid-key" content="{{ config('webpush.vapid.public_key') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @auth
-        <script>window.__shouldSubscribePush = true;</script>
+        <script>
+            window.__shouldSubscribePush = true;
+        </script>
     @endauth
     <!-- iOS specific -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -545,15 +547,19 @@
     @if (session()->hasAny(['success', 'error', 'warning', 'info']))
         <div class="flash-container">
             @if (session('success'))
-            <div class="flash flash-success"><i class="fas fa-check-circle"></i> {{ session('success') }}</div> @endif
+                <div class="flash flash-success"><i class="fas fa-check-circle"></i> {{ session('success') }}</div>
+            @endif
             @if (session('error'))
-            <div class="flash flash-error"><i class="fas fa-exclamation-circle"></i> {{ session('error') }}</div> @endif
+                <div class="flash flash-error"><i class="fas fa-exclamation-circle"></i> {{ session('error') }}</div>
+            @endif
             @if (session('warning'))
-                <div class="flash flash-warning"><i class="fas fa-exclamation-triangle"></i> {{ session('warning') }}</div>
+                <div class="flash flash-warning"><i class="fas fa-exclamation-triangle"></i> {{ session('warning') }}
+                </div>
             @endif
             @if (session('info'))
                 <div class="flash" style="background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;"><i
-            class="fas fa-info-circle"></i> {{ session('info') }}</div> @endif
+                        class="fas fa-info-circle"></i> {{ session('info') }}</div>
+            @endif
         </div>
     @endif
 
@@ -562,7 +568,7 @@
             <a href="{{ route('home') }}" class="brand">
                 <i class="fas fa-scale-balanced brand-icon"></i>
                 <div class="brand-text">
-                    <h1>ابدالی و جوشقانی</h1>
+                    <strong class="brand-title">ابدالی و جوشقانی</strong>
                     <span>دفتر وکالت تخصصی</span>
                 </div>
             </a>

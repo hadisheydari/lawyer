@@ -306,14 +306,42 @@
                             <div class="two-col">
                                 <div class="form-group">
                                     <label class="form-label">عنوان متا (SEO)</label>
+
                                     <input type="text" name="meta_title" class="lux-input"
                                         value="{{ old('meta_title') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">URL / Slug</label>
+                                    <input type="text" name="slug" dir="ltr" class="lux-input"
+                                        value="{{ old('slug', $article->slug ?? '') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Alt تصویر شاخص</label>
+                                    <input type="text" name="featured_image_alt" class="lux-input"
+                                        value="{{ old('featured_image_alt', $article->featured_image_alt ?? '') }}">
+                                </div>
+                                <div class="two-col">
+                                    <div class="form-group">
+                                        <label class="form-label">تاریخ انتشار</label>
+                                        <input type="text" class="lux-input persian-datepicker"
+                                            data-pd-target="published_hidden">
+                                        <input type="hidden" name="published_at" id="published_hidden"
+                                            value="{{ old('published_at', optional($article->published_at ?? null)->format('Y-m-d H:i:s')) }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">آخرین به‌روزرسانی</label>
+                                        <input type="text" class="lux-input persian-datepicker"
+                                            data-pd-target="updated_hidden">
+                                        <input type="hidden" name="content_updated_at" id="updated_hidden"
+                                            value="{{ old('content_updated_at', optional($article->content_updated_at ?? null)->format('Y-m-d H:i:s')) }}">
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">توضیح متا (SEO)</label>
                                 <textarea name="meta_description" class="lux-input" rows="2">{{ old('meta_description') }}</textarea>
                             </div>
+
                         </div>
                     </div>
                 </div>

@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\ArticleReaction;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ArticleController extends Controller
 {
@@ -34,10 +35,14 @@ class ArticleController extends Controller
 
     public function show(string $slug)
     {
-        $article = Article::with(['lawyer', 'categories'])
-            ->published()
-            ->where('slug', $slug)
-            ->firstOrFail();
+        $article = Article::with(['lawyer', 'categories'])->published()->where('slug', $slug)->first();
+
+        if (! $article) {
+            $r = DB::table('article_redirects')->where('old_slug', $slug)->first();
+            $new = $r ? Article::published()->find($r->article_id) : null;
+            abort_unless($new, 404);
+            return redirect()->route('articles.show', $new->slug, 301);
+        }
 
         $cookieKey = 'viewed_article_' . $article->id;
 

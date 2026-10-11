@@ -9,6 +9,8 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+
 
 class ArticleController extends Controller
 {
@@ -68,6 +70,15 @@ class ArticleController extends Controller
             'featured_image'   => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif|max:10240',
             'meta_title'       => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+            'slug'                  => 'nullable|string|max:255',
+            'featured_image_alt'    => 'nullable|string|max:255',
+            'published_at'          => 'nullable|date',
+            'content_updated_at'    => 'nullable|date',
+            'faqs'                  => 'nullable|array',
+            'faqs.*.q'              => 'nullable|string|max:300',
+            'faqs.*.a'              => 'nullable|string|max:3000',
+            'related_article_ids'   => 'nullable|array',
+            'related_article_ids.*' => 'exists:articles,id',
         ], [
             'title.required'   => 'عنوان مقاله الزامی است.',
             'content.required' => 'متن مقاله الزامی است.',
@@ -77,7 +88,12 @@ class ArticleController extends Controller
         $data = [
             'lawyer_id'        => $lawyer->id,
             'title'            => $request->title,
-            'slug'             => $this->generateUniqueSlug($request->title),
+            'slug'               => $this->generateUniqueSlug($request->slug ?: $request->title),
+            'featured_image_alt' => $request->featured_image_alt,
+            'published_at'       => $request->published_at ?: ($request->status === 'published' ? now() : null),
+            'content_updated_at' => $request->content_updated_at ?: null,
+            'faqs'               => $this->cleanFaqs($request->faqs),
+            'related_article_ids' => $request->related_article_ids ?: null,
             'content'          => $request->content,
             'excerpt'          => $request->excerpt,
             'tags'             => $request->tags ?: null,
@@ -159,6 +175,15 @@ class ArticleController extends Controller
             'featured_image'   => 'nullable|file|mimes:jpg,jpeg,png,webp,heic,heif|max:10240',
             'meta_title'       => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+            'slug'                  => 'nullable|string|max:255',
+            'featured_image_alt'    => 'nullable|string|max:255',
+            'published_at'          => 'nullable|date',
+            'content_updated_at'    => 'nullable|date',
+            'faqs'                  => 'nullable|array',
+            'faqs.*.q'              => 'nullable|string|max:300',
+            'faqs.*.a'              => 'nullable|string|max:3000',
+            'related_article_ids'   => 'nullable|array',
+            'related_article_ids.*' => 'exists:articles,id',
         ]);
 
         $data = [
@@ -172,6 +197,23 @@ class ArticleController extends Controller
             'meta_title'       => $request->meta_title,
             'meta_description' => $request->meta_description,
         ];
+        $data += [
+            'featured_image_alt' => $request->featured_image_alt,
+            'content_updated_at' => $request->content_updated_at ?: now(),
+            'faqs'               => $this->cleanFaqs($request->faqs),
+            'related_article_ids' => $request->related_article_ids ?: null,
+        ];
+        if ($request->filled('published_at')) $data['published_at'] = $request->published_at;
+
+        if ($request->filled('slug') && $request->slug !== $article->slug) {
+            $new = $this->generateUniqueSlug($request->slug, $article->id);
+            DB::table('article_redirects')->where('old_slug', $new)->delete();
+            DB::table('article_redirects')->updateOrInsert(
+                ['old_slug' => $article->slug],
+                ['article_id' => $article->id, 'created_at' => now(), 'updated_at' => now()]
+            );
+            $data['slug'] = $new;
+        }
 
         if ($request->status === 'published' && $article->status !== 'published') {
             $data['published_at'] = now();
@@ -202,7 +244,7 @@ class ArticleController extends Controller
 
 
     // اسلاگ فارسی سالم — حروف فارسی حذف نمی‌شوند (برای سئوی فارسی بهتر است)
-    private function generateUniqueSlug(string $title): string
+    private function generateUniqueSlug(string $title, ?int $ignoreId = null): string
     {
         $slug = trim(preg_replace('/\s+/u', '-', trim($title)));
         $slug = preg_replace('/[^\p{L}\p{N}\-]+/u', '', $slug);
@@ -211,10 +253,9 @@ class ArticleController extends Controller
         $base  = $slug;
         $count = 1;
 
-        while (Article::where('slug', $slug)->exists()) {
+        while (Article::where('slug', $slug)->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))->exists()) {
             $slug = $base . '-' . $count++;
         }
-
         return $slug;
     }
 
@@ -259,5 +300,10 @@ class ArticleController extends Controller
         if ($path && file_exists(public_path($path))) {
             @unlink(public_path($path));
         }
+    }
+    private function cleanFaqs(?array $faqs): ?array
+    {
+        $c = collect($faqs ?? [])->filter(fn($f) => filled($f['q'] ?? null) && filled($f['a'] ?? null))->values()->all();
+        return $c ?: null;
     }
 }

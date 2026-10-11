@@ -338,7 +338,7 @@
     <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
-                <h2>تجربه مشترک، نتیجه تضمینی</h2>
+                <h2>تجربه و تخصص حقوقی، پشتوانه دفاع از حقوق شما</h2>
                 <h1 class="main-title">
                     دفاع از حق شما<br>
                     <span>تخصص ماست</span>
@@ -380,11 +380,11 @@
     <div class="stats-wrapper">
         <div class="stats-card">
             <div class="stat-item">
-                <span class="stat-number">+۴۸</span>
+                <span class="stat-number">+۴۹</span>
                 <span class="stat-label">سال تجربه مشترک</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number">+۲۰۰۰</span>
+                <span class="stat-number">+۱۲۰۰</span>
                 <span class="stat-label">پرونده موفق</span>
             </div>
             <div class="stat-item">
